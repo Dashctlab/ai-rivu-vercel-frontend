@@ -1,9 +1,12 @@
 async function generateQuestions() {
   const input = document.getElementById('inputTopic').value;
 
-  const response = await fetch('https://YOUR-BACKEND-URL/generate', {
+  const response = await fetch('https://ai-rivu-vercel-render-backend.onrender.com/generate', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+   headers: {
+    'Content-Type': 'application/json',
+    'useremail': localStorage.getItem('userEmail') // Important to send user email
+  },
     body: JSON.stringify({ topic: input })
   });
 
