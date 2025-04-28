@@ -2,7 +2,7 @@ async function login() {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
-  const response = await fetch('https://YOUR-BACKEND-URL/login', {
+  const response = await fetch('https://ai-rivu-vercel-render-backend.onrender.com/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password })
@@ -16,3 +16,4 @@ async function login() {
     document.getElementById('error-message').innerText = 'Invalid login credentials.';
   }
 }
+
