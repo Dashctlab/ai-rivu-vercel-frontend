@@ -42,6 +42,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   curriculumDropdown.addEventListener('change', () => {
     classDropdown.disabled = false;
+    classDropdown.innerHTML = '<option value="">Select Class</option>';
+
+  // Populate Class 1 to Class 12
+  for (let i = 1; i <= 12; i++) {
+    const option = document.createElement('option');
+    option.value = `Class ${i}`;
+    option.textContent = `Class ${i}`;
+    classDropdown.appendChild(option);
+  }
   });
 
   classDropdown.addEventListener('change', () => {
