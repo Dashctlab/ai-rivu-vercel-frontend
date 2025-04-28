@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Questions - AIRIVU</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+      if (!localStorage.getItem('userEmail')) {
+        window.location.href = '/login.html';
+      }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Generate Question Paper</h2>
+        <textarea id="inputTopic" placeholder="Enter Topic or Subject"></textarea>
+        <button onclick="generateQuestions()">Generate</button>
+        <div id="output"></div>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script src="generator.js"></script>
+</body>
+</html>
