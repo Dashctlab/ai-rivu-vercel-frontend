@@ -4,6 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Generate Question Paper - AIRIVU</title>
+
+ <script>
+
+    // Restrict access: Check if userEmail exists in localStorage
+   if (!localStorage.getItem('userEmail')) {
+      window.location.href = '/login.html';
+    }
+  </script>
+
+  
   <link rel="stylesheet" href="style.css">
   <script src="generator.js" defer></script>
 </head>
