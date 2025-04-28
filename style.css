@@ -55,5 +55,9 @@ form table th, form table td {
 }
 
 #outputSection {
-  margin-top: 20px;
+  margin-top: 20px;  
+}
+
+#downloadBtn {
+  margin-bottom: 20px;
 }
