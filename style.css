@@ -37,6 +37,10 @@ form table th, form table td {
   text-align: center;
 }
 
+#generateBtn {
+  margin-bottom: 20px;
+}
+
 #generateBtn, #downloadBtn, button {
   width: 100%;
   padding: 10px;
