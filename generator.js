@@ -135,7 +135,7 @@ async function generateQuestionPaper(e) {
     answerKeyFormat: document.querySelector('input[name="answerKeyFormat"]:checked').value
   };
 
-  document.getElementById('outputSection').style.display = 'none';
+  document.getElementById('outputSection').style.display = 'block';
   document.getElementById('output').textContent = 'Generating, please wait...';
 
   try {
