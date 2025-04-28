@@ -1,25 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generate Questions - AIRIVU</title>
-    <link rel="stylesheet" href="style.css">
-    <script>
-      if (!localStorage.getItem('userEmail')) {
-        window.location.href = '/login.html';
-      }
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generate Question Paper - AIRIVU</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="generator.js" defer></script>
 </head>
 <body>
-    <div class="container">
-        <h2>Generate Question Paper</h2>
-        <textarea id="inputTopic" placeholder="Enter Topic or Subject"></textarea>
-        <button onclick="generateQuestions()">Generate</button>
-        <div id="output"></div>
-        <button onclick="logout()">Logout</button>
+  <div class="container">
+    <h2>Generate Detailed Question Paper</h2>
+    <form id="questionForm">
+      <select id="curriculum" required>
+        <option value="">Select Curriculum</option>
+        <option value="CBSE">CBSE</option>
+        <option value="Karnataka State Board">Karnataka State Board</option>
+        <option value="Tamil Nadu State Board">Tamil Nadu State Board</option>
+      </select><br><br>
+
+      <select id="className" required disabled>
+        <option value="">Select Class</option>
+      </select><br><br>
+
+      <select id="subject" required disabled>
+        <option value="">Select Subject</option>
+      </select><br><br>
+
+      <input type="text" id="topic" placeholder="Enter Topic(s)" required><br><br>
+
+      <select id="timeDuration" required>
+        <option value="30">30 Minutes</option>
+        <option value="60" selected>1 Hour</option>
+        <option value="90">1.5 Hours</option>
+        <option value="120">2 Hours</option>
+        <option value="180">3 Hours</option>
+      </select><br><br>
+
+      <table border="1" id="questionsTable">
+        <thead>
+          <tr>
+            <th>Type of Question</th>
+            <th>Number of Questions</th>
+            <th>Marks per Question</th>
+            <th>Total Marks</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" style="text-align: right;">Overall Total Marks:</td>
+            <td id="overallTotalMarks">0</td>
+          </tr>
+        </tfoot>
+      </table><br>
+
+      <label>Easy %: <input type="number" id="easy" value="0" min="0" max="100"></label><br>
+      <label>Medium %: <input type="number" id="medium" value="100" min="0" max="100"></label><br>
+      <label>Hard %: <input type="number" id="hard" value="0" min="0" max="100"></label><br><br>
+
+      <textarea id="additionalConditions" placeholder="Any additional conditions..."></textarea><br><br>
+
+      <label><input type="radio" name="answerKeyFormat" value="Brief" checked> Brief</label>
+      <label><input type="radio" name="answerKeyFormat" value="Detailed"> Detailed</label><br><br>
+
+      <button type="submit" id="generateBtn" disabled>Generate Question Paper</button>
+    </form>
+
+    <div id="outputSection" style="display:none;">
+      <h3>Generated Question Paper:</h3>
+      <pre id="output"></pre>
+      <button id="downloadBtn">Download as Word</button>
     </div>
 
-    <script src="generator.js"></script>
+    <button onclick="logout()">Logout</button>
+  </div>
 </body>
 </html>
