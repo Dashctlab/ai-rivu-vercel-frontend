@@ -108,22 +108,31 @@ async function generateQuestionPaper(e) {
   const questionTypesSelected = [];
 
   document.querySelectorAll('#questionsTable tbody tr').forEach(row => {
-    const type = row.querySelector('td').textContent;
+    const type = row.querySelector('td').textContent.trim();
     const num = parseInt(row.querySelector('.numQuestions').value) || 0;
     if (num > 0) questionTypesSelected.push(type);
   });
 
+  if (questionTypesSelected.length === 0) {
+    alert("Please select at least one type of question with a non-zero number.");
+    return;
+  }
+
+  const easy = document.getElementById('easy').value || 0;
+  const medium = document.getElementById('medium').value || 0;
+  const hard = document.getElementById('hard').value || 0;
+
   const payload = {
-    curriculum: formData.get('curriculum') || curriculumDropdown.value,
-    className: formData.get('className') || classDropdown.value,
-    subject: formData.get('subject') || subjectDropdown.value,
-    topic: formData.get('topic'),
+    curriculum: document.getElementById('curriculum').value,
+    className: document.getElementById('className').value,
+    subject: document.getElementById('subject').value,
+    topic: document.getElementById('topic').value,
     numQuestions: questionTypesSelected.length,
-    difficultySplit: `${document.getElementById('easy').value}%-${document.getElementById('medium').value}%-${document.getElementById('hard').value}%`,
-    timeDuration: formData.get('timeDuration') || document.getElementById('timeDuration').value,
-    additionalConditions: formData.get('additionalConditions'),
+    difficultySplit: `${easy}%-${medium}%-${hard}%`,
+    timeDuration: document.getElementById('timeDuration').value,
+    additionalConditions: document.getElementById('additionalConditions').value,
     questionTypes: questionTypesSelected,
-    answerKeyFormat: formData.get('answerKeyFormat') || document.querySelector('input[name="answerKeyFormat"]:checked').value
+    answerKeyFormat: document.querySelector('input[name="answerKeyFormat"]:checked').value
   };
 
   document.getElementById('outputSection').style.display = 'none';
@@ -144,10 +153,12 @@ async function generateQuestionPaper(e) {
       document.getElementById('outputSection').style.display = 'block';
       document.getElementById('output').textContent = data.questions;
     } else {
-      throw new Error('Generation failed');
+      const errorData = await response.json();
+      document.getElementById('output').textContent = `Error: ${errorData.message || 'Failed to generate paper.'}`;
     }
   } catch (error) {
-    document.getElementById('output').textContent = 'Error generating paper.';
+    console.error(error);
+    document.getElementById('output').textContent = 'Error generating paper. Please check connection or server.';
   }
 }
 
