@@ -125,7 +125,7 @@ async function generateQuestionPaper(e) {
   const payload = {
     curriculum: document.getElementById('curriculum').value,
     className: document.getElementById('className').value,
-    subject: document.getElementById('subject').value,
+    subject: document.getElementById('subject').value || '',
     topic: document.getElementById('topic').value,
     numQuestions: questionTypesSelected.length,
     difficultySplit: `${easy}%-${medium}%-${hard}%`,
