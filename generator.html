@@ -1,24 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Generate Question Paper - AI-RIVU</title>
 
-  <!-- Link to shared CSS -->
-  <link rel="stylesheet" href="style.css">
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
 
-  <!-- Link to JavaScript logic -->
+  <!-- JS Logic -->
   <script src="generator.js" defer></script>
+
+  <!-- Access Restriction -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!localStorage.getItem('userEmail')) {
+        window.location.href = '/login.html';
+      }
+    });
+  </script>
 </head>
 <body>
   <div class="container">
     <h2>Generate Detailed Question Paper</h2>
 
-    <!-- Question Paper Generator Form -->
     <form id="questionForm">
 
-      <!-- Curriculum Dropdown -->
+      <!-- Curriculum -->
       <label for="curriculum">Select Curriculum</label>
       <select id="curriculum" name="curriculum" required>
         <option value="">Select Curriculum</option>
@@ -27,23 +35,23 @@
         <option value="Tamil Nadu State Board">Tamil Nadu State Board</option>
       </select><br><br>
 
-      <!-- Class Dropdown -->
+      <!-- Class -->
       <label for="className">Select Class</label>
-      <select id="className" name="className" required>
+      <select id="className" name="className" required disabled>
         <option value="">Select Class</option>
       </select><br><br>
 
-      <!-- Subject Dropdown -->
+      <!-- Subject -->
       <label for="subject">Select Subject</label>
       <select id="subject" name="subject" required disabled>
         <option value="">Select Subject</option>
       </select><br><br>
 
-      <!-- Topic Input -->
+      <!-- Topic -->
       <label for="topic">Topic(s)</label>
-      <input type="text" id="topic" name="topic" placeholder="Enter Topic(s)"><br><br>
+      <input type="text" id="topic" name="topic" placeholder="Enter Topic(s)" /><br><br>
 
-      <!-- Time Duration -->
+      <!-- Duration -->
       <label for="timeDuration">Time Duration</label>
       <select id="timeDuration" name="timeDuration" required>
         <option value="30">30 Minutes</option>
@@ -53,7 +61,7 @@
         <option value="180">3 Hours</option>
       </select><br><br>
 
-      <!-- Questions Table -->
+      <!-- Question Table -->
       <table border="1" id="questionsTable">
         <thead>
           <tr>
@@ -72,47 +80,37 @@
         </tfoot>
       </table><br>
 
-      <!-- Difficulty Split -->
+      <!-- Difficulty -->
       <label for="easy">Easy %</label>
-      <input type="number" id="easy" name="easy" value="0" min="0" max="100"><br>
+      <input type="number" id="easy" name="easy" value="0" min="0" max="100"/><br>
 
       <label for="medium">Medium %</label>
-      <input type="number" id="medium" name="medium" value="100" min="0" max="100"><br>
+      <input type="number" id="medium" name="medium" value="100" min="0" max="100"/><br>
 
       <label for="hard">Hard %</label>
-      <input type="number" id="hard" name="hard" value="0" min="0" max="100"><br><br>
+      <input type="number" id="hard" name="hard" value="0" min="0" max="100"/><br><br>
 
       <!-- Additional Conditions -->
       <label for="additionalConditions">Additional Conditions</label><br>
       <textarea id="additionalConditions" name="additionalConditions" placeholder="Any additional conditions..."></textarea><br><br>
 
       <!-- Answer Key Format -->
-      <label><input type="radio" name="answerKeyFormat" value="Brief" checked> Brief</label>
-      <label><input type="radio" name="answerKeyFormat" value="Detailed"> Detailed</label><br><br>
+      <label><input type="radio" name="answerKeyFormat" value="Brief" checked /> Brief</label>
+      <label><input type="radio" name="answerKeyFormat" value="Detailed" /> Detailed</label><br><br>
 
-      <!-- Generate Button -->
+      <!-- Submit -->
       <button type="submit" id="generateBtn" disabled>Generate Question Paper</button>
     </form>
 
-    <!-- Output Section -->
+    <!-- Output -->
     <div id="outputSection" style="display:none;">
       <h3>Generated Question Paper:</h3>
       <pre id="output"></pre>
       <button id="downloadBtn">Download as Word</button>
     </div>
 
-    <!-- Logout Button -->
+    <!-- Logout -->
     <button onclick="logout()">Logout</button>
   </div>
-
-  <!-- Access Restriction Script -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // If userEmail is not found in localStorage, redirect to login
-      if (!localStorage.getItem('userEmail')) {
-        window.location.href = '/login.html';
-      }
-    });
-  </script>
 </body>
 </html>
