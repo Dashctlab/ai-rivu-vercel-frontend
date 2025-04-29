@@ -58,6 +58,12 @@ form table th, form table td {
   margin-top: 20px;  
 }
 
+#output {
+  white-space: pre-wrap;  /* Allow long text to wrap */
+  word-break: break-word; /* Force break long words if needed */
+}
+
+
 #downloadBtn {
   margin-bottom: 20px;
 }
