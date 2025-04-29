@@ -12,12 +12,12 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     });
 
     const result = await response.json();
-document.getElementById('error-message').innerText = result.message || 'Invalid credentials';
+
     if (response.ok) {
       localStorage.setItem('userEmail', result.email);
       window.location.href = '/generator.html';
     } else {
-      alert(result.message || 'Invalid email or password.');
+      document.getElementById('error-message').innerText = result.message || 'Invalid credentials';
     }
   } catch (err) {
     console.error('Login failed:', err);
