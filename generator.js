@@ -25,7 +25,7 @@ const classDropdown = document.getElementById('className');
 const subjectDropdown = document.getElementById('subject');
 const curriculumDropdown = document.getElementById('curriculum');
 const generateBtn = document.getElementById('generateBtn');
-
+const downloadBtn = document.getElementById('downloadBtn');
 // On page load
 
 function resetFormFields() {
@@ -100,9 +100,77 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('questionForm').addEventListener('input', validateForm);
   document.getElementById('questionForm').addEventListener('submit', generateQuestionPaper);
 
-  document.getElementById('downloadBtn').style.display = 'none';
+  downloadBtn.style.display = 'none';
+
+  // Correct download click binding
+  downloadBtn.addEventListener('click', async () => {
+    const text = document.getElementById('output').textContent;
+    const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
+
+    let sections = [], currentSection = null, answerKeyStarted = false, answerKey = [];
+
+    for (let line of lines) {
+      if (line.toLowerCase().includes('answer key')) {
+        answerKeyStarted = true;
+        continue;
+      }
+      if (answerKeyStarted) {
+        if (line !== '') answerKey.push(line);
+      } else if (line.startsWith('Section')) {
+        if (currentSection) sections.push(currentSection);
+        currentSection = { title: line, questions: [] };
+      } else if (line.match(/^\d+\.\s+/)) {
+        if (currentSection) currentSection.questions.push(line.replace(/^\d+\.\s*/, '').trim());
+      }
+    }
+
+    if (currentSection) sections.push(currentSection);
+
+    const metadata = {
+      curriculum: document.getElementById('curriculum').value,
+      className: document.getElementById('className').value,
+      subject: document.getElementById('subject').value,
+      totalMarks: document.getElementById('overallTotalMarks').textContent,
+      timeDuration: document.getElementById('timeDuration').value + ' Minutes'
+    };
+
+    const payload = {
+      subject: metadata.subject,
+      metadata: {
+        className: metadata.className,
+        totalMarks: metadata.totalMarks,
+        timeDuration: metadata.timeDuration
+      },
+      sections,
+      answerKey
+    };
+
+    try {
+      const response = await fetch(`${backendURL}/download-docx`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) throw new Error('Download failed');
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Question_Paper_${metadata.subject || 'Untitled'}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      alert('Failed to download Word file.');
+      console.error(error);
+    }
+  });  
 });
 
+document.getElementById('downloadBtn').style.display = 'none';
 // Calculate total marks dynamically
 								
 function calculateTotals() {
@@ -184,7 +252,7 @@ async function generateQuestionPaper(e) {
       const data = await response.json();
 																	   
       document.getElementById('output').textContent = data.questions;
-      document.getElementById('downloadBtn').style.display = 'inline-block';
+      downloadBtn.style.display = 'inline-block';
       resetFormFields();
     } else {
       const errorData = await response.json();
