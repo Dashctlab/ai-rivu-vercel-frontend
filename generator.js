@@ -179,7 +179,7 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
     }
 
     if (answerKeyStarted) {
-      answerKey.push(line);
+      if (line !== '') answerKey.push(line);
     } else if (line.startsWith('Section')) {
       if (currentSection) {
         sections.push(currentSection);
@@ -188,11 +188,14 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
         title: line,
         questions: []
       };
-    } else if (line.match(/^\d+\./)) {
-      // Lines starting with "1.", "2.", etc. are questions
+    } else if (line.match(/^\d+\.\s+/)) {
+      // Lines starting with "1. ", "2. " etc. are questions
       if (currentSection) {
-        currentSection.questions.push(line.replace(/^\d+\.\s*/, ''));
+        currentSection.questions.push(line.replace(/^\d+\.\s*/, '').trim());
       }
+    } else {
+      // Ignore instructions and random text
+      continue;
     }
   }
 
