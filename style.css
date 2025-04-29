@@ -1,3 +1,4 @@
+/* ===== Global Styles ===== */
 body {
   font-family: Arial, sans-serif;
   background-color: #f2f2f2;
@@ -5,6 +6,7 @@ body {
   padding: 0;
 }
 
+/* ===== Container (Common Section Styling) ===== */
 .container {
   width: 80%;
   max-width: 800px;
@@ -15,55 +17,126 @@ body {
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
+/* ===== Headings ===== */
 h2 {
   text-align: center;
   margin-bottom: 20px;
 }
 
-form select, form input[type="text"], form input[type="number"], form textarea {
+/* ===== Form Elements ===== */
+form select,
+form input[type="text"],
+form input[type="number"],
+form textarea {
   width: 100%;
   padding: 8px;
   margin: 8px 0;
   box-sizing: border-box;
 }
 
+/* ===== Tables ===== */
 form table {
   width: 100%;
   margin-bottom: 20px;
+  border-collapse: collapse;
 }
 
-form table th, form table td {
+form table th, 
+form table td {
   padding: 8px;
   text-align: center;
+  border: 1px solid #ddd;
 }
 
-#generateBtn {
-  margin-bottom: 20px;
-}
-
-#generateBtn, #downloadBtn, button {
+/* ===== Buttons ===== */
+#generateBtn,
+#downloadBtn,
+button {
   width: 100%;
   padding: 10px;
   background-color: #4CAF50;
   color: white;
   border: none;
   cursor: pointer;
+  border-radius: 4px;
+  font-size: 16px;
 }
 
-#generateBtn:hover, #downloadBtn:hover, button:hover {
+#generateBtn:hover,
+#downloadBtn:hover,
+button:hover {
   background-color: #45a049;
 }
 
+#generateBtn {
+  margin-bottom: 20px;
+}
+
+#downloadBtn {
+  margin-bottom: 20px;
+}
+
+/* ===== Output Section ===== */
 #outputSection {
   margin-top: 20px;  
 }
 
 #output {
-  white-space: pre-wrap;  /* Allow long text to wrap */
-  word-break: break-word; /* Force break long words if needed */
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #fafafa;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
 }
 
+/* ===== Login Page Styles ===== */
+.login-container {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  text-align: center;
+}
 
-#downloadBtn {
+.login-container h2 {
+  margin-bottom: 25px;
+}
+
+.login-container .form-group {
   margin-bottom: 20px;
+  text-align: left;
+}
+
+.login-container label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.login-container input[type="email"],
+.login-container input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.login-container button[type="submit"] {
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.login-container button[type="submit"]:hover {
+  background-color: #45a049;
 }
