@@ -163,16 +163,46 @@ async function generateQuestionPaper(e) {
 }
 
 // Download generated paper as Word file
-document.getElementById('downloadBtn').addEventListener('click', () => {
-  const text = document.getElementById('output').textContent;
-  const blob = new Blob([text], { type: 'application/msword' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'question-paper.docx';
-  a.click();
-  URL.revokeObjectURL(url);
+document.getElementById('downloadBtn').addEventListener('click', async () => {
+  const subject = document.getElementById('subject').value;
+  const questionsText = document.getElementById('output').textContent;
+
+  // Extract individual questions from output
+  const questions = questionsText
+    .split('\n')
+    .filter(line => line.trim() !== '' && /^\d+\./.test(line.trim())); // lines like "1. What is..."
+
+  if (!questions || questions.length === 0) {
+    alert("No valid questions found to download.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${backendURL}/download-docx`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ subject, questions })
+    });
+
+    if (!response.ok) throw new Error('Download failed');
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Question_Paper_${subject || 'Untitled'}.docx`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    alert("Failed to download Word file.");
+    console.error(error);
+  }
 });
+
 
 // Logout
 function logout() {
