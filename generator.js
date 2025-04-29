@@ -164,18 +164,61 @@ async function generateQuestionPaper(e) {
 
 // Download generated paper as Word file
 document.getElementById('downloadBtn').addEventListener('click', async () => {
-  const subject = document.getElementById('subject').value;
-  const questionsText = document.getElementById('output').textContent;
+  const text = document.getElementById('output').textContent;
+  const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
 
-  // Extract individual questions from output
-  const questions = questionsText
-    .split('\n')
-    .filter(line => line.trim() !== '' && /^\d+\./.test(line.trim())); // lines like "1. What is..."
+  let sections = [];
+  let currentSection = null;
+  let answerKeyStarted = false;
+  let answerKey = [];
 
-  if (!questions || questions.length === 0) {
-    alert("No valid questions found to download.");
-    return;
+  for (let line of lines) {
+    if (line.toLowerCase().includes('answer key')) {
+      answerKeyStarted = true;
+      continue;
+    }
+
+    if (answerKeyStarted) {
+      answerKey.push(line);
+    } else if (line.startsWith('Section')) {
+      if (currentSection) {
+        sections.push(currentSection);
+      }
+      currentSection = {
+        title: line,
+        questions: []
+      };
+    } else if (line.match(/^\d+\./)) {
+      // Lines starting with "1.", "2.", etc. are questions
+      if (currentSection) {
+        currentSection.questions.push(line.replace(/^\d+\.\s*/, ''));
+      }
+    }
   }
+
+  if (currentSection) {
+    sections.push(currentSection);
+  }
+
+  // Prepare metadata
+  const metadata = {
+    curriculum: document.getElementById('curriculum').value,
+    className: document.getElementById('className').value,
+    subject: document.getElementById('subject').value,
+    totalMarks: document.getElementById('overallTotalMarks').textContent,
+    timeDuration: document.getElementById('timeDuration').value + " Minutes"
+  };
+
+  const payload = {
+    subject: metadata.subject,
+    metadata: {
+      className: metadata.className,
+      totalMarks: metadata.totalMarks,
+      timeDuration: metadata.timeDuration
+    },
+    sections,
+    answerKey
+  };
 
   try {
     const response = await fetch(`${backendURL}/download-docx`, {
@@ -183,7 +226,7 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ subject, questions })
+      body: JSON.stringify(payload)
     });
 
     if (!response.ok) throw new Error('Download failed');
@@ -192,7 +235,7 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Question_Paper_${subject || 'Untitled'}.docx`;
+    a.download = `Question_Paper_${metadata.subject || 'Untitled'}.docx`;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -202,7 +245,6 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
     console.error(error);
   }
 });
-
 
 // Logout
 function logout() {
