@@ -170,7 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });  
 });
 
-document.getElementById('downloadBtn').style.display = 'none';
 // Calculate total marks dynamically
 								
 function calculateTotals() {
@@ -200,9 +199,7 @@ function validateForm() {
 async function generateQuestionPaper(e) {
   e.preventDefault();
 
-  generateBtn.disabled = true;
-
-													   
+  generateBtn.disabled = true;											   
 									  
   const questionTypesSelected = [];
 
