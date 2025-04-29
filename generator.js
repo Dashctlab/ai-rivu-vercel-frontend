@@ -27,6 +27,25 @@ const curriculumDropdown = document.getElementById('curriculum');
 const generateBtn = document.getElementById('generateBtn');
 
 // On page load
+
+function resetFormFields() {
+  document.getElementById('curriculum').selectedIndex = 0;
+  classDropdown.innerHTML = '<option value="">Select Class</option>';
+  subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
+  document.getElementById('topic').value = '';
+  document.getElementById('timeDuration').value = '60';
+  document.getElementById('easy').value = '0';
+  document.getElementById('medium').value = '100';
+  document.getElementById('hard').value = '0';
+  document.getElementById('additionalConditions').value = '';
+  document.querySelector('input[name="answerKeyFormat"][value="Brief"]').checked = true;
+
+  document.querySelectorAll('.numQuestions').forEach(input => input.value = 0);
+  document.querySelectorAll('.marksPerQuestion').forEach(input => input.value = 0);
+
+  calculateTotals();
+  validateForm();
+}
 document.addEventListener('DOMContentLoaded', () => {
   // Create table rows for question types
   questionTypes.forEach(type => {
@@ -43,14 +62,13 @@ document.addEventListener('DOMContentLoaded', () => {
   curriculumDropdown.addEventListener('change', () => {
     classDropdown.disabled = false;
     classDropdown.innerHTML = '<option value="">Select Class</option>';
-
   // Populate Class 1 to Class 12
-  for (let i = 1; i <= 12; i++) {
-    const option = document.createElement('option');
-    option.value = `Class ${i}`;
-    option.textContent = `Class ${i}`;
-    classDropdown.appendChild(option);
-  }
+    for (let i = 1; i <= 12; i++) {
+      const option = document.createElement('option');
+      option.value = `Class ${i}`;
+      option.textContent = `Class ${i}`;
+      classDropdown.appendChild(option);
+    }
   });
 
   classDropdown.addEventListener('change', () => {
@@ -67,15 +85,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  document.querySelectorAll('.numQuestions').forEach(input => {
+    input.addEventListener('input', () => {
+      if (parseInt(input.value) > 25) {
+        input.value = 25;
+      }
+    });
+  });
+
   document.querySelectorAll('.numQuestions, .marksPerQuestion').forEach(input => {
     input.addEventListener('input', calculateTotals);
   });
 
   document.getElementById('questionForm').addEventListener('input', validateForm);
   document.getElementById('questionForm').addEventListener('submit', generateQuestionPaper);
+
+  document.getElementById('downloadBtn').style.display = 'none';
 });
 
 // Calculate total marks dynamically
+								
 function calculateTotals() {
   let overallTotal = 0;
   document.querySelectorAll('#questionsTable tbody tr').forEach(row => {
@@ -103,8 +132,10 @@ function validateForm() {
 async function generateQuestionPaper(e) {
   e.preventDefault();
 
-  const form = document.getElementById('questionForm');
-  const formData = new FormData(form);
+  generateBtn.disabled = true;
+
+													   
+									  
   const questionTypesSelected = [];
 
   document.querySelectorAll('#questionsTable tbody tr').forEach(row => {
@@ -115,6 +146,7 @@ async function generateQuestionPaper(e) {
 
   if (questionTypesSelected.length === 0) {
     alert("Please select at least one type of question with a non-zero number.");
+    generateBtn.disabled = false;
     return;
   }
 
@@ -150,8 +182,10 @@ async function generateQuestionPaper(e) {
 
     if (response.ok) {
       const data = await response.json();
-      document.getElementById('outputSection').style.display = 'block';
+																	   
       document.getElementById('output').textContent = data.questions;
+      document.getElementById('downloadBtn').style.display = 'inline-block';
+      resetFormFields();
     } else {
       const errorData = await response.json();
       document.getElementById('output').textContent = `Error: ${errorData.message || 'Failed to generate paper.'}`;
@@ -159,8 +193,8 @@ async function generateQuestionPaper(e) {
   } catch (error) {
     console.error(error);
     document.getElementById('output').textContent = 'Error generating paper. Please check connection or server.';
-  }
-}
+  } finally {
+    generateBtn.disabled = false;
 
 // Download generated paper as Word file
 document.getElementById('downloadBtn').addEventListener('click', async () => {
