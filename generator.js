@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
       classDropdown.appendChild(option);
     }
   });
-
+  console.log("generator.js loaded and dropdown logic active");
   classDropdown.addEventListener('change', () => {
     subjectDropdown.disabled = false;
     subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
@@ -262,7 +262,6 @@ async function generateQuestionPaper(e) {
     generateBtn.disabled = false;
 
 // Download generated paper as Word file
-document.getElementById('downloadBtn').addEventListener('click', async () => {
   const text = document.getElementById('output').textContent;
   const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
 
