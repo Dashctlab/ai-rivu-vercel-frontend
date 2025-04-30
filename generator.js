@@ -260,43 +260,26 @@ async function downloadQuestionPaper() {
   console.log("Processing output text...");
   const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
 
-  let sections = [];
-  let currentSection = null;
-  let answerKeyStarted = false;
+  // Parse the text content
+  let questionPaper = "";
   let answerKey = [];
-
+  let answerKeyStarted = false;
+  
+  // First consolidate the question paper text and identify answer key
   for (let line of lines) {
     if (line.toLowerCase().includes('answer key')) {
       answerKeyStarted = true;
       continue;
     }
-
+    
     if (answerKeyStarted) {
       if (line !== '') answerKey.push(line);
-    } else if (line.startsWith('Section')) {
-      if (currentSection) {
-        sections.push(currentSection);
-      }
-      currentSection = {
-        title: line,
-        questions: []
-      };
-    } else if (line.match(/^\d+\.\s+/)) {
-      // Lines starting with "1. ", "2. " etc. are questions
-      if (currentSection) {
-        currentSection.questions.push(line.replace(/^\d+\.\s*/, '').trim());
-      }
     } else {
-      // Ignore instructions and random text
-      continue;
+      questionPaper += line + "\n";
     }
   }
-
-  if (currentSection) {
-    sections.push(currentSection);
-  }
-
-  // Prepare metadata
+  
+  // Prepare simple metadata
   const metadata = {
     curriculum: document.getElementById('curriculum').value,
     className: document.getElementById('className').value,
@@ -304,17 +287,16 @@ async function downloadQuestionPaper() {
     totalMarks: document.getElementById('overallTotalMarks').textContent,
     timeDuration: document.getElementById('timeDuration').value + " Minutes"
   };
-
+  
+  // Create a simplified payload - the backend might expect a specific format
   const payload = {
-    subject: metadata.subject,
-    metadata: {
-      className: metadata.className,
-      totalMarks: metadata.totalMarks,
-      timeDuration: metadata.timeDuration
-    },
-    sections,
-    answerKey
+    questionPaper: questionPaper.trim(),
+    answerKey: answerKey,
+    metadata: metadata,
+    email: localStorage.getItem('userEmail') || ''
   };
+
+
 
   console.log("Sending payload to server:", payload);
   try {
