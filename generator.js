@@ -361,3 +361,4 @@ function logout() {
   localStorage.removeItem('userEmail');
   window.location.href = '/login.html';
 }
+}
