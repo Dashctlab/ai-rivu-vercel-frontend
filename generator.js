@@ -354,7 +354,6 @@ async function generateQuestionPaper(e) {
     alert("Failed to download Word file.");
     console.error(error);
   }
-});
 
 // Logout
 function logout() {
