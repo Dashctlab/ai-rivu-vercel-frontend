@@ -353,7 +353,8 @@ async function generateQuestionPaper(e) {
   } catch (error) {
     alert("Failed to download Word file.");
     console.error(error);
-  }
+    }
+}
 
 // Logout
 function logout() {
