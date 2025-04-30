@@ -177,8 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Failed to download Word file.');
       console.error(error);
     }
-  });  
-});
+  });
 
 // Calculate total marks dynamically
 								
