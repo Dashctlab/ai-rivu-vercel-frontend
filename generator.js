@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         subjectDropdown.appendChild(option);
       });
     }
-  });
+  );
 
   document.querySelectorAll('.numQuestions').forEach(input => {
     input.addEventListener('input', () => {
