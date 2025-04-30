@@ -1,5 +1,6 @@
 const backendURL = 'https://ai-rivu-vercel-render-backend.onrender.com';
 let classDropdown, subjectDropdown, curriculumDropdown;
+
 // Class → Subject Mapping
 const classSubjectMap = {
   'Class 1': ['English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
@@ -20,38 +21,31 @@ const questionTypes = [
   'Match the Following', 'Case Based', 'Diagram Based', 'Descriptive'
 ];
 
-const tableBody = document.querySelector('#questionsTable tbody');
-
-const generateBtn = document.getElementById('generateBtn');
-const downloadBtn = document.getElementById('downloadBtn');
 // On page load
-
-function resetFormFields() {
-  document.getElementById('curriculum').selectedIndex = 0;
-  classDropdown.innerHTML = '<option value="">Select Class</option>';
-  subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
-  document.getElementById('topic').value = '';
-  document.getElementById('timeDuration').value = '60';
-  document.getElementById('easy').value = '0';
-  document.getElementById('medium').value = '100';
-  document.getElementById('hard').value = '0';
-  document.getElementById('additionalConditions').value = '';
-  document.querySelector('input[name="answerKeyFormat"][value="Brief"]').checked = true;
-
-  document.querySelectorAll('.numQuestions').forEach(input => input.value = 0);
-  document.querySelectorAll('.marksPerQuestion').forEach(input => input.value = 0);
-
-  calculateTotals();
-  validateForm();
-}
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize references
   curriculumDropdown = document.getElementById('curriculum');
   classDropdown = document.getElementById('className');
   subjectDropdown = document.getElementById('subject');
+  const tableBody = document.querySelector('#questionsTable tbody');
+  const generateBtn = document.getElementById('generateBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
 
-  // Initially disable both
+  // Initially disable both class and subject
   classDropdown.disabled = true;
   subjectDropdown.disabled = true;
+
+  // Populate question types table
+  questionTypes.forEach(type => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${type}</td>
+      <td><input type="number" class="numQuestions" min="0" max="25" value="0"></td>
+      <td><input type="number" class="marksPerQuestion" min="0" value="0"></td>
+      <td class="totalMarks">0</td>
+    `;
+    tableBody.appendChild(row);
+  });
 
   // Curriculum → Enable Class
   curriculumDropdown.addEventListener('change', () => {
@@ -71,15 +65,23 @@ document.addEventListener('DOMContentLoaded', () => {
         option.textContent = `Class ${i}`;
         classDropdown.appendChild(option);
       }
-      classDropdown.disabled = false; // ✅ enable class
+      classDropdown.disabled = false; // Enable class
     }
   });
 
-  // ✅ Class → Enable and populate Subject
+  // Class → Enable and populate Subject
   classDropdown.addEventListener('change', () => {
-    subjectDropdown.disabled = false;
     subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
     const selectedClass = classDropdown.value;
+    
+    // Keep subject disabled until class is selected
+    if (!selectedClass) {
+      subjectDropdown.disabled = true;
+      return;
+    }
+    
+    // Enable subject and populate options
+    subjectDropdown.disabled = false;
     if (classSubjectMap[selectedClass]) {
       classSubjectMap[selectedClass].forEach(subject => {
         const option = document.createElement('option');
@@ -90,26 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  console.log("Dropdown logic ready");
-}; 
-
-
-
-  console.log("generator.js loaded and dropdown logic active");
-  
-    subjectDropdown.disabled = false;
-    subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
-    const selectedClass = classDropdown.value;
-    if (classSubjectMap[selectedClass]) {
-      classSubjectMap[selectedClass].forEach(subject => {
-        const option = document.createElement('option');
-        option.value = subject;
-        option.textContent = subject;
-        subjectDropdown.appendChild(option);
-      });
-    }
-  );
-
+  // Limit questions to max 25
   document.querySelectorAll('.numQuestions').forEach(input => {
     input.addEventListener('input', () => {
       if (parseInt(input.value) > 25) {
@@ -118,84 +101,51 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Calculate totals when input changes
   document.querySelectorAll('.numQuestions, .marksPerQuestion').forEach(input => {
     input.addEventListener('input', calculateTotals);
   });
 
+  // Validate form on input change
   document.getElementById('questionForm').addEventListener('input', validateForm);
+  
+  // Form submission
   document.getElementById('questionForm').addEventListener('submit', generateQuestionPaper);
 
+  // Hide download button initially
   downloadBtn.style.display = 'none';
 
-  // Correct download click binding
-  downloadBtn.addEventListener('click', async () => {
-    const text = document.getElementById('output').textContent;
-    const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
+  // Download button functionality
+  downloadBtn.addEventListener('click', downloadQuestionPaper);
 
-    let sections = [], currentSection = null, answerKeyStarted = false, answerKey = [];
+  console.log("generator.js loaded and dropdown logic active");
+});
 
-    for (let line of lines) {
-      if (line.toLowerCase().includes('answer key')) {
-        answerKeyStarted = true;
-        continue;
-      }
-      if (answerKeyStarted) {
-        if (line !== '') answerKey.push(line);
-      } else if (line.startsWith('Section')) {
-        if (currentSection) sections.push(currentSection);
-        currentSection = { title: line, questions: [] };
-      } else if (line.match(/^\d+\.\s+/)) {
-        if (currentSection) currentSection.questions.push(line.replace(/^\d+\.\s*/, '').trim());
-      }
-    }
+// Reset form fields
+function resetFormFields() {
+  document.getElementById('curriculum').selectedIndex = 0;
+  classDropdown.innerHTML = '<option value="">Select Class</option>';
+  subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
+  document.getElementById('topic').value = '';
+  document.getElementById('timeDuration').value = '60';
+  document.getElementById('easy').value = '0';
+  document.getElementById('medium').value = '100';
+  document.getElementById('hard').value = '0';
+  document.getElementById('additionalConditions').value = '';
+  document.querySelector('input[name="answerKeyFormat"][value="Brief"]').checked = true;
 
-    if (currentSection) sections.push(currentSection);
+  document.querySelectorAll('.numQuestions').forEach(input => input.value = 0);
+  document.querySelectorAll('.marksPerQuestion').forEach(input => input.value = 0);
 
-    const metadata = {
-      curriculum: document.getElementById('curriculum').value,
-      className: document.getElementById('className').value,
-      subject: document.getElementById('subject').value,
-      totalMarks: document.getElementById('overallTotalMarks').textContent,
-      timeDuration: document.getElementById('timeDuration').value + ' Minutes'
-    };
+  // Re-disable dropdowns
+  classDropdown.disabled = true;
+  subjectDropdown.disabled = true;
 
-    const payload = {
-      subject: metadata.subject,
-      metadata: {
-        className: metadata.className,
-        totalMarks: metadata.totalMarks,
-        timeDuration: metadata.timeDuration
-      },
-      sections,
-      answerKey
-    };
-
-    try {
-      const response = await fetch(`${backendURL}/download-docx`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) throw new Error('Download failed');
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Question_Paper_${metadata.subject || 'Untitled'}.docx`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      alert('Failed to download Word file.');
-      console.error(error);
-    }
-  });
+  calculateTotals();
+  validateForm();
+}
 
 // Calculate total marks dynamically
-								
 function calculateTotals() {
   let overallTotal = 0;
   document.querySelectorAll('#questionsTable tbody tr').forEach(row => {
@@ -216,15 +166,17 @@ function validateForm() {
   const easy = parseInt(document.getElementById('easy').value) || 0;
   const medium = parseInt(document.getElementById('medium').value) || 0;
   const hard = parseInt(document.getElementById('hard').value) || 0;
+  const generateBtn = document.getElementById('generateBtn');
   generateBtn.disabled = !(curriculum && selectedClass && selectedSubject && (easy + medium + hard === 100));
 }
 
 // Generate Question Paper
 async function generateQuestionPaper(e) {
   e.preventDefault();
-
-  generateBtn.disabled = true;											   
-									  
+  
+  const generateBtn = document.getElementById('generateBtn');
+  generateBtn.disabled = true;
+  
   const questionTypesSelected = [];
 
   document.querySelectorAll('#questionsTable tbody tr').forEach(row => {
@@ -271,9 +223,8 @@ async function generateQuestionPaper(e) {
 
     if (response.ok) {
       const data = await response.json();
-																	   
       document.getElementById('output').textContent = data.questions;
-      downloadBtn.style.display = 'inline-block';
+      document.getElementById('downloadBtn').style.display = 'inline-block';
       resetFormFields();
     } else {
       const errorData = await response.json();
@@ -284,8 +235,11 @@ async function generateQuestionPaper(e) {
     document.getElementById('output').textContent = 'Error generating paper. Please check connection or server.';
   } finally {
     generateBtn.disabled = false;
+  }
+}
 
 // Download generated paper as Word file
+async function downloadQuestionPaper() {
   const text = document.getElementById('output').textContent;
   const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
 
@@ -368,12 +322,11 @@ async function generateQuestionPaper(e) {
   } catch (error) {
     alert("Failed to download Word file.");
     console.error(error);
-    }
+  }
 }
 
 // Logout
 function logout() {
   localStorage.removeItem('userEmail');
   window.location.href = '/login.html';
-}
 }
