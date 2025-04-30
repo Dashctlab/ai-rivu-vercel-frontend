@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
     subjectDropdown.disabled = true;
 
     if (selectedCurriculum) {
-      // Populate Class 1 to 10
       for (let i = 1; i <= 10; i++) {
         const option = document.createElement('option');
         option.value = `Class ${i}`;
@@ -76,12 +75,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // ✅ Class → Enable and populate Subject
+  classDropdown.addEventListener('change', () => {
+    subjectDropdown.disabled = false;
+    subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
+    const selectedClass = classDropdown.value;
+    if (classSubjectMap[selectedClass]) {
+      classSubjectMap[selectedClass].forEach(subject => {
+        const option = document.createElement('option');
+        option.value = subject;
+        option.textContent = subject;
+        subjectDropdown.appendChild(option);
+      });
+    }
+  });
+
   console.log("Dropdown logic ready");
-});
+}); 
+
 
 
   console.log("generator.js loaded and dropdown logic active");
-  classDropdown.addEventListener('change', () => {
+  
     subjectDropdown.disabled = false;
     subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
     const selectedClass = classDropdown.value;
