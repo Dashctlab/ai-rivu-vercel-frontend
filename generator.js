@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   console.log("Dropdown logic ready");
-}); 
+}; 
 
 
 
