@@ -1,5 +1,5 @@
 const backendURL = 'https://ai-rivu-vercel-render-backend.onrender.com';
-
+let classDropdown, subjectDropdown, curriculumDropdown;
 // Class → Subject Mapping
 const classSubjectMap = {
   'Class 1': ['English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
@@ -21,9 +21,7 @@ const questionTypes = [
 ];
 
 const tableBody = document.querySelector('#questionsTable tbody');
-const classDropdown = document.getElementById('className');
-const subjectDropdown = document.getElementById('subject');
-const curriculumDropdown = document.getElementById('curriculum');
+
 const generateBtn = document.getElementById('generateBtn');
 const downloadBtn = document.getElementById('downloadBtn');
 // On page load
@@ -47,40 +45,40 @@ function resetFormFields() {
   validateForm();
 }
 document.addEventListener('DOMContentLoaded', () => {
-  // Create table rows for question types
-  questionTypes.forEach(type => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${type}</td>
-      <td><input type="number" min="0" value="0" class="numQuestions"></td>
-      <td><input type="number" min="0" value="0" class="marksPerQuestion"></td>
-      <td class="totalMarks">0</td>
-    `;
-    tableBody.appendChild(row);
-  });
+  curriculumDropdown = document.getElementById('curriculum');
+  classDropdown = document.getElementById('className');
+  subjectDropdown = document.getElementById('subject');
 
-curriculumDropdown.addEventListener('change', () => {
-  const selectedCurriculum = curriculumDropdown.value;
-
-  // Reset class dropdown
-  classDropdown.innerHTML = '<option value="">Select Class</option>';
+  // Initially disable both
   classDropdown.disabled = true;
-
-  // Reset subject dropdown
-  subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
   subjectDropdown.disabled = true;
 
-  if (selectedCurriculum) {
-    // Populate Class 1 to Class 10
-    for (let i = 1; i <= 10; i++) {
-      const option = document.createElement('option');
-      option.value = `Class ${i}`;
-      option.textContent = `Class ${i}`;
-      classDropdown.appendChild(option);
+  // Curriculum → Enable Class
+  curriculumDropdown.addEventListener('change', () => {
+    const selectedCurriculum = curriculumDropdown.value;
+
+    // Reset class and subject
+    classDropdown.innerHTML = '<option value="">Select Class</option>';
+    classDropdown.disabled = true;
+
+    subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
+    subjectDropdown.disabled = true;
+
+    if (selectedCurriculum) {
+      // Populate Class 1 to 10
+      for (let i = 1; i <= 10; i++) {
+        const option = document.createElement('option');
+        option.value = `Class ${i}`;
+        option.textContent = `Class ${i}`;
+        classDropdown.appendChild(option);
+      }
+      classDropdown.disabled = false; // ✅ enable class
     }
-    classDropdown.disabled = false; // ✅ Enable class after curriculum is selected
-  }
+  });
+
+  console.log("Dropdown logic ready");
 });
+
 
   console.log("generator.js loaded and dropdown logic active");
   classDropdown.addEventListener('change', () => {
