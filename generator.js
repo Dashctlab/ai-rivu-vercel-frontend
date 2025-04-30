@@ -116,7 +116,14 @@ document.addEventListener('DOMContentLoaded', () => {
   downloadBtn.style.display = 'none';
 
   // Download button functionality
-  downloadBtn.addEventListener('click', downloadQuestionPaper);
+  downloadBtn.addEventListener('click', () => {
+    try {
+      downloadQuestionPaper();
+    } catch (error) {
+      console.error("Error in download handler:", error);
+      alert("Failed to download Word file. Check console for details.");
+    }
+  });
 
   console.log("generator.js loaded and dropdown logic active");
 });
@@ -240,7 +247,17 @@ async function generateQuestionPaper(e) {
 
 // Download generated paper as Word file
 async function downloadQuestionPaper() {
-  const text = document.getElementById('output').textContent;
+  console.log("Starting download process...");
+  const output = document.getElementById('output');
+  if (!output || !output.textContent || output.textContent.trim() === '' || 
+      output.textContent.includes('Generating, please wait...') || 
+      output.textContent.includes('Error:')) {
+    alert("No valid content to download. Please generate a question paper first.");
+    return;
+  }
+  
+  const text = output.textContent;
+  console.log("Processing output text...");
   const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
 
   let sections = [];
@@ -299,29 +316,60 @@ async function downloadQuestionPaper() {
     answerKey
   };
 
+  console.log("Sending payload to server:", payload);
   try {
     const response = await fetch(`${backendURL}/download-docx`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'useremail': localStorage.getItem('userEmail') || ''
       },
       body: JSON.stringify(payload)
     });
+    
+    console.log("Server response status:", response.status);
 
-    if (!response.ok) throw new Error('Download failed');
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => "Unknown error");
+      console.error("Download failed with status:", response.status, errorText);
+      throw new Error(`Download failed: ${response.status} ${errorText}`);
+    }
 
+    console.log("Download response received, processing blob...");
     const blob = await response.blob();
+    console.log("Blob received, creating download link...");
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = `Question_Paper_${metadata.subject || 'Untitled'}.docx`;
     document.body.appendChild(a);
+    console.log("Triggering download...");
     a.click();
     a.remove();
     window.URL.revokeObjectURL(url);
   } catch (error) {
-    alert("Failed to download Word file.");
-    console.error(error);
+    console.error("Download error:", error);
+    alert(`Failed to download Word file: ${error.message}`);
+    
+    // Fallback method - try a different approach if the fetch method fails
+    try {
+      console.log("Attempting fallback download method...");
+      const text = document.getElementById('output').textContent;
+      if (text && text.trim() !== '') {
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Question_Paper_${metadata.subject || 'Untitled'}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        console.log("Fallback download (text) completed");
+      }
+    } catch (fallbackError) {
+      console.error("Fallback download also failed:", fallbackError);
+    }
   }
 }
 
