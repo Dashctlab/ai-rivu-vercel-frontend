@@ -59,17 +59,29 @@ document.addEventListener('DOMContentLoaded', () => {
     tableBody.appendChild(row);
   });
 
-  curriculumDropdown.addEventListener('change', () => {
-    classDropdown.disabled = false;
-    classDropdown.innerHTML = '<option value="">Select Class</option>';
-  // Populate Class 1 to Class 12
-    for (let i = 1; i <= 12; i++) {
+curriculumDropdown.addEventListener('change', () => {
+  const selectedCurriculum = curriculumDropdown.value;
+
+  // Reset class dropdown
+  classDropdown.innerHTML = '<option value="">Select Class</option>';
+  classDropdown.disabled = true;
+
+  // Reset subject dropdown
+  subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
+  subjectDropdown.disabled = true;
+
+  if (selectedCurriculum) {
+    // Populate Class 1 to Class 10
+    for (let i = 1; i <= 10; i++) {
       const option = document.createElement('option');
       option.value = `Class ${i}`;
       option.textContent = `Class ${i}`;
       classDropdown.appendChild(option);
     }
-  });
+    classDropdown.disabled = false; // ✅ Enable class after curriculum is selected
+  }
+});
+
   console.log("generator.js loaded and dropdown logic active");
   classDropdown.addEventListener('change', () => {
     subjectDropdown.disabled = false;
