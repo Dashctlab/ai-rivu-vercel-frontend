@@ -1,7 +1,10 @@
 const backendURL = 'https://ai-rivu-vercel-render-backend.onrender.com';
 let classDropdown, subjectDropdown, curriculumDropdown;
 
-// Class → Subject Mapping
+// ---> ADDED: Global variable to store the raw generated text
+let generatedPaperText = '';
+
+// Class → Subject Mapping (No changes needed)
 const classSubjectMap = {
   'Class 1': ['English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
   'Class 2': ['English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
@@ -15,13 +18,13 @@ const classSubjectMap = {
   'Class 10': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'General Knowledge']
 };
 
-// List of question types
+// List of question types (No changes needed)
 const questionTypes = [
   'MCQ', 'Short Answer', 'Long Answer', 'True/False', 'Fill in the Blanks',
   'Match the Following', 'Case Based', 'Diagram Based', 'Descriptive'
 ];
 
-// On page load
+// On page load (No changes needed)
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize references
   curriculumDropdown = document.getElementById('curriculum');
@@ -73,13 +76,13 @@ document.addEventListener('DOMContentLoaded', () => {
   classDropdown.addEventListener('change', () => {
     subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
     const selectedClass = classDropdown.value;
-    
+
     // Keep subject disabled until class is selected
     if (!selectedClass) {
       subjectDropdown.disabled = true;
       return;
     }
-    
+
     // Enable subject and populate options
     subjectDropdown.disabled = false;
     if (classSubjectMap[selectedClass]) {
@@ -108,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Validate form on input change
   document.getElementById('questionForm').addEventListener('input', validateForm);
-  
+
   // Form submission
   document.getElementById('questionForm').addEventListener('submit', generateQuestionPaper);
 
@@ -117,26 +120,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Download button functionality
   downloadBtn.addEventListener('click', () => {
-    try {
-      downloadQuestionPaper();
-    } catch (error) {
-      console.error("Error in download handler:", error);
-      alert("Failed to download Word file. Check console for details.");
-    }
+    // Removed the try-catch here, it's better inside the async function
+    downloadQuestionPaper();
   });
 
   console.log("generator.js loaded and dropdown logic active");
 });
 
-// Reset form fields
+// Reset form fields (No changes needed)
 function resetFormFields() {
   document.getElementById('curriculum').selectedIndex = 0;
   classDropdown.innerHTML = '<option value="">Select Class</option>';
   subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
   document.getElementById('topic').value = '';
-  document.getElementById('timeDuration').value = '60';
+  document.getElementById('timeDuration').value = '60'; // Reset to default
   document.getElementById('easy').value = '0';
-  document.getElementById('medium').value = '100';
+  document.getElementById('medium').value = '100'; // Reset to default
   document.getElementById('hard').value = '0';
   document.getElementById('additionalConditions').value = '';
   document.querySelector('input[name="answerKeyFormat"][value="Brief"]').checked = true;
@@ -150,9 +149,13 @@ function resetFormFields() {
 
   calculateTotals();
   validateForm();
+  // Clear stored text on reset as well, just in case
+  generatedPaperText = '';
+  // Hide download button again on reset
+  document.getElementById('downloadBtn').style.display = 'none';
 }
 
-// Calculate total marks dynamically
+// Calculate total marks dynamically (No changes needed)
 function calculateTotals() {
   let overallTotal = 0;
   document.querySelectorAll('#questionsTable tbody tr').forEach(row => {
@@ -165,7 +168,7 @@ function calculateTotals() {
   document.getElementById('overallTotalMarks').textContent = overallTotal;
 }
 
-// Enable Generate Button only if mandatory fields filled
+// Enable Generate Button only if mandatory fields filled (No changes needed)
 function validateForm() {
   const curriculum = curriculumDropdown.value;
   const selectedClass = classDropdown.value;
@@ -174,27 +177,34 @@ function validateForm() {
   const medium = parseInt(document.getElementById('medium').value) || 0;
   const hard = parseInt(document.getElementById('hard').value) || 0;
   const generateBtn = document.getElementById('generateBtn');
-  generateBtn.disabled = !(curriculum && selectedClass && selectedSubject && (easy + medium + hard === 100));
+  // Ensure dropdowns are not disabled (meaning a valid selection path was followed)
+  const formReady = curriculum && selectedClass && selectedSubject && !classDropdown.disabled && !subjectDropdown.disabled;
+  generateBtn.disabled = !(formReady && (easy + medium + hard === 100));
 }
 
-// Generate Question Paper
+// Generate Question Paper ---> MODIFIED <---
 async function generateQuestionPaper(e) {
   e.preventDefault();
-  
+
   const generateBtn = document.getElementById('generateBtn');
-  generateBtn.disabled = true;
-  
+  generateBtn.disabled = true; // Disable button during generation
+
   const questionTypesSelected = [];
+  const questionDetails = []; // Also capture marks per type if needed for prompt
 
   document.querySelectorAll('#questionsTable tbody tr').forEach(row => {
     const type = row.querySelector('td').textContent.trim();
     const num = parseInt(row.querySelector('.numQuestions').value) || 0;
-    if (num > 0) questionTypesSelected.push(type);
+    const marks = parseInt(row.querySelector('.marksPerQuestion').value) || 0;
+    if (num > 0) {
+      questionTypesSelected.push(type);
+      questionDetails.push({ type: type, num: num, marks: marks }); // Store details
+    }
   });
 
   if (questionTypesSelected.length === 0) {
     alert("Please select at least one type of question with a non-zero number.");
-    generateBtn.disabled = false;
+    generateBtn.disabled = false; // Re-enable button
     return;
   }
 
@@ -202,215 +212,309 @@ async function generateQuestionPaper(e) {
   const medium = document.getElementById('medium').value || 0;
   const hard = document.getElementById('hard').value || 0;
 
+  // ---> Capture needed info BEFORE potential reset
+  const currentSubject = document.getElementById('subject').value;
+  const currentClassName = document.getElementById('className').value;
+  const currentCurriculum = document.getElementById('curriculum').value;
+  const currentTotalMarks = document.getElementById('overallTotalMarks').textContent;
+  const currentTimeDurationValue = document.getElementById('timeDuration').value;
+  // Find the selected time duration text (e.g., "1 Hour")
+  const timeDurationSelect = document.getElementById('timeDuration');
+  const selectedTimeOption = timeDurationSelect.options[timeDurationSelect.selectedIndex];
+  const currentTimeDurationText = selectedTimeOption ? selectedTimeOption.text : `${currentTimeDurationValue} Minutes`;
+
+
+  // Construct payload (Consider sending questionDetails if backend prompt needs num/marks per type)
   const payload = {
-    curriculum: document.getElementById('curriculum').value,
-    className: document.getElementById('className').value,
-    subject: document.getElementById('subject').value || '',
+    curriculum: currentCurriculum,
+    className: currentClassName,
+    subject: currentSubject,
     topic: document.getElementById('topic').value,
-    numQuestions: questionTypesSelected.length,
+    // numQuestions: questionTypesSelected.length, // Backend prompt seems to ignore this?
+    questionDetails: questionDetails, // Send detailed structure instead
     difficultySplit: `${easy}%-${medium}%-${hard}%`,
-    timeDuration: document.getElementById('timeDuration').value,
+    timeDuration: currentTimeDurationValue, // Send value (e.g., 60)
     additionalConditions: document.getElementById('additionalConditions').value,
-    questionTypes: questionTypesSelected,
+    questionTypes: questionTypesSelected, // Keep this for compatibility if backend uses it
     answerKeyFormat: document.querySelector('input[name="answerKeyFormat"]:checked').value
   };
 
   document.getElementById('outputSection').style.display = 'block';
   document.getElementById('output').textContent = 'Generating, please wait...';
+  generatedPaperText = ''; // Clear previous text
+  document.getElementById('downloadBtn').style.display = 'none'; // Hide download btn initially
+
 
   try {
     const response = await fetch(`${backendURL}/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'useremail': localStorage.getItem('userEmail')
+        'useremail': localStorage.getItem('userEmail') || 'anonymous' // Send something even if not logged in? Adjust as needed
       },
       body: JSON.stringify(payload)
     });
 
     if (response.ok) {
       const data = await response.json();
+      if (!data.questions || typeof data.questions !== 'string') {
+           throw new Error("Received invalid question data from server.");
+      }
       document.getElementById('output').textContent = data.questions;
-      document.getElementById('downloadBtn').style.display = 'inline-block';
-      resetFormFields();
+      generatedPaperText = data.questions; // Store the generated text
+
+      const downloadBtn = document.getElementById('downloadBtn');
+      downloadBtn.style.display = 'inline-block';
+
+      // ---> Store the captured info in data attributes AFTER successful generation
+      downloadBtn.dataset.subject = currentSubject;
+      downloadBtn.dataset.classname = currentClassName;
+      downloadBtn.dataset.curriculum = currentCurriculum;
+      downloadBtn.dataset.totalmarks = currentTotalMarks;
+      downloadBtn.dataset.timedurationtext = currentTimeDurationText; // Store text like "1 Hour"
+
+      // Don't reset form immediately, let user download first maybe?
+      // Or reset only non-essential parts? For now, keeping the reset:
+      // resetFormFields(); // Consider if this is the best UX
+
     } else {
-      const errorData = await response.json();
+      generatedPaperText = ''; // Clear stored text on error
+      let errorData = { message: `Server responded with ${response.status}` };
+      try {
+         errorData = await response.json();
+      } catch(e) { /* ignore json parsing error */ }
       document.getElementById('output').textContent = `Error: ${errorData.message || 'Failed to generate paper.'}`;
     }
   } catch (error) {
-    console.error(error);
-    document.getElementById('output').textContent = 'Error generating paper. Please check connection or server.';
+    console.error("Generation error:", error);
+    generatedPaperText = ''; // Clear stored text on error
+    document.getElementById('output').textContent = `Error generating paper: ${error.message}. Please check connection or server.`;
   } finally {
-    generateBtn.disabled = false;
+    generateBtn.disabled = false; // Re-enable button
   }
 }
 
-// Download generated paper as Word file
+
+// Download generated paper as Word file ---> MODIFIED <---
 async function downloadQuestionPaper() {
-  console.log("Starting download process...");
-  const output = document.getElementById('output');
-  if (!output || !output.textContent || output.textContent.trim() === '' || 
-      output.textContent.includes('Generating, please wait...') || 
-      output.textContent.includes('Error:')) {
-    alert("No valid content to download. Please generate a question paper first.");
-    return;
-  }
-  
-  const text = output.textContent;
-  console.log("Processing output text...");
-  
-  // Get subject for the document
-  const subject = document.getElementById('subject').value;
-  
-  // Get metadata for the document
-  const metadata = {
-    curriculum: document.getElementById('curriculum').value,
-    className: document.getElementById('className').value,
-    totalMarks: document.getElementById('overallTotalMarks').textContent,
-    timeDuration: document.getElementById('timeDuration').value + " Minutes"
-  };
-  
-  // Parse the text to identify sections and questions
-  const sections = [];
-  const answerKey = [];
-  
-  let currentSection = null;
-  let isAnswerKey = false;
-  
-  // Process the text line by line
-  const lines = text.split('\n');
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-    
-    // Skip empty lines
-    if (!line) continue;
-    
-    // Check if we've reached the answer key
-    if (line.toLowerCase().includes('answer key')) {
-      isAnswerKey = true;
-      continue;
-    }
-    
-    if (isAnswerKey) {
-      // Process answer key lines
-      // Remove any numbering and add the answer content
-      const answerMatch = line.match(/^\d+\.\s*(.+)$/);
-      if (answerMatch) {
-        answerKey.push(answerMatch[1].trim());
-      } else if (line) {
-        answerKey.push(line);
-      }
-    } else {
-      // Process question paper lines
-      // Check if this is a section header
-      if (line.toUpperCase() === line || 
-          line.startsWith('SECTION') || 
-          line.includes('QUESTIONS') || 
-          line.includes('MARKS')) {
-        // This appears to be a section header
-        currentSection = {
-          title: line,
-          questions: []
-        };
-        sections.push(currentSection);
-      } 
-      // Check if this is a numbered question
-      else if (currentSection && line.match(/^\d+\.\s*/)) {
-        currentSection.questions.push(line.replace(/^\d+\.\s*/, '').trim());
-      } 
-      // If we don't have a section yet, create a default one
-      else if (!currentSection && line) {
-        currentSection = {
-          title: "Questions",
-          questions: [line]
-        };
-        sections.push(currentSection);
-      }
-      // Otherwise add to the last section
-      else if (currentSection && line) {
-        // If the line doesn't start with a number, it might be part of the previous question
-        // or it might be a question without numbering
-        currentSection.questions.push(line);
-      }
-    }
-  }
-  
-  // Ensure we have at least one section
-  if (sections.length === 0) {
-    sections.push({
-      title: "Questions",
-      questions: ["No questions found in the generated content."]
-    });
-  }
-  
-  // Prepare the payload in the exact format expected by the backend
-  const payload = {
-    subject: subject,
-    metadata: metadata,
-    sections: sections,
-    answerKey: answerKey
-  };
+    console.log("Starting download process...");
+    const downloadBtn = document.getElementById('downloadBtn');
 
-  console.log("Sending payload to server:", payload);
-  
-  try {
-    const response = await fetch(`${backendURL}/download-docx`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'useremail': localStorage.getItem('userEmail') || ''
-      },
-      body: JSON.stringify(payload)
-    });
-    
-    console.log("Server response status:", response.status);
+    // ---> Read data from the button's data attributes and stored text
+    const subject = downloadBtn.dataset.subject;
+    const className = downloadBtn.dataset.classname;
+    const curriculum = downloadBtn.dataset.curriculum;
+    const totalMarks = downloadBtn.dataset.totalmarks;
+    const timeDurationText = downloadBtn.dataset.timedurationtext; // Use the stored text like "1 Hour"
+    const text = generatedPaperText; // Use the stored text
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: "Unknown error" }));
-      console.error("Download failed with status:", response.status, errorData);
-      throw new Error(`Download failed: ${errorData.message || response.statusText}`);
+    // Basic check if data is available
+    if (!subject || !text || !className || !curriculum || !totalMarks || !timeDurationText) {
+         alert("Required data for download is missing or incomplete. Please generate the paper again.");
+         console.error("Missing data attributes/text for download. Attributes:", downloadBtn.dataset, "Text available:", !!text);
+         return;
     }
 
-    console.log("Download response received, processing blob...");
-    const blob = await response.blob();
-    
-    console.log("Blob received with type:", blob.type);
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Question_Paper_${subject || 'Untitled'}.docx`;
-    document.body.appendChild(a);
-    console.log("Triggering download...");
-    a.click();
-    a.remove();
-    window.URL.revokeObjectURL(url);
-    
-    console.log("Download completed successfully");
-  } catch (error) {
-    console.error("Download error:", error);
-    alert(`Failed to download Word file: ${error.message}`);
-    
-    // Fallback method - try a different approach if the fetch method fails
+     // Check if text content is valid
+     if (!text || text.trim() === '' || text.includes('Generating, please wait...') || text.includes('Error:')) {
+         alert("No valid content to download. Please generate a question paper first.");
+         return;
+     }
+
+    console.log("Processing output text for download...");
+
+    // ---> Construct metadata from stored data
+    const metadata = {
+      curriculum: curriculum,
+      className: className,
+      totalMarks: totalMarks,
+      timeDuration: timeDurationText // Use the text format (e.g., "1 Hour")
+    };
+
+    // Parse the text to identify sections and questions
+    const sections = [];
+    const answerKey = [];
+    let currentSection = null;
+    let isAnswerKey = false;
+    const lines = text.split('\n');
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+
+        if (!line) continue; // Skip empty lines
+
+        // Improved Answer Key detection
+        if (/^(\*\*|__)?answer key(\*\*|__)?$/i.test(line)) {
+          isAnswerKey = true;
+          // Check if the next line is also part of the header (like a separator ===)
+          if (i + 1 < lines.length && /^-+|=+$/.test(lines[i + 1].trim())) {
+              i++; // Skip the separator line
+          }
+          continue;
+        }
+
+        if (isAnswerKey) {
+           // Process answer key lines: Keep numbering if present, otherwise add as is
+           const answerMatch = line.match(/^(\d+\.?\)?)\s*(.*)$/); // Match "1.", "1)", "1" etc.
+           if (answerMatch) {
+               answerKey.push(`${answerMatch[1]} ${answerMatch[2].trim()}`); // Keep number + content
+           } else if (line) { // Only add non-empty lines
+               answerKey.push(line); // Add line as is if no standard numbering
+           }
+        } else {
+           // Process question paper lines
+           // Regex to detect potential section headers (more flexible)
+           // Matches lines like "SECTION A", "SECTION B: MCQS", "PART 1 - SHORT ANSWER", "Marks: 10" etc.
+           const sectionHeaderRegex = /^(SECTION|PART)\s*([A-Z0-9]+)?(\s*[:\-]\s*.*)?$|^.*(QUESTIONS|MARKS:\s*\d+).*$/i;
+
+           // Regex to detect numbered list items (more robust)
+           // Matches "1.", "1)", "a.", "a)", "(i)" etc.
+           const numberedItemRegex = /^\s*(\d+\.|\(?[a-z]\)|\(?[ivx]+\))\s+/i;
+
+            if (sectionHeaderRegex.test(line) && line.length < 80) { // Assume headers are relatively short
+                 // This appears to be a section header
+                 currentSection = {
+                     title: line,
+                     questions: []
+                 };
+                 sections.push(currentSection);
+            } else if (currentSection && numberedItemRegex.test(line)) {
+                // Starts with a number/letter - likely a new question/item
+                 // Remove the numbering part for storage
+                 currentSection.questions.push(line.replace(numberedItemRegex, '').trim());
+            } else if (currentSection) {
+                // Doesn't start with numbering, could be continuation of previous question or unnumbered item
+                // Append to the last question or add as a new item? Append for now.
+                if (currentSection.questions.length > 0) {
+                    currentSection.questions[currentSection.questions.length - 1] += '\n' + line; // Append as new line
+                } else {
+                    currentSection.questions.push(line); // Add as first item if section was empty
+                }
+            } else if (line) {
+                 // No section detected yet, but we have content. Create a default section.
+                 currentSection = {
+                     title: "General Instructions / Questions", // Default title
+                     questions: [line] // Add the line as the first question/instruction
+                 };
+                 sections.push(currentSection);
+            }
+        }
+    }
+
+    // Ensure we have at least one section if questions were expected
+    if (sections.length === 0 && !isAnswerKey && text.trim() !== '') {
+      console.warn("Parsing resulted in no sections, adding default.");
+      sections.push({
+        title: "Questions",
+        questions: ["Could not automatically parse sections. Full text included.", text] // Include full text
+      });
+    }
+
+    // Prepare the payload using the retrieved and parsed data
+    const payload = {
+      subject: subject,
+      metadata: metadata,
+      sections: sections,
+      answerKey: answerKey
+    };
+
+    console.log("Sending payload to server:", JSON.stringify(payload, null, 2)); // Pretty print for easier debugging
+
     try {
-      console.log("Attempting fallback download method as text file...");
-      const blob = new Blob([text], { type: 'text/plain' });
+      const response = await fetch(`${backendURL}/download-docx`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'useremail': localStorage.getItem('userEmail') || 'anonymous' // Adjust as needed
+        },
+        body: JSON.stringify(payload)
+      });
+
+      console.log("Server response status:", response.status);
+
+      if (!response.ok) {
+        let errorData = { message: `Server responded with status ${response.status}` };
+        try {
+          // Try to get specific error message from backend JSON response
+          errorData = await response.json();
+        } catch (e) {
+          console.warn("Could not parse error response as JSON. Response text:", await response.text());
+        }
+        console.error("Download failed with status:", response.status, errorData);
+        throw new Error(`Download failed: ${errorData.message || response.statusText}`);
+      }
+
+      console.log("Download response received, processing blob...");
+      const blob = await response.blob();
+
+       // Check blob type - should be WordprocessingML
+       if (!blob.type.includes('officedocument.wordprocessingml.document')) {
+           console.warn(`Received blob of type ${blob.type}, expected Word document. Attempting download anyway.`);
+       }
+
+      console.log("Blob received with type:", blob.type, "Size:", blob.size);
+      if (blob.size === 0) {
+           throw new Error("Received empty file from server.");
+      }
+
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
+      a.style.display = 'none'; // Hide the link
       a.href = url;
-      a.download = `Question_Paper_${subject || 'Untitled'}.txt`;
+      // Sanitize filename slightly
+      const safeSubject = subject.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      a.download = `Question_Paper_${safeSubject || 'Untitled'}.docx`;
       document.body.appendChild(a);
+      console.log("Triggering download...");
       a.click();
-      a.remove();
+
+      // Cleanup
       window.URL.revokeObjectURL(url);
-      console.log("Fallback download (text) completed");
-    } catch (fallbackError) {
-      console.error("Fallback download also failed:", fallbackError);
+      a.remove();
+
+      console.log("Download initiated successfully");
+
+    } catch (error) {
+       console.error("Download error:", error);
+       alert(`Failed to download Word file: ${error.message}`);
+
+       // Fallback method - try downloading the raw text (keep this)
+       try {
+         console.log("Attempting fallback download method as text file...");
+         const fallbackBlob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+         const fallbackUrl = window.URL.createObjectURL(fallbackBlob);
+         const fallbackA = document.createElement('a');
+         fallbackA.style.display = 'none';
+         fallbackA.href = fallbackUrl;
+         const safeSubject = subject.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+         fallbackA.download = `Question_Paper_${safeSubject || 'Untitled'}_RAW.txt`;
+         document.body.appendChild(fallbackA);
+         fallbackA.click();
+         window.URL.revokeObjectURL(fallbackUrl);
+         fallbackA.remove();
+         console.log("Fallback download (text) completed");
+       } catch (fallbackError) {
+         console.error("Fallback download also failed:", fallbackError);
+         alert('Primary download failed, and fallback text download also failed.');
+       }
     }
-  }
 }
 
-// Logout
+
+// Logout function (No changes needed)
 function logout() {
   localStorage.removeItem('userEmail');
-  window.location.href = '/login.html';
+  // Optional: Clear other stored data if needed
+  generatedPaperText = '';
+  const downloadBtn = document.getElementById('downloadBtn');
+  if(downloadBtn) {
+      // Clear data attributes on logout
+      delete downloadBtn.dataset.subject;
+      delete downloadBtn.dataset.classname;
+      delete downloadBtn.dataset.curriculum;
+      delete downloadBtn.dataset.totalmarks;
+      delete downloadBtn.dataset.timedurationtext;
+      downloadBtn.style.display = 'none';
+  }
+  window.location.href = '/login.html'; // Redirect to login page
 }
