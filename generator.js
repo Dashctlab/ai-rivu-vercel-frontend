@@ -366,9 +366,15 @@ async function downloadQuestionPaper() {
         } else {
            // Process question paper lines
            // Regex to detect potential section headers (more flexible)
-           // Matches lines like "SECTION A", "SECTION B: MCQS", "PART 1 - SHORT ANSWER", "Marks: 10" etc.
-           const sectionHeaderRegex = /^(SECTION|PART)\s*([A-Z0-9]+)?(\s*[:\-]\s*.*)?$|^.*(QUESTIONS|MARKS:\s*\d+).*$/i;
-
+          const sectionHeaderRegex = new RegExp(
+            // optional Markdown heading  ##  or  #  
+            String.raw`^(?:#+\s*)?` +
+            // SECTION A,  PART 1,  etc.
+            String.raw`(?:SECTION|PART)\s*([A-Z0-9]+)?\s*[:\-]?.*$` +
+            // OR any line that already contains “QUESTIONS” or “MARKS:”
+            String.raw`|^.*(QUESTIONS|MARKS:\s*\d+).*$`,
+            'i'
+          );
            // Regex to detect numbered list items (more robust)
            // Matches "1.", "1)", "a.", "a)", "(i)" etc.
            const numberedItemRegex = /^\s*(\d+\.|\(?[a-z]\)|\(?[ivx]+\))\s+/i;
