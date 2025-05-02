@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Download button functionality
   downloadBtn.addEventListener('click', () => {
     // Removed the try-catch here, it's better inside the async function
-    downloadQuestionPaper();
+downloadQuestionPaper();
   });
 
   console.log("generator.js loaded and dropdown logic active");
@@ -371,38 +371,39 @@ async function downloadQuestionPaper() {
            // Matches "1.", "1)", "a.", "a)", "(i)" etc.
            const numberedItemRegex = /^\s*(\d+\.|\(?[a-z]\)|\(?[ivx]+\))\s+/i;
 
-            if (sectionHeaderRegex.test(line) && line.length < 80) { // Assume headers are relatively short
-                 // This appears to be a section header
-                 currentSection = {
-                     title: line,
-                     questions: []
-                 };
-                 sections.push(currentSection);
-            } else if (currentSection && numberedItemRegex.test(line)) {
-                 } else if (
-                currentSection &&
-                numberedItemRegex.test(line) &&
-                /[?]|[:.]$/.test(line)        // extra check – likely a question stem
-                ) {
-                // Starts with a number/letter - likely a new question/item
-                 // Remove the numbering part for storage
-                 currentSection.questions.push(line.replace(numberedItemRegex, '').trim());
-            } else if (currentSection) {
-                // Doesn't start with numbering, could be continuation of previous question or unnumbered item
-                // Append to the last question or add as a new item? Append for now.
-                if (currentSection.questions.length > 0) {
-                    currentSection.questions[currentSection.questions.length - 1] += '\n' + line; // Append as new line
-                } else {
-                    currentSection.questions.push(line); // Add as first item if section was empty
-                }
-            } else if (line) {
-                 // No section detected yet, but we have content. Create a default section.
-                 currentSection = {
-                     title: "General Instructions / Questions", // Default title
-                     questions: [line] // Add the line as the first question/instruction
-                 };
-                 sections.push(currentSection);
-            }
+          if (sectionHeaderRegex.test(line) && line.length < 80) {
+              // ------- SECTION HEADER -------
+              currentSection = { title: line, questions: [] };
+              sections.push(currentSection);
+          
+          } else if (                             // ONE (and only one) else‑if
+              currentSection &&
+              numberedItemRegex.test(line) &&
+              /[?]|[:.]$/.test(line)              // heuristic: looks like a real question stem
+          ) {
+              // -------- NEW QUESTION --------
+              // strip the numbering and store the stem
+              currentSection.questions.push(
+                  line.replace(numberedItemRegex, '').trim()
+              );
+          
+          } else if (currentSection) {
+              // ------ CONTINUATION LINE (options, extra text, etc.) ------
+              if (currentSection.questions.length > 0) {
+                  currentSection.questions[currentSection.questions.length - 1] +=
+                      '\n' + line;                     // append to the last question
+              } else {
+                  currentSection.questions.push(line); // first line in otherwise‑empty section
+              }
+          
+          } else if (line) {
+              // -------- TEXT BEFORE ANY SECTION FOUND --------
+              currentSection = {
+                  title: 'General Instructions / Questions',
+                  questions: [line]
+              };
+              sections.push(currentSection);
+          }
         }
     }
 
