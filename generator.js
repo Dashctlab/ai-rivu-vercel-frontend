@@ -340,7 +340,9 @@ async function downloadQuestionPaper() {
 
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
-
+        if (/^(class\s*:|subject\s*:|total\s*time\s*duration\s*:)/i.test(line)) {
+          continue;           // ignore; don't add to sections or questions
+        }
         if (!line) continue; // Skip empty lines
 
         // Improved Answer Key detection
@@ -390,8 +392,8 @@ async function downloadQuestionPaper() {
           } else if (currentSection) {
               // ------ CONTINUATION LINE (options, extra text, etc.) ------
               if (currentSection.questions.length > 0) {
-                  currentSection.questions[currentSection.questions.length - 1] +=
-                      '\n' + line;                     // append to the last question
+                   currentSection.questions[currentSection.questions.length - 1] +=
+                   '\n' + line.replace(numberedItemRegex, '').trim(); 
               } else {
                   currentSection.questions.push(line); // first line in otherwise‑empty section
               }
