@@ -339,9 +339,9 @@ async function downloadQuestionPaper() {
     const lines = text.split('\n');
 
     for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (/^(class\s*:|subject\s*:|total\s*time\s*duration\s*:)/i.test(line)) {
-          continue;           // ignore; don't add to sections or questions
+      let line = lines[i].trim().replace(/\*\*/g, '');   // strip Markdown bold
+      if (/^(\*\*?)?(question paper|curriculum board|class|subject|total time)/i.test(line)) {
+        continue;           // ignore; don't add to sections or questions
         }
         if (!line) continue; // Skip empty lines
 
@@ -359,7 +359,7 @@ async function downloadQuestionPaper() {
            // Process answer key lines: Keep numbering if present, otherwise add as is
            const answerMatch = line.match(/^(\d+\.?\)?)\s*(.*)$/); // Match "1.", "1)", "1" etc.
            if (answerMatch) {
-               answerKey.push(`${answerMatch[1]} ${answerMatch[2].trim()}`); // Keep number + content
+                answerKey.push(answerMatch[2].trim());        // keep answer ONLY
            } else if (line) { // Only add non-empty lines
                answerKey.push(line); // Add line as is if no standard numbering
            }
