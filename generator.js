@@ -379,6 +379,11 @@ async function downloadQuestionPaper() {
                  };
                  sections.push(currentSection);
             } else if (currentSection && numberedItemRegex.test(line)) {
+                 } else if (
+                currentSection &&
+                numberedItemRegex.test(line) &&
+                /[?]|[:.]$/.test(line)        // extra check – likely a question stem
+                ) {
                 // Starts with a number/letter - likely a new question/item
                  // Remove the numbering part for storage
                  currentSection.questions.push(line.replace(numberedItemRegex, '').trim());
