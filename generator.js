@@ -258,47 +258,101 @@ async function downloadQuestionPaper() {
   
   const text = output.textContent;
   console.log("Processing output text...");
-  const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
-
-  // Parse the text content
-  let questionPaper = "";
-  let answerKey = [];
-  let answerKeyStarted = false;
   
-  // First consolidate the question paper text and identify answer key
-  for (let line of lines) {
-    if (line.toLowerCase().includes('answer key')) {
-      answerKeyStarted = true;
-      continue;
-    }
-    
-    if (answerKeyStarted) {
-      if (line !== '') answerKey.push(line);
-    } else {
-      questionPaper += line + "\n";
-    }
-  }
+  // Get subject for the document
+  const subject = document.getElementById('subject').value;
   
-  // Prepare simple metadata
+  // Get metadata for the document
   const metadata = {
     curriculum: document.getElementById('curriculum').value,
     className: document.getElementById('className').value,
-    subject: document.getElementById('subject').value,
     totalMarks: document.getElementById('overallTotalMarks').textContent,
     timeDuration: document.getElementById('timeDuration').value + " Minutes"
   };
   
-  // Create a simplified payload - the backend might expect a specific format
+  // Parse the text to identify sections and questions
+  const sections = [];
+  const answerKey = [];
+  
+  let currentSection = null;
+  let isAnswerKey = false;
+  
+  // Process the text line by line
+  const lines = text.split('\n');
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    
+    // Skip empty lines
+    if (!line) continue;
+    
+    // Check if we've reached the answer key
+    if (line.toLowerCase().includes('answer key')) {
+      isAnswerKey = true;
+      continue;
+    }
+    
+    if (isAnswerKey) {
+      // Process answer key lines
+      // Remove any numbering and add the answer content
+      const answerMatch = line.match(/^\d+\.\s*(.+)$/);
+      if (answerMatch) {
+        answerKey.push(answerMatch[1].trim());
+      } else if (line) {
+        answerKey.push(line);
+      }
+    } else {
+      // Process question paper lines
+      // Check if this is a section header
+      if (line.toUpperCase() === line || 
+          line.startsWith('SECTION') || 
+          line.includes('QUESTIONS') || 
+          line.includes('MARKS')) {
+        // This appears to be a section header
+        currentSection = {
+          title: line,
+          questions: []
+        };
+        sections.push(currentSection);
+      } 
+      // Check if this is a numbered question
+      else if (currentSection && line.match(/^\d+\.\s*/)) {
+        currentSection.questions.push(line.replace(/^\d+\.\s*/, '').trim());
+      } 
+      // If we don't have a section yet, create a default one
+      else if (!currentSection && line) {
+        currentSection = {
+          title: "Questions",
+          questions: [line]
+        };
+        sections.push(currentSection);
+      }
+      // Otherwise add to the last section
+      else if (currentSection && line) {
+        // If the line doesn't start with a number, it might be part of the previous question
+        // or it might be a question without numbering
+        currentSection.questions.push(line);
+      }
+    }
+  }
+  
+  // Ensure we have at least one section
+  if (sections.length === 0) {
+    sections.push({
+      title: "Questions",
+      questions: ["No questions found in the generated content."]
+    });
+  }
+  
+  // Prepare the payload in the exact format expected by the backend
   const payload = {
-    questionPaper: questionPaper.trim(),
-    answerKey: answerKey,
+    subject: subject,
     metadata: metadata,
-    email: localStorage.getItem('userEmail') || ''
+    sections: sections,
+    answerKey: answerKey
   };
 
-
-
   console.log("Sending payload to server:", payload);
+  
   try {
     const response = await fetch(`${backendURL}/download-docx`, {
       method: 'POST',
@@ -312,43 +366,43 @@ async function downloadQuestionPaper() {
     console.log("Server response status:", response.status);
 
     if (!response.ok) {
-      const errorText = await response.text().catch(() => "Unknown error");
-      console.error("Download failed with status:", response.status, errorText);
-      throw new Error(`Download failed: ${response.status} ${errorText}`);
+      const errorData = await response.json().catch(() => ({ message: "Unknown error" }));
+      console.error("Download failed with status:", response.status, errorData);
+      throw new Error(`Download failed: ${errorData.message || response.statusText}`);
     }
 
     console.log("Download response received, processing blob...");
     const blob = await response.blob();
-    console.log("Blob received, creating download link...");
+    
+    console.log("Blob received with type:", blob.type);
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Question_Paper_${metadata.subject || 'Untitled'}.docx`;
+    a.download = `Question_Paper_${subject || 'Untitled'}.docx`;
     document.body.appendChild(a);
     console.log("Triggering download...");
     a.click();
     a.remove();
     window.URL.revokeObjectURL(url);
+    
+    console.log("Download completed successfully");
   } catch (error) {
     console.error("Download error:", error);
     alert(`Failed to download Word file: ${error.message}`);
     
     // Fallback method - try a different approach if the fetch method fails
     try {
-      console.log("Attempting fallback download method...");
-      const text = document.getElementById('output').textContent;
-      if (text && text.trim() !== '') {
-        const blob = new Blob([text], { type: 'text/plain' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Question_Paper_${metadata.subject || 'Untitled'}.txt`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
-        console.log("Fallback download (text) completed");
-      }
+      console.log("Attempting fallback download method as text file...");
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Question_Paper_${subject || 'Untitled'}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      console.log("Fallback download (text) completed");
     } catch (fallbackError) {
       console.error("Fallback download also failed:", fallbackError);
     }
