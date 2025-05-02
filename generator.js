@@ -393,7 +393,7 @@ async function downloadQuestionPaper() {
               // ------ CONTINUATION LINE (options, extra text, etc.) ------
               if (currentSection.questions.length > 0) {
                    currentSection.questions[currentSection.questions.length - 1] +=
-                   '\n' + line.replace(numberedItemRegex, '').trim(); 
+                    '\n' + line.trim();      // keep “A)”, “B) …” so Word shows them
               } else {
                   currentSection.questions.push(line); // first line in otherwise‑empty section
               }
