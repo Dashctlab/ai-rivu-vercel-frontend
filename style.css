@@ -1,13 +1,40 @@
+/* ===== Google Fonts ===== */
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@500;600&family=Inter:wght@400;500&display=swap');
+
+/* ===== CSS Variables - Color Palette & Fonts ===== */
+:root {
+  --primary-color: #2A9D8F; /* Teal Green */
+  --accent-color: #E9C46A;  /* Soft Yellow */
+  --background-color: #FAF9F6; /* Off-white */
+  --text-color: #264653; /* Dark Slate */
+  --secondary-text-color: #264653; /* Dark Slate */
+  --container-bg-color: #FFFFFF; /* White for containers */
+  --border-color-light: #dee2e6; /* Light grey for borders */
+  --border-color-inputs: #ccc; /* Slightly darker for input borders */
+  --error-red: #D8000C;
+  --error-bg-red: #FFD2D2;
+
+  --font-heading: 'Urbanist', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-button: 'Urbanist', sans-serif; /* Or 'Inter' if Urbanist Medium is not distinct */
+}
+
 /* ===== Global Styles ===== */
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #FAF9F6; /* Off-white Background */
-  color: #264653; /* Dark Slate Text */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  font-weight: 400; /* Inter Regular */
+  background-color: var(--background-color);
+  color: var(--text-color);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  line-height: 1.6;
 }
 
 .main-content {
@@ -15,320 +42,373 @@ body {
 }
 
 /* ===== Header ===== */
-header {
-  background-color: #2A9D8F; /* Primary Teal Green */
-  color: #FAF9F6; /* Off-white Text */
+header.app-header {
+  background-color: var(--primary-color);
+  color: var(--background-color); /* Off-white Text */
   padding: 15px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-header .logo-container {
+header.app-header .logo-container {
   display: flex;
   align-items: center;
 }
 
-header .logo-image { /* Placeholder for an actual logo image */
+header.app-header .logo-image {
   height: 40px;
   width: 40px;
-  background-color: #E9C46A; /* Accent Soft Yellow for a simple placeholder */
+  background-color: var(--accent-color);
   border-radius: 50%;
-  margin-right: 10px;
+  margin-right: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
-  color: #264653;
+  font-family: var(--font-heading);
+  font-weight: 600; /* Urbanist SemiBold */
+  font-size: 1.2em;
+  color: var(--text-color);
 }
 
-
-header .site-name {
-  font-size: 1.5em;
-  font-weight: bold;
+header.app-header .site-name {
+  font-family: var(--font-heading);
+  font-weight: 600; /* Urbanist SemiBold */
+  font-size: 1.6em;
 }
 
-header nav ul {
+header.app-header nav ul {
   list-style: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   align-items: center;
 }
 
-header nav ul li {
-  margin-left: 20px;
+header.app-header nav ul li {
+  margin-left: 25px;
 }
 
-header nav ul li a,
-header nav ul li span {
-  color: #FAF9F6;
+header.app-header nav ul li span,
+header.app-header nav ul li a {
+  color: var(--background-color);
   text-decoration: none;
+  font-family: var(--font-body);
   font-size: 1em;
 }
 
-header nav ul li .logout-button {
-  background-color: #E9C46A; /* Accent Soft Yellow */
-  color: #264653; /* Dark Slate Text */
-  padding: 8px 15px;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
+/* ===== Footer ===== */
+footer.app-footer {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  text-align: center;
+  padding: 25px 30px;
+  border-top: 2px solid var(--primary-color);
+  margin-top: auto; /* Pushes footer to the bottom */
+  font-family: var(--font-body);
+  font-size: 0.9em;
 }
 
-header nav ul li .logout-button:hover {
-  background-color: #d8b350; /* Darker Accent */
+footer.app-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500; /* Inter Medium */
+}
+footer.app-footer a:hover {
+    text-decoration: underline;
 }
 
 
-/* ===== Container (Common Section Styling) ===== */
+/* ===== General Container (used by generator.html) ===== */
 .container {
   width: 90%;
-  max-width: 1200px; /* Wider for generator */
+  max-width: 1000px; /* Adjusted for generator page */
   margin: 30px auto;
-  background: #FFFFFF; /* White container background */
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  background: var(--container-bg-color);
+  padding: 25px 30px; /* Slightly more padding */
+  border-radius: 10px; /* Softer radius */
+  box-shadow: 0 6px 20px rgba(38, 70, 83, 0.1); /* Subtle Dark Slate shadow */
 }
 
 /* ===== Headings ===== */
-h2 {
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600; /* Urbanist SemiBold */
+  color: var(--primary-color); /* Default heading color */
+  margin-bottom: 0.75em;
+}
+h2 { /* For page titles like "Login to AI-RIVU" */
+  font-size: 2.2em;
   text-align: center;
   margin-bottom: 30px;
-  color: #2A9D8F; /* Primary Teal Green */
-  font-size: 2em;
 }
-
-h3 {
-  color: #264653; /* Dark Slate */
+h3 { /* For section titles like "Generated Question Paper" */
+  font-size: 1.8em;
+  color: var(--text-color); /* Darker for sub-sections */
   margin-top: 25px;
   margin-bottom: 15px;
-  border-bottom: 2px solid #E9C46A; /* Accent Soft Yellow underline */
-  padding-bottom: 5px;
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: 8px;
 }
 
-/* ===== Form Elements ===== */
+
+/* ===== Form Elements - General Styling ===== */
 label {
   display: block;
   margin-bottom: 8px;
-  font-weight: bold;
-  color: #264653; /* Dark Slate Text */
+  font-family: var(--font-body);
+  font-weight: 500; /* Inter Medium for labels */
+  color: var(--text-color);
+  font-size: 1em;
 }
 
-select,
 input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="number"],
+select,
 textarea {
   width: 100%;
-  padding: 10px 12px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc; /* Softer border */
-  border-radius: 5px;
+  padding: 12px 15px; /* More padding */
+  margin-bottom: 18px; /* More space */
+  border: 1px solid var(--border-color-inputs);
+  border-radius: 6px; /* Softer radius */
   box-sizing: border-box;
+  font-family: var(--font-body);
   font-size: 1em;
-  color: #264653;
-  background-color: #FAF9F6; /* Off-white input background */
+  color: var(--text-color);
+  background-color: var(--background-color); /* Off-white input background */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.2); /* Teal focus ring */
+  outline: none;
 }
 
 textarea {
-    min-height: 80px;
-    resize: vertical;
+  min-height: 100px;
+  resize: vertical;
 }
 
-input[type="radio"] {
-  margin-right: 5px;
+/* Specific for number inputs in table for generator */
+#questionsTable input[type="number"],
+.difficulty-split input[type="number"] {
+    width: 80px; /* Keep it compact */
+    padding: 10px;
+    text-align: center;
+}
+/* Remove <br> styling from generator if possible, use margin/padding instead */
+form br { display: none; }
+
+
+/* ===== Radio Buttons ===== */
+.radio-group {
+    margin-bottom: 18px;
 }
 .radio-group label {
-    display: inline-block;
-    margin-right: 15px;
-    font-weight: normal;
+    display: inline-flex; /* Align items nicely */
+    align-items: center;
+    margin-right: 20px;
+    font-weight: 400; /* Inter Regular for radio label text */
+    cursor: pointer;
+}
+.radio-group input[type="radio"] {
+  margin-right: 8px;
+  accent-color: var(--primary-color); /* Styles the radio button itself */
+  width: auto; /* Override general input width */
+  margin-bottom: 0; /* Override general input margin */
 }
 
 
-/* ===== Tables ===== */
-table {
+/* ===== Tables (Generator Page) ===== */
+#questionsTable {
   width: 100%;
   margin-bottom: 25px;
-  border-collapse: collapse;
+  border-collapse: separate; /* Allows for border-radius on cells */
+  border-spacing: 0;
+  border: 1px solid var(--border-color-light);
+  border-radius: 8px; /* Rounded corners for the table */
+  overflow: hidden; /* To make border-radius work with th */
 }
 
-table th,
-table td {
-  padding: 12px;
-  text-align: left;
-  border: 1px solid #dee2e6; /* Light grey border */
+#questionsTable th,
+#questionsTable td {
+  padding: 12px 15px; /* More padding */
+  text-align: left; /* Better for readability */
+  border-bottom: 1px solid var(--border-color-light);
+}
+#questionsTable td:not(:last-child),
+#questionsTable th:not(:last-child) {
+  border-right: 1px solid var(--border-color-light);
 }
 
-table th {
-  background-color: #2A9D8F; /* Primary Teal Green */
-  color: #FAF9F6; /* Off-white text */
-  font-weight: bold;
-}
 
-table td input[type="number"] {
-    width: 80px; /* More specific width for table inputs */
-    padding: 8px;
-}
-
-table tfoot td {
-    font-weight: bold;
-    background-color: #e9ecef; /* Light grey for footer */
-}
-#overallTotalMarks {
-    color: #2A9D8F; /* Primary Teal Green */
-}
-
-/* ===== Buttons ===== */
-.button-primary,
-button[type="submit"] { /* Targets login button specifically if it's a submit type */
-  padding: 12px 20px;
-  background-color: #2A9D8F; /* Primary Teal Green */
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 1.1em;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-  display: inline-block; /* For multiple buttons in a row */
+#questionsTable th {
+  background-color: var(--primary-color);
+  color: var(--background-color); /* Off-white text */
+  font-family: var(--font-heading);
+  font-weight: 600; /* Urbanist Semibold */
+  font-size: 1.05em;
   text-align: center;
 }
-.button-primary:hover,
-button[type="submit"]:hover {
-  background-color: #21867a; /* Darker Teal */
+
+#questionsTable tbody tr:hover {
+    background-color: #f7fdfc; /* Very light teal hover */
 }
 
-.button-primary:disabled {
-  background-color: #a0d1cb; /* Lighter, muted Teal */
+#questionsTable tfoot td {
+    font-family: var(--font-heading);
+    font-weight: 600; /* Urbanist SemiBold */
+    background-color: #e6f5f3; /* Light teal for footer */
+    text-align: right !important; /* For "Overall Total Marks:" text */
+}
+#questionsTable tfoot #overallTotalMarks {
+    color: var(--primary-color);
+    font-size: 1.1em;
+    text-align: center !important;
+}
+
+
+/* ===== Buttons - General Styling ===== */
+button, .button { /* Added .button class for link-styled buttons if needed */
+  padding: 12px 25px; /* More padding */
+  border: none;
+  border-radius: 6px; /* Softer radius */
+  cursor: pointer;
+  font-family: var(--font-button);
+  font-weight: 500; /* Urbanist Medium or Inter Medium */
+  font-size: 1.05em;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  display: inline-block; /* To respect padding and allow multiple on a line */
+  width: auto; /* Override user agent stylesheet */
+  margin-bottom: 10px; /* Default spacing */
+}
+button:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+/* Primary Action Buttons (e.g., Login, Generate) */
+button[type="submit"], /* Specifically targets the Login button in login.html */
+#generateBtn {
+  background-color: var(--primary-color);
+  color: var(--background-color); /* Off-white text */
+}
+button[type="submit"]:hover:not(:disabled),
+#generateBtn:hover:not(:disabled) {
+  background-color: #22867a; /* Darker Teal */
+}
+
+/* Accent/Secondary Buttons (e.g., Download, Logout in header) */
+#downloadBtn,
+.button-accent { /* .button-accent for generic use, e.g., header logout */
+  background-color: var(--accent-color);
+  color: var(--text-color); /* Dark Slate text */
+}
+#downloadBtn:hover:not(:disabled),
+.button-accent:hover:not(:disabled) {
+  background-color: #d8b350; /* Darker Yellow */
+}
+
+/* Tertiary/Regular Buttons (e.g., general purpose or logout in generator page) */
+/* This is for the existing logout button on generator.html if not moved to header */
+.generator-page-logout-btn {
+    background-color: #6c757d; /* A neutral grey */
+    color: var(--background-color);
+}
+.generator-page-logout-btn:hover:not(:disabled) {
+    background-color: #5a6268;
+}
+
+
+button:disabled {
+  background-color: #a0d1cb; /* Muted Teal for primary */
+  color: #eaf7f5;
   cursor: not-allowed;
 }
-
-.button-accent {
-  padding: 12px 20px;
-  background-color: #E9C46A; /* Accent Soft Yellow */
-  color: #264653; /* Dark Slate Text */
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 1.1em;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-  display: inline-block;
-  text-align: center;
-}
-
-.button-accent:hover {
-  background-color: #d8b350; /* Darker Accent */
-}
+#downloadBtn:disabled,
 .button-accent:disabled {
-  background-color: #f3e0a9; /* Lighter, muted Yellow */
-  cursor: not-allowed;
-}
-
-/* Button group styling */
-.button-group {
-    margin-top: 20px;
-    display: flex;
-    gap: 15px; /* Space between buttons */
+  background-color: #f3e0a9; /* Muted Yellow for accent */
+  color: #fff9e6;
 }
 
 
-/* ===== Output Section ===== */
+/* ===== Output Section (Generator Page) ===== */
 #outputSection {
   margin-top: 30px;
-  padding: 20px;
-  background-color: #FFFFFF; /* White background for contrast */
-  border: 1px solid #dee2e6;
-  border-radius: 5px;
+  padding: 25px;
+  background-color: var(--container-bg-color); /* White background for contrast */
+  border: 1px solid var(--border-color-light);
+  border-radius: 8px;
 }
 
 #output {
   white-space: pre-wrap;
   word-break: break-word;
-  background: #FAF9F6; /* Off-white background for pre */
-  padding: 15px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+  background: var(--background-color); /* Off-white background for pre */
+  padding: 20px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color-inputs);
   max-height: 500px;
   overflow-y: auto;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace; /* Monospace for code-like output */
   font-size: 0.95em;
-  color: #264653;
+  color: var(--text-color);
+  line-height: 1.5;
 }
+
 
 /* ===== Login Page Specific Styles ===== */
-.login-page-wrapper {
+.login-page-wrapper { /* New wrapper for centering login box */
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Vertically center */
-    align-items: center; /* Horizontally center */
-    min-height: calc(100vh - 140px); /* Adjust based on header/footer height */
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1; /* Takes up available space to center vertically */
     padding: 20px;
-    /* Optional: background image for login page */
-    /* background-image: url('path/to/your/classroom-image.jpg'); */
-    /* background-size: cover; */
-    /* background-position: center; */
 }
-
-.login-container {
-  max-width: 450px;
+.login-container { /* This is the main box for login form elements */
+  max-width: 480px; /* Slightly wider */
   width: 100%;
-  padding: 30px 40px;
-  background: #FFFFFF; /* White background for login box */
-  border-radius: 8px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  margin: 0; /* Removed margin auto, as wrapper handles centering */
+  padding: 35px 45px; /* More padding */
+  background: var(--container-bg-color);
+  border-radius: 10px; /* Softer radius */
+  box-shadow: 0 6px 20px rgba(38, 70, 83, 0.1); /* Subtle Dark Slate shadow */
   text-align: center;
 }
-
 .login-container h2 {
+  font-size: 2.4em; /* Larger heading for login */
   margin-bottom: 25px;
-  color: #2A9D8F; /* Primary Teal Green */
 }
-
 .login-container .form-group {
   margin-bottom: 20px;
   text-align: left;
 }
-
-.login-container label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: bold;
-  color: #264653; /* Dark Slate Text */
+/* Login button is targeted by button[type="submit"] */
+#error-message { /* For login error message */
+    color: var(--error-red);
+    background-color: var(--error-bg-red);
+    border: 1px solid var(--error-red);
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 20px;
+    font-family: var(--font-body);
+    font-size: 0.95em;
+    text-align: center; /* Ensure it's centered */
+    /* display: none;  Controlled by JS */
 }
-
-.login-container input[type="email"],
-.login-container input[type="password"] {
-  width: 100%;
-  background-color: #FAF9F6; /* Off-white input background */
-}
-
-.login-container button[type="submit"] {
-  width: 100%;
-  margin-top: 10px;
-}
-
-#error-message {
-    color: #D8000C; /* Standard error red */
-    background-color: #FFD2D2; /* Light red background */
-    border: 1px solid #D8000C;
-    padding: 10px;
-    border-radius: 5px;
-    margin-top: 15px;
-    display: none; /* Initially hidden, shown by JS */
-}
-#error-message.visible {
+#error-message:not(:empty) { /* Show only if it has content */
     display: block;
 }
 
 
-/* ===== Generator Page Specific Layouts ===== */
+/* ===== Generator Page Specific Layout & Sections ===== */
 .generator-layout {
     display: grid;
     grid-template-columns: 1fr; /* Single column by default */
@@ -337,62 +417,108 @@ button[type="submit"]:hover {
 
 @media (min-width: 992px) { /* For larger screens */
     .generator-layout {
-        grid-template-columns: repeat(2, 1fr); /* Two columns */
-    }
-    .form-column {
-        grid-column: span 1;
-    }
-    .output-column {
-         grid-column: span 1;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Responsive columns */
     }
 }
 
 .form-section {
     margin-bottom: 25px;
-    padding: 20px;
-    background-color: #fdfdfd; /* Very slightly off-white sections */
-    border-radius: 6px;
-    border: 1px solid #e9ecef;
+    padding: 25px;
+    background-color: #fdfdfd; /* Very slightly off-white for sections */
+    border-radius: 8px;
+    border: 1px solid var(--border-color-light);
 }
-.form-section h4 {
+.form-section h4 { /* Sub-section headings within generator */
     margin-top: 0;
-    color: #2A9D8F; /* Teal for section subheadings */
-    font-size: 1.2em;
-    margin-bottom: 15px;
+    font-family: var(--font-heading);
+    font-weight: 600; /* Urbanist SemiBold */
+    color: var(--primary-color);
+    font-size: 1.4em;
+    margin-bottom: 20px;
 }
 
+.difficulty-split-container { /* Wrapper for difficulty inputs */
+    margin-bottom: 18px;
+}
+.difficulty-split-container > label { /* Main label for "Difficulty Split" */
+    font-size: 1.1em; /* Make it a bit more prominent */
+    margin-bottom: 12px;
+}
 .difficulty-split {
     display: flex;
-    gap: 10px; /* space between easy, medium, hard inputs */
-    align-items: center;
+    gap: 15px;
+    align-items: flex-start; /* Align items to top */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
 .difficulty-split > div {
-    flex: 1; /* Each input group takes equal space */
+    flex: 1;
+    min-width: 100px; /* Ensure they don't get too squished */
 }
-.difficulty-split label {
-    font-size: 0.9em;
-    margin-bottom: 4px;
+.difficulty-split label { /* Labels for Easy, Medium, Hard */
+    font-size: 0.95em;
+    font-weight: 400; /* Inter Regular */
+    margin-bottom: 6px;
 }
-.difficulty-split input[type="number"] {
-    width: 100%; /* Full width within its flex item */
+#difficultyTotalMessage {
+    font-size:0.9em;
+    color: var(--text-color);
+    margin-top:10px;
+    font-family: var(--font-body);
 }
-
-
-/* ===== Footer ===== */
-footer {
-  background-color: #FAF9F6; /* Off-white Background to match body */
-  color: #264653; /* Dark Slate Text */
-  text-align: center;
-  padding: 20px 30px;
-  border-top: 1px solid #2A9D8F; /* Thin Teal Green top border */
-  margin-top: auto; /* Pushes footer to the bottom */
+#difficultySum {
+    font-weight: 500; /* Inter Medium */
 }
 
-/* Utility Classes */
-.text-center {
-    text-align: center;
+
+/* Grouping for generator buttons */
+.generator-actions, .output-actions {
+    display: flex;
+    justify-content: center; /* Center buttons */
+    gap: 15px; /* Space between buttons */
+    margin-top: 25px;
+    flex-wrap: wrap;
 }
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
-.mb-1 { margin-bottom: 0.5rem; }
-.mb-2 { margin-bottom: 1rem; }
+#generateBtn, #downloadBtn {
+    min-width: 220px; /* Give buttons a decent minimum width */
+}
+
+/* Specific for the original logout button on generator.html if not in header */
+.generator-page-logout-btn-container {
+    margin-top: 30px;
+    text-align: center; /* Or right if preferred */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container, .login-container {
+        width: 95%;
+        padding: 20px;
+    }
+    h2 { font-size: 1.8em; }
+    h3 { font-size: 1.5em; }
+    header.app-header { padding: 15px; }
+    header.app-header .site-name { font-size: 1.3em; }
+    header.app-header nav ul li { margin-left: 15px; }
+
+    .difficulty-split {
+        flex-direction: column; /* Stack difficulty inputs on small screens */
+        gap: 0;
+    }
+    .difficulty-split > div {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .difficulty-split input[type="number"] {
+        width: 100%;
+    }
+}
+
+/* Remove inline styles from generator.html */
+#questionsTable tfoot td[style] {
+    text-align: right !important; /* Overridden by more specific CSS */
+}
+
+/* Hide <br> tags as they are used for spacing in the original HTML */
+form#questionForm br {
+    display: none;
+}
