@@ -666,3 +666,41 @@
                     </div>
                 </div>
                 <div class="testimonial-car
+
+
+
+    <!-- footer Section -->
+
+
+        <footer>
+            <p>&copy; <span id="currentYearFooter">2025</span> AI-RIVU. Empowering Educators. | Support: support@airivu.com</p>
+          </footer>
+        
+          <script>
+            document.getElementById('currentYearFooter').textContent = new Date().getFullYear();
+        
+            // Script to update difficulty sum dynamically
+            const easyInput = document.getElementById('easy');
+            const mediumInput = document.getElementById('medium');
+            const hardInput = document.getElementById('hard');
+            const difficultySumSpan = document.getElementById('difficultySum');
+            const difficultyTotalMessage = document.getElementById('difficultyTotalMessage');
+        
+            function updateDifficultySum() {
+                const easy = parseInt(easyInput.value) || 0;
+                const medium = parseInt(mediumInput.value) || 0;
+                const hard = parseInt(hardInput.value) || 0;
+                const total = easy + medium + hard;
+                difficultySumSpan.textContent = total;
+                if (total !== 100) {
+                    difficultyTotalMessage.style.color = '#D8000C'; // Error red
+                } else {
+                    difficultyTotalMessage.style.color = '#2A9D8F'; // Teal Green for success
+                }
+                // This validation will also be handled by validateForm in generator.js
+            }
+            easyInput.addEventListener('input', updateDifficultySum);
+            mediumInput.addEventListener('input', updateDifficultySum);
+            hardInput.addEventListener('input', updateDifficultySum);
+          </script>
+          <script src="generator.js"></script>
