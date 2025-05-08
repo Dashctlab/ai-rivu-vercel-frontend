@@ -1,50 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - AI-RIVU Question Paper Generator</title>
-  <link rel="stylesheet" href="style.css">
-  </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Paper Generator - AI-RIVU</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Check if the user's email is stored in local storage
+            const userEmail = localStorage.getItem('userEmail');
+            // If the email is not found, the user is likely not logged in
+            if (!userEmail) {
+                // Redirect the user to the login page
+                window.location.href = '/login.html';
+            } else {
+                // If the email is found, the user is logged in; display their email
+                const userDisplay = document.getElementById('userEmailDisplay');
+                if (userDisplay) {
+                    userDisplay.textContent = `User: ${userEmail}`;
+                }
+            }
+        });
+    </script>
+    <script defer src="generator.js"></script>
+</head>
 <body>
 
-  <header class="app-header">
-    <div class="logo-container">
-      <div class="logo-image">AI</div>
-      <span class="site-name">AI-RIVU QPG</span>
-    </div>
+    <header class="app-header">
+        <div class="logo-container">
+            <div class="logo-image">AI</div>
+            <span class="site-name">AI-RIVU QPG</span>
+        </div>
+        <nav>
+            <ul>
+                <li><span id="userEmailDisplay">User: Loading...</span></li>
+                <li><button onclick="logout()" class="button-accent">Logout</button></li>
+            </ul>
+        </nav>
     </header>
 
-  <main class="main-content login-page-wrapper">
-    <div class="login-container">
-      <h2>Welcome Back!</h2>
-      <p style="font-family: var(--font-body); color: var(--secondary-text-color); margin-bottom: 25px;">
-        Please login to access the Question Paper Generator.
-      </p>
-      <form id="loginForm">
-        <div class="form-group">
-          <label for="email">Email Address</label>
-          <input type="email" id="email" required placeholder="e.g., teacher@example.com">
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" required placeholder="Enter your password">
-        </div>
-        <button type="submit">Login Securely</button>
-      </form>
-      <p id="error-message" style="display:none;"></p> </div>
-  </main>
+    <main class="main-content">
+        <div class="container">
+            <h2>Generate Your Custom Question Paper</h2>
+            <p style="font-family: var(--font-body); color: var(--secondary-text-color); text-align: center; margin-bottom: 30px; font-size: 1.1em;">
+                Fill in the details below to craft the perfect assessment.
+            </p>
 
-  <footer class="app-footer">
-    <p>&copy; <span id="currentYear"></span> AI-RIVU. All rights reserved. | 
-       <a href="#">Privacy Policy</a> | 
-       <a href="#">Terms of Service</a>
-    </p>
-  </footer>
+            <form id="questionForm">
+                <div class="generator-layout">
 
-  <script>
-    document.getElementById('currentYear').textContent = new Date().getFullYear();
-  </script>
-  <script src="login.js"></script>
+                    <div class="form-column-left">
+                        <div class="form-section">
+                            <h4>1. Core Details</h4>
+                            <label for="curriculum">Curriculum Board</label>
+                            <select id="curriculum" name="curriculum" required>
+                                <option value="">-- Select Curriculum --</option>
+                                <option value="CBSE">CBSE</option>
+                                <option value="Karnataka State Board">Karnataka State Board</option>
+                                <option value="Tamil Nadu State Board">Tamil Nadu State Board</option>
+                            </select>
+
+                            <label for="className">Class / Grade</label>
+                            <select id="className" name="className" required disabled>
+                                <option value="">-- Select Class --</option>
+                            </select>
+
+                            <label for="subject">Subject</label>
+                            <select id="subject" name="subject" required disabled>
+                                <option value="">-- Select Subject --</option>
+                            </select>
+
+                            <label for="topic">Specific Topic(s) (Optional)</label>
+                            <input type="text" id="topic" name="topic" placeholder="e.g., Algebra, Photosynthesis, Indian History">
+
+                            <label for="timeDuration">Exam Time Duration</label>
+                            <select id="timeDuration" name="timeDuration" required>
+                                <option value="30">30 Minutes</option>
+                                <option value="60" selected>1 Hour</option>
+                                <option value="90">1.5 Hours</option>
+                                <option value="120">2 Hours</option>
+                                <option value="180">3 Hours</option>
+                            </select>
+                        </div>
+
+                        <div class="form-section">
+                            <h4>2. Difficulty &amp; Formatting</h4>
+                            <div class="difficulty-split-container">
+                                <label>Difficulty Split (Total must be 100%)</label>
+                                <div class="difficulty-split">
+                                    <div>
+                                        <label for="easy">Easy %</label>
+                                        <input type="number" id="easy" name="easy" value="0" min="0" max="100" required>
+                                    </div>
+                                    <div>
+                                        <label for="medium">Medium %</label>
+                                        <input type="number" id="medium" name="medium" value="100" min="0" max="100" required>
+                                    </div>
+                                    <div>
+                                        <label for="hard">Hard %</label>
+                                        <input type="number" id="hard" name="hard" value="0" min="0" max="100" required>
+                                    </div>
+                                </div>
+                                <p id="difficultyTotalMessage">Current Total: <span id="difficultySum">100</span>%</p>
+                            </div>
+
+                            <label for="additionalConditions">Additional Instructions/Conditions (Optional)</label>
+                            <textarea id="additionalConditions" name="additionalConditions" placeholder="e.g., All questions are compulsory. Diagrams should be neatly drawn."></textarea>
+
+                            <label>Answer Key Format</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="answerKeyFormat" value="Brief" checked> Brief</label>
+                                <label><input type="radio" name="answerKeyFormat" value="Detailed"> Detailed</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-column-right">
+                        <div class="form-section">
+                            <h4>3. Question Types &amp; Marks</h4>
+                            <p style="font-family: var(--font-body); font-size:0.95em; margin-bottom:15px;">Specify the number of questions and marks for each type. Max 25 questions per type.</p>
+                            <table border="1" id="questionsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Type of Question</th>
+                                        <th>Number of Questions</th>
+                                        <th>Marks per Question</th>
+                                        <th>Total Marks</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" style="text-align: right;">Overall Total Marks:</td>
+                                        <td id="overallTotalMarks">0</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="generator-actions">
+                    <button type="submit" id="generateBtn" disabled>Generate Question Paper</button>
+                </div>
+            </form>
+
+            <div id="outputSection" style="display:none;">
+                <h3>Generated Question Paper Preview</h3>
+                <pre id="output"></pre>
+                <div class="output-actions">
+                    <button id="downloadBtn">Download as Word (.docx)</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p>&copy; <span id="currentYearFooter"></span> AI-RIVU. Empowering Educators. |
+            <a href="mailto:support@airivu.com">Support: support@airivu.com</a>
+        </p>
+    </footer>
+
+    <script>
+        // Update the current year in the footer dynamically
+        document.getElementById('currentYearFooter').textContent = new Date().getFullYear();
+
+        // Get references to the input elements for difficulty levels and the display for their sum
+        const easyInput = document.getElementById('easy');
+        const mediumInput = document.getElementById('medium');
+        const hardInput = document.getElementById('hard');
+        const difficultySumSpan = document.getElementById('difficultySum');
+        const difficultyTotalMessageP = document.getElementById('difficultyTotalMessage');
+
+        // Function to calculate and update the sum of the difficulty percentages
+        function updateDifficultySum() {
+            // Parse the integer values from the input fields, defaulting to 0 if the input is not a number
+            const easy = parseInt(easyInput.value) || 0;
+            const medium = parseInt(mediumInput.value) || 0;
+            const hard = parseInt(hardInput.value) || 0;
+            // Calculate the total difficulty percentage
+            const total = easy + medium + hard;
+            // Update the displayed sum
+            if (difficultySumSpan) difficultySumSpan.textContent = total;
+            // Update the color of the total message based on whether it equals 100
+            if (difficultyTotalMessageP) {
+                if (total !== 100) {
+                    difficultyTotalMessageP.style.color = 'var(--error-red)';
+                } else {
+                    difficultyTotalMessageP.style.color = 'var(--primary-color)';
+                }
+            }
+        }
+
+        // Add event listeners to the difficulty input fields to call updateDifficultySum whenever their values change
+        if(easyInput && mediumInput && hardInput) {
+            easyInput.addEventListener('input', updateDifficultySum);
+            mediumInput.addEventListener('input', updateDifficultySum);
+            hardInput.addEventListener('input', updateDifficultySum);
+            updateDifficultySum(); // Call the function initially to set the default display
+        }
+    </script>
 </body>
 </html>
