@@ -7,7 +7,7 @@
 
   <!-- ===== Root palette & typography ===== -->
   <style>
-    :root {
+    :root{
       --primary:#2a9d8f;
       --accent:#e9c46a;
       --background:#faf9f6;
@@ -16,8 +16,8 @@
       --shadow:0 4px 6px rgba(0,0,0,.08);
     }
 
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
       font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
       background:var(--background);
       color:var(--text);
@@ -25,67 +25,67 @@
     }
 
     /* ---------- HEADER ---------- */
-    header {
+    header{
       background:var(--primary);
       color:#fff;
-      position:sticky; top:0; z-index:1000;
+      position:sticky;top:0;z-index:1000;
       box-shadow:var(--shadow);
     }
-    .container { width:90%; max-width:1200px; margin:0 auto; }
+    .container{width:90%;max-width:1200px;margin:0 auto;}
 
-    .header-wrap {
-      display:flex; align-items:center; justify-content:space-between;
+    .header-wrap{
+      display:flex;align-items:center;justify-content:space-between;
       padding:1rem 0;
     }
 
-    /* logo @ 75% of 96px = 72px */
-    .logo-wrap img { height:72px; width:auto; }
-    .logo-wrap span { display:none; }
+    /* logo */
+    .logo-wrap img{height:72px;width:auto;}
+    .logo-wrap span{display:none;}
 
     /* ---------- NAV ---------- */
-    .right-nav { display:flex; align-items:center; gap:16px; }
+    .right-nav{display:flex;align-items:center;gap:16px;}
 
-    .nav-btn {
+    .nav-btn{
       background:#fff;
       color:var(--primary);
       padding:8px 18px;
       border-radius:4px;
       font-weight:600;
       text-decoration:none;
-      transition:background .25s, transform .25s;
+      transition:background .25s,transform .25s;
       display:inline-block;
     }
-    .nav-btn:hover {
+    .nav-btn:hover{
       background:var(--accent);
       transform:translateY(-2px);
     }
 
-    nav { display:flex; gap:16px; }
-    /* wipe any inherited link styling */
-    nav a { all:unset; }
+    /* remove old link underline effect */
+    nav{display:flex;gap:16px;}
+    nav a{all:unset;}  /* wipe inherited underline styles */
 
     /* ---------- HERO ---------- */
-    .hero {
+    .hero{
       background-image: url("images/hero-image.jpg");
       background-position: center center;
       background-size: cover;
       background-repeat: no-repeat;
       /* maintain 16:9 but never taller than 90vh */
-      min-height: calc(100vw * 0.5625);
-      max-height: 90vh;
+      min-height:calc(100vw * 0.5625);
+      max-height:90vh;
       color:#fff;
-      display:flex; align-items:center;
+      display:flex;align-items:center;
     }
-    .hero-inner {
+    .hero-inner{
       max-width:600px;
-      text-align:left;   /* flush left */
+      text-align:left;          /* flush-left copy */
     }
-    .hero h1 { font-size:clamp(2rem,6vw,3rem); margin-bottom:1rem; }
-    .hero p { font-size:1.2rem; margin-bottom:2rem; }
-    .primary-btn {
+    .hero h1{font-size:clamp(2rem,6vw,3rem);margin-bottom:1rem;}
+    .hero p{font-size:1.2rem;margin-bottom:2rem;}
+    .primary-btn{
       background:var(--accent);
       color:var(--text);
-      padding:12px 28px;
+           padding:12px 28px;
       border:none;
       border-radius:4px;
       font-size:1rem;
@@ -96,49 +96,95 @@
     .primary-btn:hover {
       background:#f1c75f;
       transform:translateY(-2px);
-    }
 
-    /* ---------- rest of page left unchanged ---------- */
+    }
+    .primary-btn:hover{background:#f1c75f;transform:translateY(-2px);}
+
+    /* ---------- INTRO ---------- */
     .intro{padding:3rem 0 2rem;text-align:center;}
     .intro p{max-width:700px;margin:0 auto;}
+
+    /* ---------- FEATURES ---------- */
     .features{padding:2rem 0 4rem;}
-    .section-title{font-size:1.8rem;color:var(--primary);margin-bottom:1.5rem;text-align:center;position:relative;display:inline-block;}
-    .section-title::after{content:"";position:absolute;bottom:-6px;left:50%;width:60px;height:3px;background:var(--accent);transform:translateX(-50%);}
+    .section-title{
+      font-size:1.8rem;color:var(--primary);margin-bottom:1.5rem;
+      text-align:center;position:relative;display:inline-block;
+    }
+    .section-title::after{
+      content:"";position:absolute;bottom:-6px;left:50%;
+      width:60px;height:3px;background:var(--accent);transform:translateX(-50%);
+    }
     .grid{display:grid;gap:28px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));}
-    .card{background:#fff;padding:1.6rem;border-radius:8px;box-shadow:var(--shadow);transition:transform .25s;}
+    .card{
+      background:#fff;padding:1.6rem;border-radius:8px;box-shadow:var(--shadow);
+      transition:transform .25s;
+    }
     .card:hover{transform:translateY(-4px);}
-    .icon-circle{width:56px;height:56px;border-radius:50%;background:var(--light-primary);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1rem;}
+    .icon-circle{
+      width:56px;height:56px;border-radius:50%;
+      background:var(--light-primary);color:var(--primary);
+      display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1rem;
+    }
     .card h3{font-size:1.2rem;margin-bottom:.5rem;color:var(--primary);}
-    .why{background-image:repeating-linear-gradient(135deg,var(--light-primary),var(--light-primary)15px,transparent 15px,transparent 30px);padding:3rem 0;}
+
+    /* ---------- WHY STRIP ---------- */
+    .why{
+      background-image:repeating-linear-gradient(135deg,var(--light-primary),var(--light-primary)15px,transparent 15px,transparent 30px);
+      padding:3rem 0;
+    }
     .why ul{list-style:none;max-width:900px;margin:0 auto;}
     .why li{margin:.8rem 0;font-weight:500;padding-left:1.4rem;position:relative;}
     .why li::before{content:"✔";position:absolute;left:0;color:var(--primary);font-weight:700;}
+
+    /* ---------- COMING SOON ---------- */
     .coming{padding:4rem 0;}
     .coming .card h4{font-size:1.15rem;margin-bottom:.6rem;color:var(--primary);}
+
+    /* ---------- BOTTOM CTA ---------- */
     .bottom-cta{text-align:center;padding:2rem 0 3rem;}
-    footer{background:var(--text);color:#fff;padding:3rem 0 1.2rem;margin-top:4rem;}
+
+    /* ---------- FOOTER ---------- */
+    footer{
+      background:var(--text);
+      color:#fff;
+      padding:3rem 0 1.2rem;
+      margin-top:4rem;
+    }
     .footer-flex{display:flex;flex-wrap:wrap;gap:40px;justify-content:space-between;}
     .footer-links{list-style:none;}
     .footer-links li{margin-bottom:10px;}
     .footer-links a{color:#ccc;text-decoration:none;transition:color .25s;}
     .footer-links a:hover{color:#fff;}
-    .footer-logo img{height:100px;width:auto;} /* remains 2.5× in footer */
-    .footer-bottom{text-align:center;border-top:1px solid rgba(255,255,255,.15);margin-top:2.5rem;padding-top:1.2rem;font-size:.9rem;color:#ccc;}
+
+    /* 2.5× Asmakam logo */
+    .footer-logo img{height:100px;width:auto;}
+
+    .footer-bottom{
+      text-align:center;border-top:1px solid rgba(255,255,255,.15);
+      margin-top:2.5rem;padding-top:1.2rem;
+      font-size:.9rem;color:#ccc;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
     @media(max-width:768px){
       nav.mobile-hide{display:none;}
       .hero{justify-content:center;text-align:center;background-position:60% center;}
-      .logo-wrap img{height:60px;}
+      .logo-wrap img{height:60px;}            /* scale logo down on phones */
     }
   </style>
 </head>
 
 <body>
+  <!-- ================= HEADER ================= -->
   <header>
     <div class="container header-wrap">
-      <a class="logo-wrap" href="#"><img src="images/ai-rivu-logo.png" alt="AI-RIVU logo"></a>
+      <a class="logo-wrap" href="#">
+        <img src="images/ai-rivu-logo.png" alt="AI-RIVU logo">
+      </a>
+
       <div class="right-nav">
         <nav class="mobile-hide">
-          <a href="#about" class="nav-btn">About</a>
+          <a href="#about"   class="nav-btn">About</a>
           <a href="#contact" class="nav-btn">Contact</a>
         </nav>
         <a href="/login" class="nav-btn">Login</a>
@@ -146,6 +192,7 @@
     </div>
   </header>
 
+  <!-- ================= HERO ================= -->
   <section class="hero">
     <div class="container hero-inner">
       <h1>Teach Smarter. Inspire Every Day</h1>
@@ -154,7 +201,76 @@
     </div>
   </section>
 
-  <!-- …rest of your page… -->
+  <!-- ================= INTRO ================= -->
+  <section class="intro">
+    <div class="container">
+      <p>Create curriculum-aligned question papers in minutes.<br>
+         Save time, maintain quality, and customise for your classroom needs.</p>
+    </div>
+  </section>
+
+  <!-- ================= FEATURES ================= -->
+  <section class="features">
+    <div class="container">
+      <h2 class="section-title">Key Features</h2>
+      <div class="grid">
+        <div class="card"><div class="icon-circle">📚</div><h3>Curriculum Aligned</h3><p>Questions map directly to CBSE and major state board syllabi for truly relevant assessments.</p></div>
+        <div class="card"><div class="icon-circle">🎯</div><h3>Customisable Difficulty</h3><p>Mix easy, medium, and hard questions to match your class profile perfectly.</p></div>
+        <div class="card"><div class="icon-circle">📄</div><h3>Ready-to-Use Format</h3><p>Download clean, professionally formatted Word docs — print-ready or fully editable.</p></div>
+        <div class="card"><div class="icon-circle">📝</div><h3>Multiple Question Types</h3><p>MCQ, short answer, long answer, matching &amp; more — all in one click.</p></div>
+        <div class="card"><div class="icon-circle">🔍</div><h3>Answer Keys Included</h3><p>Auto-generated keys in concise or detailed format save further prep time.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= WHY ================= -->
+  <section class="why">
+    <div class="container">
+      <h2 class="section-title">Why&nbsp;AI-RIVU?</h2>
+      <ul>
+        <li>Save time: cut preparation time by <strong>90&nbsp;%+</strong></li>
+        <li>Built for any curricula: CBSE &amp; major state boards today — ICSE coming soon</li>
+        <li>Works on low-bandwidth connections: lightweight web app with no heavy installs</li>
+        <li>Human-centric AI: you stay in control while AI does the heavy lifting</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ================= COMING SOON ================= -->
+  <section class="coming">
+    <div class="container">
+      <h2 class="section-title">Coming&nbsp;Soon</h2>
+      <div class="grid">
+        <div class="card"><h4>Student Progress&nbsp;&amp; Analytics</h4><p>Real-time dashboards spotlight strengths, gaps, and growth trends for every learner.</p></div>
+        <div class="card"><h4>Local Language Adaptations</h4><p>Auto-generate papers, lessons, and feedback in key Indian languages for true inclusion.</p></div>
+        <div class="card"><h4>Answer Paper Evaluations</h4><p>AI grades against rubrics, flags misconceptions, and offers actionable feedback.</p></div>
+        <div class="card"><h4>Lesson Planners</h4><p>Drag-and-drop daily or weekly plans aligned to outcomes, resources, and activities.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BOTTOM CTA ================= -->
+  <section class="bottom-cta">
+    <button class="primary-btn" onclick="location.href='/app'">Try AI-RIVU Now</button>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>
+    <div class="container">
+      <div class="footer-flex">
+        <div>
+          <ul class="footer-links">
+            <li><a href="#about">About&nbsp;Us</a></li>
+            <li><a href="#contact">Contact&nbsp;Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-logo">
+          <img src="images/asmakam-logo.png" alt="Asmakam Labs logo">
+        </div>
+      </div>
+      <div class="footer-bottom">© <span id="yr"></span> Asmakam&nbsp;Labs · All&nbsp;Rights&nbsp;Reserved</div>
+    </div>
+  </footer>
 
   <script>document.getElementById("yr").textContent=new Date().getFullYear();</script>
 </body>
