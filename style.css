@@ -96,12 +96,63 @@ header.app-header nav ul li a {
   font-size: 1em;
 }
 
+
+* ===== Hero (19:8) ===== */
+.hero {
+  background-image: url("images/hero-image.jpg");
+						   
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* 19:8 → height = width * (8/19) */
+  min-height: calc(100vw * 8 / 19);
+  max-height: 90vh;
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.hero-inner {
+  max-width: 600px;
+  text-align: left;
+}
+.hero h1 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: clamp(2rem, 6vw, 3rem);
+    margin-bottom: 1rem;
+}
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;				 
+}
+.primary-btn {
+  background: var(--accent-color);
+  color: var(--text-color);
+  padding: 12px 28px;	
+  border: none;
+  border-radius: 4px;
+  font-family: var(--font-button);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.25s, transform 0.25s;							   
+}
+
+.primary-btn:hover {								   
+  background: #f1c75f;
+  transform: translateY(-2px);
+}
+
 /* ===== Footer ===== */
+
+
 footer.app-footer {
   background-color: var(--background-color);
   color: var(--text-color);
   text-align: center;
   padding: 25px 30px;
+  margin-top: auto;
   border-top: 2px solid var(--primary-color);
   margin-top: auto; /* Pushes footer to the bottom */
   font-family: var(--font-body);
@@ -493,6 +544,14 @@ button:disabled {
     .container, .login-container {
         width: 95%;
         padding: 20px;
+    .hero {
+    min-height: 50vw; /* fallback on very narrow viewports */
+    justify-content: center;
+       text-align: center;
+          }
+  .hero-inner {
+	    max-width: 90%;
+              }
     }
     h2 { font-size: 1.8em; }
     h3 { font-size: 1.5em; }
