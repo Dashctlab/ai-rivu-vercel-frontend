@@ -37,23 +37,28 @@
       box-shadow: var(--shadow);
     }
     .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+
     .header-wrap {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 1rem 0;
     }
-    .logo-wrap {
-      display: flex; align-items: center; gap: 10px;
-      font-weight: 600; font-size: 1.4rem;
-    }
-    .logo-wrap img { height: 40px; width: auto; }
-    nav { display: flex; align-items: center; gap: 24px; }
+
+    /* logo only, bigger */
+    .logo-wrap img { height: 48px; width: auto; }
+    .logo-wrap span { display: none; } /* hide wordmark */
+
+    /* right‐hand group for nav + login */
+    .right-nav { display: flex; align-items: center; gap: 16px; }
+
+    nav { display: flex; align-items: center; gap: 16px; }
     nav a {
       color: #fff; text-decoration: none;
       padding: 6px 0;
       position: relative;
       transition: color .25s;
+      font-weight: 500;
     }
     nav a::after {
       content: ""; position: absolute; bottom: -2px; left: 0;
@@ -75,7 +80,8 @@
        HERO
     ------------------------------------------------------------------*/
     .hero {
-      background: url("images/hero-image.jpg") center/cover no-repeat;
+      background: url("images/hero-image.jpg") no-repeat 75% center / cover;
+      /* ^ 75% keeps teacher’s face in frame on desktop */
       padding: 5rem 0;
       color: #fff;
       display: flex;
@@ -203,163 +209,3 @@
     ------------------------------------------------------------------*/
     @media (max-width: 768px) {
       nav { display: none; }  /* simple: hide nav on small; add menu later if needed */
-      .hero { text-align: center; justify-content: center; }
-      .hero h1 { text-align: center; }
-      .header-wrap { gap: 12px; }
-      .logo-wrap img { height: 34px; }
-    }
-  </style>
-</head>
-
-<body>
-  <!-- ================= HEADER ================= -->
-  <header>
-    <div class="container header-wrap">
-      <a class="logo-wrap" href="#">
-        <img src="images/ai-rivu-logo.png" alt="AI-RIVU logo" />
-        <span>AI-RIVU</span>
-      </a>
-
-      <nav>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-      </nav>
-
-      <a href="/login" class="login-btn">Login</a>
-    </div>
-  </header>
-
-  <!-- ================= HERO ================= -->
-  <section class="hero">
-    <div class="container hero-inner">
-      <h1>Teach Smarter. Inspire Every Day</h1>
-      <p>AI-powered solutions for a future-ready classroom.</p>
-      <button class="primary-btn" onclick="location.href='/app'">Try AI-RIVU Now</button>
-    </div>
-  </section>
-
-  <!-- ================= INTRO ================= -->
-  <section class="intro">
-    <div class="container">
-      <p>
-        Create curriculum-aligned question papers in minutes.<br />
-        Save time, maintain quality, and customize for your classroom needs.
-      </p>
-    </div>
-  </section>
-
-  <!-- ================= FEATURES ================= -->
-  <section class="features">
-    <div class="container">
-      <h2 class="section-title">Key Features</h2>
-
-      <div class="grid">
-        <!-- 1 -->
-        <div class="card">
-          <div class="icon-circle">📚</div>
-          <h3>Curriculum Aligned</h3>
-          <p>Questions map directly to CBSE and major state board syllabi for truly relevant assessments.</p>
-        </div>
-        <!-- 2 -->
-        <div class="card">
-          <div class="icon-circle">🎯</div>
-          <h3>Customizable Difficulty</h3>
-          <p>Mix easy, medium, and hard questions to match your class profile perfectly.</p>
-        </div>
-        <!-- 3 -->
-        <div class="card">
-          <div class="icon-circle">📄</div>
-          <h3>Ready-to-Use Format</h3>
-          <p>Download clean, professionally formatted Word docs — print-ready or fully editable.</p>
-        </div>
-        <!-- 4 -->
-        <div class="card">
-          <div class="icon-circle">📝</div>
-          <h3>Multiple Question Types</h3>
-          <p>MCQ, short answer, long answer, matching &amp; more — all in one click.</p>
-        </div>
-        <!-- 5 -->
-        <div class="card">
-          <div class="icon-circle">🔍</div>
-          <h3>Answer Keys Included</h3>
-          <p>Auto-generated keys in concise or detailed format save further prep time.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= WHY AI-RIVU ================= -->
-  <section class="why">
-    <div class="container">
-      <h2 class="section-title">Why&nbsp;AI-RIVU?</h2>
-      <ul>
-        <li>Save time: Cut preparation time by <strong>90 %</strong>+</li>
-        <li>Built for any curricula: CBSE &amp; major state boards today — ICSE coming soon</li>
-        <li>Works on low-bandwidth connections: lightweight web app with no heavy installs</li>
-        <li>Human-centric AI: You stay in control while AI does the heavy lifting</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ================= COMING SOON ================= -->
-  <section class="coming">
-    <div class="container">
-      <h2 class="section-title">Coming&nbsp;Soon</h2>
-
-      <div class="grid">
-        <!-- 1 -->
-        <div class="card">
-          <h4>Student Progress&nbsp;&amp; Analytics</h4>
-          <p>Real-time dashboards spotlight strengths, gaps, and growth trends for every learner.</p>
-        </div>
-        <!-- 2 -->
-        <div class="card">
-          <h4>Local Language Adaptations</h4>
-          <p>Auto-generate papers, lessons, and feedback in key Indian languages for true inclusion.</p>
-        </div>
-        <!-- 3 -->
-        <div class="card">
-          <h4>Answer Paper Evaluations</h4>
-          <p>AI grades against rubrics, flags misconceptions, and offers actionable feedback.</p>
-        </div>
-        <!-- 4 -->
-        <div class="card">
-          <h4>Lesson Planners</h4>
-          <p>Drag-and-drop daily or weekly plans aligned to outcomes, resources, and activities.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= BOTTOM CTA ================= -->
-  <section class="bottom-cta">
-    <button class="primary-btn" onclick="location.href='/app'">Try AI-RIVU Now</button>
-  </section>
-
-  <!-- ================= FOOTER ================= -->
-  <footer>
-    <div class="container">
-      <div class="footer-flex">
-        <!-- Left column -->
-        <div>
-          <ul class="footer-links">
-            <li><a href="#about">About&nbsp;Us</a></li>
-            <li><a href="#contact">Contact&nbsp;Us</a></li>
-          </ul>
-        </div>
-
-        <!-- Right column -->
-        <div class="footer-logo">
-          <img src="images/asmakam-logo.png" alt="Asmakam Labs logo" />
-        </div>
-      </div>
-
-      <div class="footer-bottom">
-        © <span id="yr"></span> Asmakam&nbsp;Labs · All&nbsp;Rights&nbsp;Reserved
-      </div>
-    </div>
-  </footer>
-
-  <script>document.getElementById("yr").textContent = new Date().getFullYear();</script>
-</body>
-</html>
