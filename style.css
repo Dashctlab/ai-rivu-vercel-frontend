@@ -522,3 +522,47 @@ button:disabled {
 form#questionForm br {
     display: none;
 }
+
+
+
+/* === QUICK FIXES: header & hero ==================================== */
+
+/* 1. Bigger logo (applied via .logo-lg on the <img>) */
+.logo-lg {
+  height: 48px;    /* adjust if still small */
+  width: auto;
+}
+
+/* 2. Tighter nav-item spacing (add .tight to the <ul>) */
+.nav-list.tight {
+  gap: 1.2rem;     /* pull “About | Contact | Login” closer */
+}
+
+/* 3. Hero image shows teacher’s face properly */
+.hero {
+  background: var(--background-color);
+  overflow: hidden;
+}
+.hero-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  min-height: 70vh;
+}
+.hero-copy {
+  max-width: 520px;
+}
+.hero-img {
+  flex: 1 1 50%;
+  max-height: 70vh;
+  object-fit: cover;
+  object-position: 70% center;   /* keeps face in frame on desktop */
+  border-radius: 0.5rem;         /* optional – matches card style */
+}
+
+/* Mobile stack */
+@media (max-width: 768px) {
+  .hero-inner       { flex-direction: column; text-align: center; }
+  .hero-img         { width: 100%; object-position: center top; }
+}
