@@ -4,347 +4,129 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI-RIVU • Home</title>
-  
-  <!-- Link to the external style.css - ENSURE THIS PATH IS CORRECT -->
-  <link rel="stylesheet" href="style.css">
-
-  <!-- ===== Inline styles: We will reduce this significantly ===== -->
-  <style>
-    /*
-      KEEPING some home-page specific layout styles for now, 
-      but header, nav, hero, and .primary-btn styles that conflict
-      with style.css will be removed or commented out.
-      CSS Variables from style.css will be used.
-    */
-
-    /* :root variables are removed from here, style.css is the source */
-
-    /* Keep global reset and body defaults if not fully covered by style.css,
-       or if home.html has slightly different body needs.
-       For now, let's assume style.css handles body basics.
-    */
-    /* *{margin:0;padding:0;box-sizing:border-box;} */ /* Covered by style.css */
-    /* body{
-      font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
-      background:var(--background-color); /* Use var from style.css */
-      color:var(--text-color); /* Use var from style.css */
-      line-height:1.6;
-    } */ /* style.css has its own body styles, prefer those */
-
-
-    /* ---------- HEADER ---------- */
-    /*
-      REMOVING most header styles from here.
-      Let style.css (header.app-header) handle this.
-      The sticky position can be added to style.css if needed.
-    */
-    /* header{
-      background:var(--primary-color);
-      color:#fff;
-      position:sticky;top:0;z-index:1000;
-      box-shadow:var(--shadow); /* var(--shadow) may not be defined in style.css */
-    } */
-    
-    /* .container is used throughout home.html, let's keep its specific version for home.html for now,
-       though style.css also has a .container. We need to reconcile this.
-       The home.html .container is max-width: 1200px. style.css .container is max-width: 1000px.
-       Let's keep the home.html version for its sections for now.
-    */
-    .container{width:90%;max-width:1200px;margin:0 auto;}
-
-    /* .header-wrap not used in current HTML */
-    /* .logo-wrap img not used in current HTML's active logo */
-
-    /* ---------- NAV ---------- */
-    /* .right-nav not used in current HTML */
-    
-    /* .nav-btn is used for the Login button.
-       style.css has .button-accent. We can make them consistent.
-       For now, let's keep home.html's .nav-btn but ensure it uses style.css variables.
-    */
-    .nav-btn{
-      background:#fff; /* Or var(--container-bg-color) */
-      color:var(--primary-color);
-      padding:8px 18px;
-      border-radius:4px;
-      font-weight:600;
-      text-decoration:none;
-      transition:background .25s,transform .25s;
-      display:inline-block;
-    }
-    .nav-btn:hover{
-      background:var(--accent-color);
-      transform:translateY(-2px);
-    }
-
-    /* remove old link underline effect - THIS WAS PROBLEMATIC */
-    /* nav{display:flex;gap:16px;} */ /* Let style.css handle nav layout */
-    /* nav a{all:unset;} */  /* CRITICAL: REMOVE THIS. It breaks nav links. */
-
-    /* ---------- HERO ---------- */
-    /*
-      Hero styles from home.html inline CSS.
-      We'll ensure it uses style.css variables and doesn't conflict with the
-      intended hero styling from style.css (the non-"QUICK FIXES" part).
-    */
-    .hero{
-      /* background-image will be set by style.css .hero rule */
-      /* background-position, size, repeat will be set by style.css .hero rule */
-      /* min-height and max-height will be set by style.css .hero rule */
-      /* color will be set by style.css .hero rule */
-      /* display:flex, align-items:center will be set by style.css .hero rule */
-      /* Adding justify-content to center the .hero-inner container */
-      justify-content: center; /* This will center hero-inner if it's the only flex child */
-      text-align: center; /* Fallback for inner content if not otherwise aligned */
-    }
-    .hero-inner{
-      max-width:600px;
-      text-align:left; /* Keep text left-aligned within the centered block */
-      /* margin: 0 auto; /* This also helps center it if .hero is not flex or not justify-content:center */
-    }
-    /* .hero h1, .hero p styles are fine, they use relative units */
-    .hero h1{font-size:clamp(2rem,6vw,3rem);margin-bottom:1rem;}
-    .hero p{font-size:1.2rem;margin-bottom:2rem;}
-
-    /* .primary-btn is defined in style.css. REMOVE from here to avoid conflict. */
-    /* .primary-btn{
-      background:var(--accent-color);
-      color:var(--text-color);
-      padding:12px 28px;
-      border:none;
-      border-radius:4px;
-      font-size:1rem;
-      font-weight:600;
-      cursor:pointer;
-      transition:background .25s, transform .25s;
-    }
-    .primary-btn:hover {
-      background:#f1c75f; /* This should be a darker var(--accent-color) */
-      transform:translateY(-2px);
-    } */
-
-    /* ---------- INTRO ---------- */
-    .intro{padding:3rem 0 2rem;text-align:center;}
-    .intro p{max-width:700px;margin:0 auto;}
-
-    /* ---------- FEATURES ---------- */
-    .features{padding:2rem 0 4rem;}
-    .section-title{
-      font-size:1.8rem;color:var(--primary-color);margin-bottom:1.5rem;
-      text-align:center;position:relative;display:inline-block;
-    }
-    .section-title::after{
-      content:"";position:absolute;bottom:-6px;left:50%;
-      width:60px;height:3px;background:var(--accent-color);transform:translateX(-50%);
-    }
-    .grid{display:grid;gap:28px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));}
-    .card{
-      background:var(--container-bg-color);padding:1.6rem;border-radius:8px;
-      box-shadow: 0 4px 6px rgba(0,0,0,.08); /* Consider a var for shadow */
-      transition:transform .25s;
-    }
-    .card:hover{transform:translateY(-4px);}
-    .icon-circle{
-      width:56px;height:56px;border-radius:50%;
-      /* --light-primary needs to be defined or use an rgba of --primary-color */
-      background:rgba(42,157,143,.08); /* Example: Hardcoded light primary */
-      color:var(--primary-color);
-      display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1rem;
-    }
-    .card h3{font-size:1.2rem;margin-bottom:.5rem;color:var(--primary-color);}
-
-    /* ---------- WHY STRIP ---------- */
-    .why{
-      /* --light-primary needs to be defined or use an rgba of --primary-color */
-      background-image:repeating-linear-gradient(135deg,rgba(42,157,143,.08),rgba(42,157,143,.08)15px,transparent 15px,transparent 30px);
-      padding:3rem 0;
-    }
-    .why ul{list-style:none;max-width:900px;margin:0 auto;}
-    .why li{margin:.8rem 0;font-weight:500;padding-left:1.4rem;position:relative;}
-    .why li::before{content:"✔";position:absolute;left:0;color:var(--primary-color);font-weight:700;}
-
-    /* ---------- COMING SOON ---------- */
-    .coming{padding:4rem 0;}
-    .coming .card h4{font-size:1.15rem;margin-bottom:.6rem;color:var(--primary-color);}
-
-    /* ---------- BOTTOM CTA ---------- */
-    .bottom-cta{text-align:center;padding:2rem 0 3rem;}
-
-    /* ---------- FOOTER ---------- */
-    /* Footer styles in home.html appear different from style.css's .app-footer.
-       We need to decide which one to use or merge.
-       For now, keeping home.html's footer styles as they are specific.
-    */
-    footer{ /* This is generic, style.css uses footer.app-footer */
-      background:var(--text-color);
-      color:#fff; /* Use a variable for light text on dark bg if available */
-      padding:3rem 0 1.2rem;
-      margin-top:4rem;
-    }
-    .footer-flex{display:flex;flex-wrap:wrap;gap:40px;justify-content:space-between;}
-    .footer-links{list-style:none;}
-    .footer-links li{margin-bottom:10px;}
-    .footer-links a{color:#ccc;text-decoration:none;transition:color .25s;}
-    .footer-links a:hover{color:#fff;}
-
-    .footer-logo img{height:100px;width:auto;} /* Asmakam logo size */
-
-    .footer-bottom{
-      text-align:center;border-top:1px solid rgba(255,255,255,.15);
-      margin-top:2.5rem;padding-top:1.2rem;
-      font-size:.9rem;color:#ccc;
-    }
-
-    /* ---------- RESPONSIVE ---------- */
-    @media(max-width:768px){
-      /* nav.mobile-hide{display:none;} */ /* Not using .mobile-hide currently */
-      
-      /* .hero styles for mobile in home.html */
-      .hero {
-        /* background-position: 60% center; /* Already in style.css or adjust there */
-        /* text-align:center; /* Already set on .hero */
-      }
-      .hero-inner {
-         /* On mobile, let hero-inner also be centered if text-align:left is too much for small screens */
-        margin: 0 1rem; /* Add some horizontal margin on mobile */
-        text-align: center; /* Center text content on mobile */
-      }
-
-      /* Original home.html logo scaling - not needed if using image logo from style.css logic */
-      /* .logo-wrap img{height:60px;} */
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-  <!-- =============== HEADER =============== -->
-  <!-- Using header.app-header structure from style.css -->
+  <!-- Header -->
   <header class="app-header">
-    <div class="container"> <!-- Add .container for alignment -->
-      <div class="header-wrap"> <!-- Use .header-wrap for flex layout -->
-        <div class="logo-container">
-          <!-- Using the image logo -->
-          <a href="/" aria-label="AI-RIVU Home">
-            <!-- You can use AI-RIVU-logo.png or the text based one -->
-            <!-- Option 1: Image Logo (Recommended) -->
-            <img src="images/ai-rivu-logo.png" alt="AI-RIVU Logo" style="height: 48px; display: block;">
-            <!-- Option 2: Text Logo (if AI-RIVU-logo.png is not preferred) -->
-            <!--
-            <div class="logo-image">AI</div>
-            <div class="site-name">AI-RIVU</div>
-            -->
-          </a>
-        </div>
-        <nav class="right-nav"> <!-- Use .right-nav for grouping, style.css handles ul, li -->
-          <ul>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="/login" class="nav-btn">Login</a></li> <!-- .nav-btn from home.html inline styles -->
-          </ul>
-        </nav>
-      </div>
+    <div class="logo-container">
+      <img src="images/ai-rivu-logo.png" alt="AI-RIVU logo" class="logo-lg" />
     </div>
+    <nav>
+      <ul class="nav-list tight">
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="login.html" class="nav-btn">Login</a></li>
+      </ul>
+    </nav>
   </header>
 
-  <!-- =============== HERO =============== -->
-  <section class="hero">
-    <!-- Wrap hero-inner in a .container to align with page content -->
-    <div class="container">
+  <main>
+    <!-- Hero -->
+    <section class="hero">
       <div class="hero-inner">
-        <h1>Teach Smarter. Inspire Every Day</h1>
-        <p>AI-powered solutions for a future-ready classroom.</p>
-        <!-- Use .primary-btn class which should be styled by style.css -->
-        <button class="primary-btn" onclick="location.href='/app'">
-          Try AI-RIVU Now
-        </button>
+        <div class="hero-copy">
+          <h1>Teach Smarter. Inspire Every Day</h1>
+          <p>AI-powered solutions for a future-ready classroom.</p>
+          <button class="primary-btn" onclick="location.href='generator.html'">
+            Try AI-RIVU Now
+          </button>
+        </div>
+        <img
+          src="images/hero-image.jpg"
+          alt="Teacher with students"
+          class="hero-img"
+        />
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- =============== INTRO =============== -->
-  <section class="intro">
-    <div class="container">
+    <!-- Intro -->
+    <section class="intro container">
       <p>
-        Create curriculum-aligned question papers in minutes.<br>
-        Save time, maintain quality, and customise for your classroom needs.
+        Create curriculum-aligned question papers in minutes.<br />
+        Save time, maintain quality, and customize for your classroom needs.
       </p>
-    </div>
-  </section>
+    </section>
 
-
-  <!-- ================= FEATURES ================= -->
-  <section class="features">
-    <div class="container">
+    <!-- Key Features -->
+    <section id="features" class="features container">
       <h2 class="section-title">Key Features</h2>
-      <div class="grid">
-        <div class="card"><div class="icon-circle">📚</div><h3>Curriculum Aligned</h3><p>Questions map directly to CBSE and major state board syllabi for truly relevant assessments.</p></div>
-        <div class="card"><div class="icon-circle">🎯</div><h3>Customisable Difficulty</h3><p>Mix easy, medium, and hard questions to match your class profile perfectly.</p></div>
-        <div class="card"><div class="icon-circle">📄</div><h3>Ready-to-Use Format</h3><p>Download clean, professionally formatted Word docs — print-ready or fully editable.</p></div>
-        <div class="card"><div class="icon-circle">📝</div><h3>Multiple Question Types</h3><p>MCQ, short answer, long answer, matching & more — all in one click.</p></div>
-        <div class="card"><div class="icon-circle">🔍</div><h3>Answer Keys Included</h3><p>Auto-generated keys in concise or detailed format save further prep time.</p></div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>Curriculum Aligned</h3>
+          <p>Questions map directly to CBSE and major state board syllabi for truly relevant assessments.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Customisable Difficulty</h3>
+          <p>Mix easy, medium, and hard questions to match your class profile perfectly.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Ready-to-Use Format</h3>
+          <p>Download clean, professionally formatted Word docs — print-ready or fully editable.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Multiple Question Types</h3>
+          <p>MCQ, short answer, long answer, matching &amp; more — all in one click.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Answer Keys Included</h3>
+          <p>Auto-generated keys in concise or detailed format save further prep time.</p>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ================= WHY ================= -->
-  <section class="why">
-    <div class="container">
-      <h2 class="section-title">Why AI-RIVU?</h2>
-      <ul>
-        <li>Save time: cut preparation time by <strong>90 %+</strong></li>
-        <li>Built for any curricula: CBSE & major state boards today — ICSE coming soon</li>
+    <!-- Why AI-RIVU? -->
+    <section class="why container">
+      <h2 class="section-title">Why AI-RIVU?</h2>
+      <ul class="why-list">
+        <li>Save time: cut preparation time by 90%+</li>
+        <li>Built for any curricula: CBSE &amp; major state boards today — ICSE coming soon</li>
         <li>Works on low-bandwidth connections: lightweight web app with no heavy installs</li>
         <li>Human-centric AI: you stay in control while AI does the heavy lifting</li>
       </ul>
-    </div>
-  </section>
+    </section>
 
-  <!-- ================= COMING SOON ================= -->
-  <section class="coming">
-    <div class="container">
-      <h2 class="section-title">Coming Soon</h2>
-      <div class="grid">
-        <div class="card"><h4>Student Progress & Analytics</h4><p>Real-time dashboards spotlight strengths, gaps, and growth trends for every learner.</p></div>
-        <div class="card"><h4>Local Language Adaptations</h4><p>Auto-generate papers, lessons, and feedback in key Indian languages for true inclusion.</p></div>
-        <div class="card"><h4>Answer Paper Evaluations</h4><p>AI grades against rubrics, flags misconceptions, and offers actionable feedback.</p></div>
-        <div class="card"><h4>Lesson Planners</h4><p>Drag-and-drop daily or weekly plans aligned to outcomes, resources, and activities.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= BOTTOM CTA ================= -->
-  <section class="bottom-cta">
-    <!-- Use .primary-btn class which should be styled by style.css -->
-    <button class="primary-btn" onclick="location.href='/app'">Try AI-RIVU Now</button>
-  </section>
-
-  <!-- ================= FOOTER ================= -->
-  <!--
-    Decide whether to use home.html's footer structure/style or style.css's footer.app-footer.
-    The HTML below is from home.html.
-    If using style.css's footer, adapt the HTML to match its expectations.
-    For now, this footer will use home.html's inline styles.
-  -->
-  <footer>
-    <div class="container">
-      <div class="footer-flex">
-        <div>
-          <ul class="footer-links">
-            <li><a href="#about">About Us</a></li>
-            <li><a href="#contact">Contact Us</a></li>
-          </ul>
+    <!-- Coming Soon -->
+    <section id="coming-soon" class="coming-soon container">
+      <h2 class="section-title">Coming Soon</h2>
+      <div class="coming-grid">
+        <div class="coming-card">
+          <h3>Student Progress &amp; Analytics</h3>
+          <p>Real-time dashboards spotlight strengths, gaps, and growth trends for every learner.</p>
         </div>
-        <div class="footer-logo">
-          <img src="images/asmakam-logo.png" alt="Asmakam Labs logo">
+        <div class="coming-card">
+          <h3>Local Language Adaptations</h3>
+          <p>Auto-generate papers, lessons, and feedback in key Indian languages for true inclusion.</p>
+        </div>
+        <div class="coming-card">
+          <h3>Answer Paper Evaluations</h3>
+          <p>AI grades against rubrics, flags misconceptions, and offers actionable feedback.</p>
+        </div>
+        <div class="coming-card">
+          <h3>Lesson Planners</h3>
+          <p>Drag-and-drop daily or weekly plans aligned to outcomes, resources, and activities.</p>
         </div>
       </div>
-      <!-- This P element was outside footer-flex, now inside .container but after .footer-flex -->
-      <div class="footer-bottom"> <!-- Wrapped in div for styling -->
-         © <span id="yr"></span> Asmakam Labs · All Rights Reserved
+      <div class="btn-wrapper">
+        <button class="primary-btn" onclick="location.href='generator.html'">
+          Try AI-RIVU Now
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-content container">
+      <div class="footer-links">
+        <a href="#about">About Us</a>
+        <a href="#contact">Contact Us</a>
+      </div>
+      <div class="footer-brand">
+        <img src="images/asmakam-logo.png" alt="Asmakam Labs logo" class="footer-logo" />
+        <p>© 2025 Asmakam Labs - All Rights Reserved</p>
       </div>
     </div>
   </footer>
-
-  <script>document.getElementById("yr").textContent=new Date().getFullYear();</script>
 </body>
 </html>
