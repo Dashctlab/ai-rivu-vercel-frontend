@@ -22,7 +22,7 @@
 </head>
 <body>
 
-  <header>
+ <!-- <header>
     <div class="logo-container">
       <div class="logo-image">AI</div>
       <span class="site-name">AI-RIVU Question Paper Generator</span>
@@ -34,7 +34,40 @@
       </ul>
     </nav>
   </header>
+-->
 
+ <!-- =============== HEADER =============== -->
+  <header class="app-header">
+    <div class="container">
+      <div class="logo-container">
+         <img src="images/ai-rivu-logo.png" alt="AI-RIVU Logo" class="logo-image">
+      </div>
+      <nav>
+        <ul class="nav-list tight">
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <!--
+          <li><a href="/login.html" class="login-btn">Login</a></li
+          <li><button class="primary-btn" onclick="location.href='/login.html'">Login</button></li>
+          -->
+        <li><span id="userEmailDisplay">User: Loading...</span></li>
+        <li><button onclick="logout()" class="logout-button">Logout</button></li>
+          
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+
+
+ <!-- =============== main content =============== -->
+
+
+
+
+
+
+  
   <main class="main-content">
     <div class="container">
       <h2>Create Your Custom Question Paper</h2>
@@ -150,11 +183,28 @@
     </div>
   </main>
 
-  <footer>
-    <p>&copy; <span id="currentYearFooter">2025</span> AI-RIVU. Empowering Educators. | Support: support@airivu.com</p>
+  <!-- ================= FOOTER ================= -->
+  <footer class="app-footer">
+    <div class="container">
+      <div class="footer-flex">
+        <div>
+          <ul class="footer-links">
+            <li><a href="#about">About&nbsp;Us</a></li>
+            <li><a href="#contact">Contact&nbsp;Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-logo">
+          <img src="images/asmakam-logo.png" alt="Asmakam Labs logo">
+        </div>
+      </div>
+      <p>© <span id="yr"></span> Asmakam Labs · All Rights Reserved</p>
+    </div>
   </footer>
 
   <script>
+
+    <script>document.getElementById("yr").textContent=new Date().getFullYear();
+
     document.getElementById('currentYearFooter').textContent = new Date().getFullYear();
 
     // Script to update difficulty sum dynamically
