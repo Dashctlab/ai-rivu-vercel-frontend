@@ -200,7 +200,7 @@ header.app-header nav ul li a:hover {
 .intro p {
   max-width: 800px; 
   margin: 0 auto;
-  font-size: 2rem; 
+  font-size: 1.9rem; 
   font-weight: 700;
   line-height: 1.8; 
   color: var(--text-color);
