@@ -4,129 +4,118 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI-RIVU • Home</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <!-- Header -->
+  <!-- =============== HEADER =============== -->
   <header class="app-header">
-    <div class="logo-container">
-      <img src="images/ai-rivu-logo.png" alt="AI-RIVU logo" class="logo-lg" />
+    <div class="container">
+      <div class="logo-container">
+        <div class="logo-image">AI</div>
+        <div class="site-name">AI-RIVU</div>
+      </div>
+      <nav>
+        <ul class="nav-list tight">
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="/login">Login</a></li>
+        </ul>
+      </nav>
     </div>
-    <nav>
-      <ul class="nav-list tight">
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><a href="login.html" class="nav-btn">Login</a></li>
-      </ul>
-    </nav>
   </header>
 
-  <main>
-    <!-- Hero -->
-    <section class="hero">
+  <!-- =============== HERO =============== -->
+  <section class="hero">
+    <div class="container">
       <div class="hero-inner">
         <div class="hero-copy">
           <h1>Teach Smarter. Inspire Every Day</h1>
           <p>AI-powered solutions for a future-ready classroom.</p>
-          <button class="primary-btn" onclick="location.href='generator.html'">
+          <button class="primary-btn" onclick="location.href='/app'">
             Try AI-RIVU Now
           </button>
         </div>
-        <img
-          src="images/hero-image.jpg"
-          alt="Teacher with students"
-          class="hero-img"
-        />
+        <img src="images/hero-image.jpg" alt="Teacher in classroom" class="hero-img">
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Intro -->
-    <section class="intro container">
+  <!-- =============== INTRO =============== -->
+  <section class="intro">
+    <div class="container">
       <p>
-        Create curriculum-aligned question papers in minutes.<br />
-        Save time, maintain quality, and customize for your classroom needs.
+        Create curriculum-aligned question papers in minutes.<br>
+        Save time, maintain quality, and customise for your classroom needs.
       </p>
-    </section>
+    </div>
+  </section>
 
-    <!-- Key Features -->
-    <section id="features" class="features container">
+  <!-- ================= FEATURES ================= -->
+  <section class="features">
+    <div class="container">
       <h2 class="section-title">Key Features</h2>
-      <div class="features-grid">
-        <div class="feature-card">
-          <h3>Curriculum Aligned</h3>
-          <p>Questions map directly to CBSE and major state board syllabi for truly relevant assessments.</p>
-        </div>
-        <div class="feature-card">
-          <h3>Customisable Difficulty</h3>
-          <p>Mix easy, medium, and hard questions to match your class profile perfectly.</p>
-        </div>
-        <div class="feature-card">
-          <h3>Ready-to-Use Format</h3>
-          <p>Download clean, professionally formatted Word docs — print-ready or fully editable.</p>
-        </div>
-        <div class="feature-card">
-          <h3>Multiple Question Types</h3>
-          <p>MCQ, short answer, long answer, matching &amp; more — all in one click.</p>
-        </div>
-        <div class="feature-card">
-          <h3>Answer Keys Included</h3>
-          <p>Auto-generated keys in concise or detailed format save further prep time.</p>
-        </div>
+      <div class="grid">
+        <div class="card"><div class="icon-circle">📚</div><h3>Curriculum Aligned</h3><p>Questions map directly to CBSE and major state board syllabi for truly relevant assessments.</p></div>
+        <div class="card"><div class="icon-circle">🎯</div><h3>Customisable Difficulty</h3><p>Mix easy, medium, and hard questions to match your class profile perfectly.</p></div>
+        <div class="card"><div class="icon-circle">📄</div><h3>Ready-to-Use Format</h3><p>Download clean, professionally formatted Word docs — print-ready or fully editable.</p></div>
+        <div class="card"><div class="icon-circle">📝</div><h3>Multiple Question Types</h3><p>MCQ, short answer, long answer, matching &amp; more — all in one click.</p></div>
+        <div class="card"><div class="icon-circle">🔍</div><h3>Answer Keys Included</h3><p>Auto-generated keys in concise or detailed format save further prep time.</p></div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Why AI-RIVU? -->
-    <section class="why container">
-      <h2 class="section-title">Why AI-RIVU?</h2>
-      <ul class="why-list">
-        <li>Save time: cut preparation time by 90%+</li>
+  <!-- ================= WHY ================= -->
+  <section class="why">
+    <div class="container">
+      <h2 class="section-title">Why&nbsp;AI-RIVU?</h2>
+      <ul>
+        <li>Save time: cut preparation time by <strong>90&nbsp;%+</strong></li>
         <li>Built for any curricula: CBSE &amp; major state boards today — ICSE coming soon</li>
         <li>Works on low-bandwidth connections: lightweight web app with no heavy installs</li>
         <li>Human-centric AI: you stay in control while AI does the heavy lifting</li>
       </ul>
-    </section>
+    </div>
+  </section>
 
-    <!-- Coming Soon -->
-    <section id="coming-soon" class="coming-soon container">
-      <h2 class="section-title">Coming Soon</h2>
-      <div class="coming-grid">
-        <div class="coming-card">
-          <h3>Student Progress &amp; Analytics</h3>
-          <p>Real-time dashboards spotlight strengths, gaps, and growth trends for every learner.</p>
-        </div>
-        <div class="coming-card">
-          <h3>Local Language Adaptations</h3>
-          <p>Auto-generate papers, lessons, and feedback in key Indian languages for true inclusion.</p>
-        </div>
-        <div class="coming-card">
-          <h3>Answer Paper Evaluations</h3>
-          <p>AI grades against rubrics, flags misconceptions, and offers actionable feedback.</p>
-        </div>
-        <div class="coming-card">
-          <h3>Lesson Planners</h3>
-          <p>Drag-and-drop daily or weekly plans aligned to outcomes, resources, and activities.</p>
-        </div>
-      </div>
-      <div class="btn-wrapper">
-        <button class="primary-btn" onclick="location.href='generator.html'">
-          Try AI-RIVU Now
-        </button>
-      </div>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="footer-content container">
-      <div class="footer-links">
-        <a href="#about">About Us</a>
-        <a href="#contact">Contact Us</a>
-      </div>
-      <div class="footer-brand">
-        <img src="images/asmakam-logo.png" alt="Asmakam Labs logo" class="footer-logo" />
-        <p>© 2025 Asmakam Labs - All Rights Reserved</p>
+  <!-- ================= COMING SOON ================= -->
+  <section class="coming">
+    <div class="container">
+      <h2 class="section-title">Coming&nbsp;Soon</h2>
+      <div class="grid">
+        <div class="card"><h4>Student Progress&nbsp;&amp; Analytics</h4><p>Real-time dashboards spotlight strengths, gaps, and growth trends for every learner.</p></div>
+        <div class="card"><h4>Local Language Adaptations</h4><p>Auto-generate papers, lessons, and feedback in key Indian languages for true inclusion.</p></div>
+        <div class="card"><h4>Answer Paper Evaluations</h4><p>AI grades against rubrics, flags misconceptions, and offers actionable feedback.</p></div>
+        <div class="card"><h4>Lesson Planners</h4><p>Drag-and-drop daily or weekly plans aligned to outcomes, resources, and activities.</p></div>
       </div>
     </div>
+  </section>
+
+  <!-- ================= BOTTOM CTA ================= -->
+  <section class="bottom-cta">
+    <div class="container">
+      <button class="primary-btn" onclick="location.href='/app'">Try AI-RIVU Now</button>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="app-footer">
+    <div class="container">
+      <div class="footer-flex">
+        <div>
+          <ul class="footer-links">
+            <li><a href="#about">About&nbsp;Us</a></li>
+            <li><a href="#contact">Contact&nbsp;Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-logo">
+          <img src="images/asmakam-logo.png" alt="Asmakam Labs logo">
+        </div>
+      </div>
+      <p>© <span id="yr"></span> Asmakam Labs · All Rights Reserved</p>
+    </div>
   </footer>
+
+  <script>document.getElementById("yr").textContent=new Date().getFullYear();</script>
 </body>
 </html>
