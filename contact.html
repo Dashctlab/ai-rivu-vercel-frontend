@@ -5,6 +5,127 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Contact Us - AI-RIVU</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .contact-us h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    .contact-us p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      max-width: 700px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      background: var(--container-bg-color);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    label {
+      font-weight: 500;
+    }
+
+    input, textarea {
+      padding: 0.75rem;
+      border: 1px solid var(--border-color-inputs);
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.9rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #21867a;
+    }
+
+    .form-response {
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+
+    footer {
+      background-color: #264653;
+      color: white;
+      padding: 2rem 1rem;
+      margin-top: 4rem;
+    }
+
+    .footer-container {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .footer-brand {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      color: #E9C46A;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+
+    .footer-social {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 600px) {
+      form {
+        padding: 1rem;
+      }
+
+      .contact-us h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -12,7 +133,7 @@
     <div class="container">
       <div class="logo-container">
         <a href="home.html">
-          <img src="images/ai-rivu-logo.png" alt="AI-RIVU Logo" class="logo-image"/>
+          <img src="images/ai-rivu-logo.png" alt="AI-RIVU Logo" class="logo-image" />
         </a>
       </div>
       <nav>
@@ -38,7 +159,7 @@
         <input type="tel" id="phone" name="phone" required />
 
         <label for="email">Email ID</label>
-        <input type="email" id="email" name="email"/>
+        <input type="email" id="email" name="email" required />
 
         <label for="message">Message</label>
         <textarea id="message" name="message" rows="5" placeholder="Location, school details, etc." required></textarea>
@@ -50,6 +171,20 @@
     </section>
   </main>
 
+  <footer>
+    <div class="footer-container">
+      <div class="footer-brand">© Asmakam Innovations Pvt. Ltd.</div>
+      <div class="footer-links">
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="login.html">Login</a>
+        <a href="https://www.linkedin.com/company/asmakam" target="_blank">LinkedIn</a>
+        <a href="https://www.instagram.com/ai.rivu" target="_blank">Instagram</a>
+      </div>
+      <div class="footer-social">Empowering educators. Building India's AI-powered classrooms.</div>
+    </div>
+  </footer>
+
   <script>
     const form = document.getElementById("contact-form");
     const responseDiv = document.getElementById("form-response");
@@ -57,7 +192,7 @@
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       const data = new FormData(form);
-      fetch("https://script.google.com/macros/s/AKfycbxnv-x2009h4U-Db7xMtcE2WYO7M5RTgC3qpz0T6uzg3-kciZdE_J8thp8jubboF2-v/exec", {
+      fetch("https://script.google.com/macros/s/PASTE_YOUR_SCRIPT_URL_HERE/exec", {
         method: "POST",
         body: data,
       })
