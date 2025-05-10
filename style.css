@@ -64,34 +64,24 @@ header.app-header .container {
 header.app-header .logo-container {
   display: flex;
   align-items: center;
+  padding: 5px 0;
 }
 
 /* Logo Styling */
 header.app-header .logo-image {
-  height: 75px;
+  height: 90px;
   width: auto; /* change as per aspect ratio*/
   background-color: var(--accent-color);
-  /*border-radius: 50%; */
   margin-right: 12px;
   display: block;
   vertical-align: middle;
-    /* Remove background color since we're using an actual image */
+  /* Remove background color since we're using an actual image */
   background-color: transparent;
   /* Remove circle border-radius */
   border-radius: 0;
   /* Keep a subtle shadow for depth */
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 
-  
-  /*justify-content: center;
-  align-items: center;
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 1.2em;
-  color: var(--text-color); */
-  /* Add a clear border to make it more visible */
-  /* border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
 }
 
 
@@ -210,8 +200,8 @@ header.app-header nav ul li a:hover {
 .intro p {
   max-width: 800px; 
   margin: 0 auto;
-  font-size: 1.25rem; 
-  font-weight: 500;
+  font-size: 2rem; 
+  font-weight: 700;
   line-height: 1.8; 
   color: var(--text-color);
 }
@@ -251,12 +241,18 @@ header.app-header nav ul li a:hover {
   margin: 0 auto; /* Center the grid */
 }
 
-/* Adjust the last two cards to be centered */
-.features .grid::after {
-  content: "";
-  grid-column: 1;
+
+/* Apply specific placement for the last two cards */
+.features .grid .card:nth-child(4) {
+  grid-column: 1 / span 1;
   grid-row: 2;
 }
+
+.features .grid .card:nth-child(5) {
+  grid-column: 2 / span 1;
+  grid-row: 2;
+}
+
 
 .card {
   background: #fff;
@@ -369,10 +365,16 @@ header.app-header nav ul li a:hover {
   padding: 3.5rem 0;
   position: relative;
 }
-
+.why ul {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+  list-style: none;
+}
 .why ul li {
-  margin: 1rem 0;
-  font-weight: 500;
+  margin: 0;
   padding-left: 2rem;
   position: relative;
   line-height: 1.7;
@@ -408,7 +410,13 @@ header.app-header nav ul li a:hover {
 .coming {
   padding: 4rem 0;
 }
-
+.coming .grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
 .coming-icon {
   width: 50px;
   height: 50px;
@@ -932,15 +940,38 @@ button:disabled {
       height: 50vh;
       margin-bottom: 1rem;
     }
-
-    .process-step {
-        width: 100%;
+  
+     .intro p {
+    font-size: 1.5rem; /* Smaller on mobile but still prominent */
     }
   
-    .features .grid {
-        grid-template-columns: 1fr;
+     .process-flow {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 40px;
     }
-
+  
+    .process-step {
+      width: 45%;
+    }
+  
+    .process-flow::before {
+      display: none; /* Hide connector line on mobile */
+    }
+    
+    .features .grid,
+    .coming .grid {
+      grid-template-columns: 1fr; /* Single column on mobile */
+    }
+     .features .grid .card:nth-child(4),
+    .features .grid .card:nth-child(5) {
+      grid-column: auto;
+      grid-row: auto;
+    }
+  
+  .why ul {
+    grid-template-columns: 1fr; /* Single column on mobile */
+  }
   
     .difficulty-split {
         flex-direction: column; /* Stack difficulty inputs on small screens */
