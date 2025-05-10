@@ -190,17 +190,17 @@ header.app-header nav ul li a:hover {
 
 /* ===== Intro Section ===== */
 .intro {
-  padding: 3.5rem 0 2.5rem; 
+  padding: 3rem 0 2rem; 
   text-align: center;
   background-color: rgba(42, 157, 143, 0.05); /* Very subtle background */
 }
 
 .intro p {
-  max-width: 1000px; 
+  max-width: 1100px; 
   margin: 0 auto;
   font-size: 1.9rem; 
   font-weight: 800;
-  line-height: 1.8; 
+  line-height: 1.6; 
   color: var(--text-color);
 }
 
