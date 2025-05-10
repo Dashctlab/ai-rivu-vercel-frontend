@@ -4,17 +4,60 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI-RIVU • About Us</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- Font Awesome for any icons if needed -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* PAGE-SPECIFIC LAYOUT */
+    .two-column {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: space-between;
+      margin-top: 2rem;
+    }
+    .two-column > div {
+      flex: 1;
+      min-width: 280px;
+    }
+    .team-join {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: space-between;
+      margin-top: 3rem;
+    }
+    .team-join > div {
+      flex: 1;
+      min-width: 280px;
+    }
+    /* ENSURE JUSTIFIED PARAGRAPHS */
+    main p {
+      text-align: justify;
+    }
+    /* MATCH HEADER FORMATTING FOR ALL SECTION HEADINGS */
+    .section-title {
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      text-align: left;
+      border-bottom: 2px solid var(--border-color-light);
+      padding-bottom: 0.5rem;
+    }
+    /* OPTIONAL HERO IMAGE STYLING */
+    .about-hero {
+      width: 100%;
+      height: auto;
+      margin-bottom: 2rem;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+  </style>
 </head>
-
 <body>
-  <!-- =============== HEADER =============== -->
+  <!-- HEADER -->
   <header class="app-header">
     <div class="container">
       <div class="logo-container">
-         <img src="images/ai-rivu-logo.png" alt="AI-RIVU Logo" class="logo-image">
+        <img src="images/ai-rivu-logo.png" alt="AI-RIVU Logo" class="logo-image" />
       </div>
       <nav>
         <ul class="nav-list tight">
@@ -26,69 +69,66 @@
     </div>
   </header>
 
-  <!-- =============== MAIN CONTENT =============== -->
-  <main class="main-content">
-    <section id="about" class="container" style="padding: 4rem 0;">
-      <h1>About AI-RIVU</h1>
-      <p>
-        AI-RIVU is the first and flagship product of Asmakam Innovations, built to empower India’s teachers with AI-driven tools.  
-        AI-RIVU will cultivate the next generation with stronger curriculum rigor—shaping student careers, strengthening our nation’s foundation, 
-        and democratising quality education for all. It will enable educators to become vastly more efficient and help every teacher teach better.
-      </p>
-      <p>
-        We believe that every educator deserves access to cutting-edge technology—without the technical overhead—and that seamless, 
-        intelligent assistance can transform how lessons are planned, delivered, and assessed.
-      </p>
+  <!-- MAIN CONTENT -->
+  <main class="main-content container" style="padding: 4rem 0;">
+    <!-- Optional hero/banner image -->
+    <!-- <img src="images/about-hero.jpg" alt="Teachers collaborating" class="about-hero"> -->
 
-      <h2 class="section-title">Our Story</h2>
-      <p>
-        Asmakam Innovations was founded on the conviction that technology can help our future be bright. “Asmakam” (meaning “ours” in Sanskrit) 
-        drives the core value of growing together as a community with a goal of bettering lives, increasing efficiency, and improving access to technology.
-      </p>
-      <p>
-        In early 2025, our team—rooted in Bangalore but passionate about India’s heartland—launched AI-RIVU (a play on “Arivu,” meaning “knowledge” in Tamil). 
-        AI can level the playing field for educators outside major metros. Starting with our Question Paper Generator, we are rapidly expanding our toolkit 
-        to support lesson planning, grading, and more—making every school more efficient and education more accessible.
-      </p>
+    <h1 class="section-title">About AI-RIVU</h1>
+    <p>
+      AI-RIVU is the first and flagship product of Asmakam Innovations, built to empower India’s teachers with AI-driven tools. AI-RIVU will cultivate the next generation with stronger curriculum rigor—shaping student careers, strengthening our nation’s foundation, and democratising quality education for all. It will enable educators to become vastly more efficient and help every teacher teach better.
+    </p>
+    <p>
+      We believe that every educator deserves access to cutting-edge technology—without the technical overhead—and that seamless, intelligent assistance can transform how lessons are planned, delivered, and assessed.
+    </p>
 
-      <h2 class="section-title">Our Mission</h2>
-      <p>
-        To give every teacher the power to create high-quality, curriculum-aligned materials in minutes—so they can focus on what truly matters: inspiring young minds.
-      </p>
+    <h2 class="section-title">Our Story</h2>
+    <p>
+      Asmakam Innovations was founded on the conviction that technology can help our future be bright. “Asmakam” (meaning “ours” in Sanskrit) drives the core value of growing together as a community with a goal of bettering lives, increasing efficiency, and improving access to technology.
+    </p>
+    <p>
+      In early 2025, our team—rooted in Bangalore but passionate about India’s heartland—launched AI-RIVU (a play on “Arivu,” meaning “knowledge” in Tamil). AI can level the playing field for educators outside major metros. Starting with our Question Paper Generator, we are rapidly expanding our toolkit to support lesson planning, grading, and more—making every school more efficient and education more accessible.
+    </p>
 
-      <h2 class="section-title">Our Vision</h2>
-      <p>
-        A future where no teacher feels constrained by time, resources, or technical know-how; where AI quietly handles the heavy lifting, 
-        and educators reclaim their creativity and connection in the classroom.
-      </p>
-      <p>
-        A future where every school student, regardless of background, gets access to the best education and embarks on the career of their choice.
-      </p>
+    <!-- MISSION & VISION COLUMNS -->
+    <div class="two-column">
+      <div>
+        <h2 class="section-title">Our Mission</h2>
+        <p>
+          To give every teacher the power to create high-quality, curriculum-aligned materials in minutes—so they can focus on what truly matters: inspiring young minds.
+        </p>
+      </div>
+      <div>
+        <h2 class="section-title">Our Vision</h2>
+        <p>
+          A future where no teacher feels constrained by time, resources, or technical know-how; where AI quietly handles the heavy lifting, and educators reclaim their creativity and connection in the classroom.
+        </p>
+        <p>
+          A future where every school student, regardless of background, gets access to the best education and embarks on the career of their choice.
+        </p>
+      </div>
+    </div>
 
-      <h2 class="section-title">Why AI-RIVU?</h2>
-      <ul>
-        <li>Teacher-First Design: No steep learning curve—intuitive UI built around real classroom workflows.</li>
-        <li>Speed & Quality: Automate repetitive tasks without sacrificing pedagogical rigor.</li>
-        <li>Scalable & Secure: Cloud-hosted on Vercel and Render for 99.9% uptime; student data protected by industry-standard encryption.</li>
-        <li>Continuous Improvement: Regular feature updates based on direct feedback from our pilot schools across Karnataka and Tamil Nadu.</li>
-      </ul>
-
-      <h2 class="section-title">Meet the Team</h2>
-      <ul>
-        <li><strong>Ashwin CT</strong>, Founder &amp; CEO – Growth marketer turned edtech entrepreneur, spearheading AI-RIVU’s vision.</li>
-        <li><strong>Advisory Board</strong> – Senior educators, CBSE examiners, and AI ethics experts guiding our roadmap.</li>
-      </ul>
-
-      <h2 class="section-title">Join Us</h2>
-      <p>
-        Whether you’re an educator looking to pilot AI-RIVU in your school, a developer keen to contribute, or an investor interested in 
-        transforming Indian education—let’s talk.
-      </p>
-      <button class="primary-btn" onclick="location.href='contact.html'">Contact Us</button>
-    </section>
+    <!-- TEAM & JOIN COLUMNS -->
+    <div class="team-join">
+      <div>
+        <h2 class="section-title">Meet the Team</h2>
+        <ul>
+          <li><strong>Ashwin CT</strong>, Founder &amp; CEO – Growth marketer turned edtech entrepreneur, spearheading AI-RIVU’s vision.</li>
+          <li><strong>Advisory Board</strong> – Senior educators, CBSE examiners, and AI ethics experts guiding our roadmap.</li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="section-title">Join Us</h2>
+        <p>
+          Whether you’re an educator looking to pilot AI-RIVU in your school, a developer keen to contribute, or an investor interested in transforming Indian education—let’s talk.
+        </p>
+        <button class="primary-btn" onclick="location.href='contact.html'">Contact Us</button>
+      </div>
+    </div>
   </main>
 
-  <!-- ================= FOOTER ================= -->
+  <!-- FOOTER -->
   <footer class="app-footer">
     <div class="container">
       <div class="footer-flex">
