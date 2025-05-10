@@ -196,10 +196,10 @@ header.app-header nav ul li a:hover {
 }
 
 .intro p {
-  max-width: 800px; 
+  max-width: 900px; 
   margin: 0 auto;
   font-size: 1.9rem; 
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.8; 
   color: var(--text-color);
 }
@@ -293,7 +293,7 @@ header.app-header nav ul li a:hover {
 
 .how-it-works {
   padding: 4rem 0;
-  background-color: var(--background-color);
+ background-color: rgba(42, 157, 143, 0.05); /* Very subtle background */
 }
 
 .process-flow {
@@ -407,6 +407,7 @@ header.app-header nav ul li a:hover {
 /* ===== Coming Soon Section ===== */
 .coming {
   padding: 4rem 0;
+   background-color: rgba(42, 157, 143, 0.05); /* Very subtle background */
 }
 .coming .grid {
   display: grid;
