@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us - AI-RIVU</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="container">
+      <div class="logo-container">
+        <a href="home.html">
+          <img src="images/ai-rivu-logo.png" alt="AI-RIVU Logo" class="logo-image"/>
+        </a>
+      </div>
+      <nav>
+        <ul class="nav-list tight">
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html" class="active">Contact</a></li>
+          <li><a href="login.html" class="cta-button">Login</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="contact-us">
+      <h1>Contact Us</h1>
+      <p>We’re here to help you bring the power of AI into every classroom. Fill out the form and we’ll get in touch!</p>
+      
+      <form id="contact-form">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="phone">Phone</label>
+        <input type="tel" id="phone" name="phone" required />
+
+        <label for="email">Email ID</label>
+        <input type="email" id="email" name="email"/>
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5" placeholder="Location, school details, etc." required></textarea>
+
+        <button type="submit">Send Message</button>
+      </form>
+
+      <div id="form-response" class="form-response"></div>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById("contact-form");
+    const responseDiv = document.getElementById("form-response");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      fetch("https://script.google.com/macros/s/AKfycbxnv-x2009h4U-Db7xMtcE2WYO7M5RTgC3qpz0T6uzg3-kciZdE_J8thp8jubboF2-v/exec", {
+        method: "POST",
+        body: data,
+      })
+      .then(res => res.text())
+      .then(msg => {
+        responseDiv.innerText = "Message sent successfully!";
+        form.reset();
+      })
+      .catch(err => {
+        responseDiv.innerText = "Something went wrong. Please try again.";
+      });
+    });
+  </script>
+
+</body>
+</html>
