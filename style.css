@@ -13,10 +13,14 @@
   --border-color-inputs: #ccc; /* Slightly darker for input borders */
   --error-red: #D8000C;
   --error-bg-red: #FFD2D2;
+  /* Define a light primary for consistency if used in multiple places */
+  --light-primary-color: rgba(42, 157, 143, .08);
+  --shadow-main: 0 4px 6px rgba(0,0,0,.08); /* Define a shadow variable */
+
 
   --font-heading: 'Urbanist', sans-serif;
   --font-body: 'Inter', sans-serif;
-  --font-button: 'Urbanist', sans-serif; /* Or 'Inter' if Urbanist Medium is not distinct */
+  --font-button: 'Urbanist', sans-serif;
 }
 
 /* ===== Global Styles ===== */
@@ -28,19 +32,13 @@
 
 body {
   font-family: var(--font-body);
-  font-weight: 400; /* Inter Regular */
+  font-weight: 400;
   background-color: var(--background-color);
   color: var(--text-color);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   line-height: 1.6;
-}
-
-.container {
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 .main-content {
@@ -50,22 +48,31 @@ body {
 /* ===== Header ===== */
 header.app-header {
   background-color: var(--primary-color);
-  color: var(--background-color); /* Off-white Text */
-  padding: 15px 0;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  color: var(--background-color); /* Off-white Text for links if not overridden */
+  padding: 1rem 0; /* Use .container inside for horizontal padding */
+  /* display: flex; /* No longer needed here if .header-wrap handles it */
+  /* justify-content: space-between; */
+  /* align-items: center; */
+  box-shadow: var(--shadow-main); /* Use defined shadow */
+  position: sticky; /* Added from home.html inline */
+  top: 0;
+  z-index: 1000;
 }
 
-header.app-header .container {
+/* Added .header-wrap for flex layout within the .container */
+header.app-header .container .header-wrap {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 
 header.app-header .logo-container {
   display: flex;
   align-items: center;
 }
 
+/* Styles for the <div class="logo-image">AI</div> if that option is chosen */
 header.app-header .logo-image {
   height: 40px;
   width: 40px;
@@ -76,302 +83,204 @@ header.app-header .logo-image {
   justify-content: center;
   align-items: center;
   font-family: var(--font-heading);
-  font-weight: 600; /* Urbanist SemiBold */
+  font-weight: 600;
   font-size: 1.2em;
   color: var(--text-color);
 }
+header.app-header .logo-container img { /* For image logo */
+    height: 48px; /* Default height for image logo */
+    width: auto;
+    display: block; /* Removes extra space below inline images */
+}
+
 
 header.app-header .site-name {
   font-family: var(--font-heading);
-  font-weight: 600; /* Urbanist SemiBold */
+  font-weight: 600;
   font-size: 1.6em;
+  color: var(--background-color); /* Ensure site name is light on dark header */
+  margin-left: 0.5em; /* If used alongside image logo */
 }
 
 header.app-header nav ul {
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 16px; /* Added gap from home.html nav style */
 }
 
-header.app-header nav ul.tight {
-  gap: 15px;
+header.app-header nav ul li {
+  margin-left: 0; /* Gap handles spacing, remove margin if gap is used */
+  /* margin-left: 25px; /* Original value, choose one with gap */
 }
 
-header.app-header nav ul li a {
+header.app-header nav ul li a { /* General nav link styling */
   color: var(--background-color);
   text-decoration: none;
-  font-family: var(--font-body);
+  font-family: var(--font-body); /* Or var(--font-button) if preferred */
   font-size: 1em;
-  transition: opacity 0.2s;
+  padding: 0.5em 0.25em; /* Add some padding for better clickability */
+  transition: color 0.25s;
 }
-
 header.app-header nav ul li a:hover {
-  opacity: 0.8;
+  color: var(--accent-color); /* Example hover */
 }
 
-/* ===== Hero (19:8) ===== */
+/* Styling for .nav-btn if it's decided to merge with style.css */
+/* .nav-btn (if standardized from home.html) */
+header.app-header nav ul li a.nav-btn { /* Specificity for nav-btn in header */
+  background: var(--container-bg-color); /* White */
+  color: var(--primary-color);
+  padding: 8px 18px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .25s,transform .25s, color .25s;
+  display: inline-block;
+}
+header.app-header nav ul li a.nav-btn:hover{
+  background: var(--accent-color);
+  color: var(--text-color); /* Text color on accent hover */
+  transform:translateY(-2px);
+}
+
+
+/* ===== Hero ===== */
 .hero {
-  background-color: var(--background-color);
-  overflow: hidden;
-  color: var(--text-color);
-}
-
-.hero-inner {
+  background-image: url("images/hero-image.jpg"); /* Ensure path is correct */
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* Choose one aspect ratio. E.g., 16:9 from home.html */
+  min-height: calc(100vw * 0.5625); /* 16:9 aspect ratio */
+  /* min-height: calc(100vw * 8 / 19); /* Original 19:8 from style.css */
+  max-height: 90vh;
+  color: #fff; /* Text color on hero */
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  min-height: 70vh;
-  padding: 2rem 0;
+  justify-content: center; /* Center .container within .hero */
+  text-align: center; /* Default text align for content, .hero-inner can override */
 }
 
-.hero-copy {
-  flex: 1;
-  max-width: 520px;
+/* .hero .container ensures content width matches other sections */
+/* .hero-inner is inside .container */
+.hero .hero-inner {
+  max-width: 600px; /* Max width for the text content block */
+  text-align: left; /* As per original home.html spec for the text block */
+  margin: 0 auto; /* Ensures this block is centered within its container if text-align:center is on parent */
 }
-
 .hero h1 {
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: clamp(2rem, 6vw, 3rem);
   margin-bottom: 1rem;
-  color: var(--text-color);
 }
-
 .hero p {
   font-size: 1.2rem;
-  margin-bottom: 2rem;				 
+  margin-bottom: 2rem;
 }
 
-.hero-img {
-  flex: 1;
-  max-height: 70vh;
-  object-fit: cover;
-  object-position: 70% center;
-  border-radius: 0.5rem;
-}
-
+/* .primary-btn styling (this should be the main definition) */
 .primary-btn {
   background: var(--accent-color);
   color: var(--text-color);
-  padding: 12px 28px;	
+  padding: 12px 28px;
   border: none;
   border-radius: 4px;
   font-family: var(--font-button);
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
-  transition: background 0.25s, transform 0.25s;							   
+  transition: background 0.25s, transform 0.25s;
+  text-decoration: none; /* Ensure buttons that are links don't get underlined */
+  display: inline-block; /* For proper padding and behavior */
 }
 
-.primary-btn:hover {								   
-  background: #f1c75f;
+.primary-btn:hover {
+  background: #e0b450; /* Darker accent: var(--accent-color) darkened */
+  /* Example: #f1c75f is used in home.html, #d8b350 in style.css for .button-accent hover */
   transform: translateY(-2px);
 }
 
-/* ===== Intro Section ===== */
-.intro {
-  padding: 3rem 0 2rem;
-  text-align: center;
-}
-
-.intro p {
-  max-width: 700px;
-  margin: 0 auto;
-  font-size: 1.1rem;
-}
-
-/* ===== Features Section ===== */
-.features {
-  padding: 2rem 0 4rem;
-}
-
-.section-title {
-  font-size: 1.8rem;
-  color: var(--primary-color);
-  margin-bottom: 1.5rem;
-  text-align: center;
-  position: relative;
-  display: inline-block;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.section-title::after {
-  content: "";
-  position: absolute;
-  bottom: -6px;
-  left: 50%;
-  width: 60px;
-  height: 3px;
-  background: var(--accent-color);
-  transform: translateX(-50%);
-}
-
-.grid {
-  display: grid;
-  gap: 28px;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-}
-
-.card {
-  background: #fff;
-  padding: 1.6rem;
-  border-radius: 8px;
-  box-shadow: 0 6px 20px rgba(38, 70, 83, 0.1);
-  transition: transform 0.25s;
-}
-
-.card:hover {
-  transform: translateY(-4px);
-}
-
-.icon-circle {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: rgba(42, 157, 143, 0.08);
-  color: var(--primary-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.card h3 {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-  color: var(--primary-color);
-}
-
-.card h4 {
-  font-size: 1.15rem;
-  margin-bottom: 0.6rem;
-  color: var(--primary-color);
-}
-
-/* ===== Why Section ===== */
-.why {
-  background-image: repeating-linear-gradient(135deg, rgba(42, 157, 143, 0.08), rgba(42, 157, 143, 0.08) 15px, transparent 15px, transparent 30px);
-  padding: 3rem 0;
-}
-
-.why ul {
-  list-style: none;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.why li {
-  margin: 0.8rem 0;
-  font-weight: 500;
-  padding-left: 1.4rem;
-  position: relative;
-}
-
-.why li::before {
-  content: "✔";
-  position: absolute;
-  left: 0;
-  color: var(--primary-color);
-  font-weight: 700;
-}
-
-/* ===== Coming Soon Section ===== */
-.coming {
-  padding: 4rem 0;
-}
-
-/* ===== Bottom CTA ===== */
-.bottom-cta {
-  text-align: center;
-  padding: 2rem 0 3rem;
-}
-
 /* ===== Footer ===== */
-footer.app-footer {
-  background-color: var(--text-color);
-  color: #fff;
-  padding: 3rem 0 1.2rem;
-  margin-top: auto;
+/* style.css has footer.app-footer. home.html has a generic footer.
+   Let's assume we want to use home.html's footer style for now and style it here.
+   Or, rename home.html's footer to <footer class="app-footer"> and adapt.
+
+   IF home.html footer is kept as is (generic <footer_> tag):
+   The styles for it are currently in home.html's inline <style>.
+   They should be moved here for consistency, or home.html should adopt footer.app-footer.
+
+   For now, the existing footer.app-footer style in style.css is for other pages.
+   We can add specific styles for the home page footer if needed, or standardize.
+*/
+footer.app-footer { /* This is the style for generator/login pages footer */
+  background-color: var(--background-color);
+  color: var(--text-color);
+  text-align: center;
+  padding: 25px 30px;
+  /* margin-top: auto; /* Pushes footer to the bottom */
+  border-top: 2px solid var(--primary-color);
   font-family: var(--font-body);
   font-size: 0.9em;
 }
-
-.footer-flex {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-  justify-content: space-between;
-  margin-bottom: 2.5rem;
+footer.app-footer a { /* This is for generator/login pages footer */
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500; /* Inter Medium */
+}
+footer.app-footer a:hover { /* This is for generator/login pages footer */
+    text-decoration: underline;
 }
 
-.footer-links {
-  list-style: none;
-}
 
-.footer-links li {
-  margin-bottom: 10px;
-}
-
-.footer-links a {
-  color: #ccc;
-  text-decoration: none;
-  transition: color 0.25s;
-}
-
-.footer-links a:hover {
-  color: #fff;
-}
-
-.footer-logo img {
-  height: 100px;
-  width: auto;
-}
-
-footer.app-footer p {
-  text-align: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  padding-top: 1.2rem;
-}
-
-/* ===== General Container (used by generator.html) ===== */
-.generator-container {
+/* ===== General Container (used by generator.html, and now potentially by home.html header) ===== */
+/* home.html uses max-width: 1200px for its .container.
+   style.css uses max-width: 1000px.
+   If one .container style is to rule them all, pick one.
+   If home.html needs a wider container, its inline style for .container can override.
+*/
+.container {
   width: 90%;
-  max-width: 1000px; /* Adjusted for generator page */
-  margin: 30px auto;
-  background: var(--container-bg-color);
-  padding: 25px 30px; /* Slightly more padding */
-  border-radius: 10px; /* Softer radius */
-  box-shadow: 0 6px 20px rgba(38, 70, 83, 0.1); /* Subtle Dark Slate shadow */
+  max-width: 1000px; /* Default max-width */
+  margin: 0 auto; /* Standard centering */
+  /* padding: 25px 30px; /* From generator page styling - home.html sections have their own padding */
 }
+/* For home.html sections, its specific .container can be kept inline or moved: */
+/*
+.home-container { // example if we need a different one for home
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+*/
+
 
 /* ===== Headings ===== */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
-  font-weight: 600; /* Urbanist SemiBold */
-  color: var(--primary-color); /* Default heading color */
+  font-weight: 600;
+  color: var(--primary-color);
   margin-bottom: 0.75em;
 }
-
-h2 { /* For page titles like "Login to AI-RIVU" */
+h2 {
   font-size: 2.2em;
   text-align: center;
   margin-bottom: 30px;
 }
-
-h3 { /* For section titles like "Generated Question Paper" */
+h3 {
   font-size: 1.8em;
-  color: var(--text-color); /* Darker for sub-sections */
+  color: var(--text-color);
   margin-top: 25px;
   margin-bottom: 15px;
   border-bottom: 2px solid var(--accent-color);
   padding-bottom: 8px;
 }
 
-/* ===== Form Elements - General Styling ===== */
+/* ... (rest of form elements, tables, buttons general styling from style.css) ... */
+/* Ensure these don't unintentionally affect home.html elements if class names overlap */
+
+/* ===== Form Elements - General Styling (Mostly for other pages) ===== */
 label {
   display: block;
   margin-bottom: 8px;
@@ -388,18 +297,17 @@ input[type="number"],
 select,
 textarea {
   width: 100%;
-  padding: 12px 15px; /* More padding */
-  margin-bottom: 18px; /* More space */
+  padding: 12px 15px;
+  margin-bottom: 18px;
   border: 1px solid var(--border-color-inputs);
-  border-radius: 6px; /* Softer radius */
+  border-radius: 6px;
   box-sizing: border-box;
   font-family: var(--font-body);
   font-size: 1em;
   color: var(--text-color);
-  background-color: var(--background-color); /* Off-white input background */
+  background-color: var(--background-color);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus,
@@ -407,7 +315,7 @@ input[type="number"]:focus,
 select:focus,
 textarea:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.2); /* Teal focus ring */
+  box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.2);
   outline: none;
 }
 
@@ -416,158 +324,144 @@ textarea {
   resize: vertical;
 }
 
-/* Specific for number inputs in table for generator */
 #questionsTable input[type="number"],
 .difficulty-split input[type="number"] {
-    width: 80px; /* Keep it compact */
+    width: 80px;
     padding: 10px;
     text-align: center;
 }
-
-/* Remove <br> styling from generator if possible, use margin/padding instead */
 form br { display: none; }
 
-/* ===== Radio Buttons ===== */
+
 .radio-group {
     margin-bottom: 18px;
 }
-
 .radio-group label {
-    display: inline-flex; /* Align items nicely */
+    display: inline-flex;
     align-items: center;
     margin-right: 20px;
-    font-weight: 400; /* Inter Regular for radio label text */
+    font-weight: 400;
     cursor: pointer;
 }
-
 .radio-group input[type="radio"] {
   margin-right: 8px;
-  accent-color: var(--primary-color); /* Styles the radio button itself */
-  width: auto; /* Override general input width */
-  margin-bottom: 0; /* Override general input margin */
+  accent-color: var(--primary-color);
+  width: auto;
+  margin-bottom: 0;
 }
 
-/* ===== Tables (Generator Page) ===== */
+
 #questionsTable {
   width: 100%;
   margin-bottom: 25px;
-  border-collapse: separate; /* Allows for border-radius on cells */
+  border-collapse: separate;
   border-spacing: 0;
   border: 1px solid var(--border-color-light);
-  border-radius: 8px; /* Rounded corners for the table */
-  overflow: hidden; /* To make border-radius work with th */
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 #questionsTable th,
 #questionsTable td {
-  padding: 12px 15px; /* More padding */
-  text-align: left; /* Better for readability */
+  padding: 12px 15px;
+  text-align: left;
   border-bottom: 1px solid var(--border-color-light);
 }
-
 #questionsTable td:not(:last-child),
 #questionsTable th:not(:last-child) {
   border-right: 1px solid var(--border-color-light);
 }
 
+
 #questionsTable th {
   background-color: var(--primary-color);
-  color: var(--background-color); /* Off-white text */
+  color: var(--background-color);
   font-family: var(--font-heading);
-  font-weight: 600; /* Urbanist Semibold */
+  font-weight: 600;
   font-size: 1.05em;
   text-align: center;
 }
 
 #questionsTable tbody tr:hover {
-    background-color: #f7fdfc; /* Very light teal hover */
+    background-color: #f7fdfc;
 }
 
 #questionsTable tfoot td {
     font-family: var(--font-heading);
-    font-weight: 600; /* Urbanist SemiBold */
-    background-color: #e6f5f3; /* Light teal for footer */
-    text-align: right !important; /* For "Overall Total Marks:" text */
+    font-weight: 600;
+    background-color: #e6f5f3;
+    text-align: right !important;
 }
-
 #questionsTable tfoot #overallTotalMarks {
     color: var(--primary-color);
     font-size: 1.1em;
     text-align: center !important;
 }
 
-/* ===== Buttons - General Styling ===== */
-button, .button { /* Added .button class for link-styled buttons if needed */
-  padding: 12px 25px; /* More padding */
+
+button, .button {
+  padding: 12px 25px;
   border: none;
-  border-radius: 6px; /* Softer radius */
+  border-radius: 6px;
   cursor: pointer;
   font-family: var(--font-button);
-  font-weight: 500; /* Urbanist Medium or Inter Medium */
+  font-weight: 500;
   font-size: 1.05em;
   text-align: center;
   transition: background-color 0.3s ease, transform 0.1s ease;
-  display: inline-block; /* To respect padding and allow multiple on a line */
-  width: auto; /* Override user agent stylesheet */
-  margin-bottom: 10px; /* Default spacing */
+  display: inline-block;
+  width: auto;
+  margin-bottom: 10px;
 }
-
 button:active:not(:disabled) {
     transform: translateY(1px);
 }
 
-/* Primary Action Buttons (e.g., Login, Generate) */
-button[type="submit"], /* Specifically targets the Login button in login.html */
+button[type="submit"], 
 #generateBtn {
   background-color: var(--primary-color);
-  color: var(--background-color); /* Off-white text */
+  color: var(--background-color);
 }
-
 button[type="submit"]:hover:not(:disabled),
 #generateBtn:hover:not(:disabled) {
   background-color: #22867a; /* Darker Teal */
 }
 
-/* Accent/Secondary Buttons (e.g., Download, Logout in header) */
 #downloadBtn,
-.button-accent { /* .button-accent for generic use, e.g., header logout */
+.button-accent {
   background-color: var(--accent-color);
-  color: var(--text-color); /* Dark Slate text */
+  color: var(--text-color);
 }
-
 #downloadBtn:hover:not(:disabled),
 .button-accent:hover:not(:disabled) {
   background-color: #d8b350; /* Darker Yellow */
 }
 
-/* Tertiary/Regular Buttons (e.g., general purpose or logout in generator page) */
-/* This is for the existing logout button on generator.html if not in header */
 .generator-page-logout-btn {
-    background-color: #6c757d; /* A neutral grey */
+    background-color: #6c757d;
     color: var(--background-color);
 }
-
 .generator-page-logout-btn:hover:not(:disabled) {
     background-color: #5a6268;
 }
 
+
 button:disabled {
-  background-color: #a0d1cb; /* Muted Teal for primary */
+  background-color: #a0d1cb;
   color: #eaf7f5;
   cursor: not-allowed;
 }
-
 #downloadBtn:disabled,
 .button-accent:disabled {
-  background-color: #f3e0a9; /* Muted Yellow for accent */
+  background-color: #f3e0a9;
   color: #fff9e6;
 }
 
-/* ===== Output Section (Generator Page) ===== */
+
 #outputSection {
   margin-top: 30px;
   padding: 25px;
-  background-color: var(--container-bg-color); /* White background for contrast */
+  background-color: var(--container-bg-color);
   border: 1px solid var(--border-color-light);
   border-radius: 8px;
 }
@@ -575,51 +469,47 @@ button:disabled {
 #output {
   white-space: pre-wrap;
   word-break: break-word;
-  background: var(--background-color); /* Off-white background for pre */
+  background: var(--background-color);
   padding: 20px;
   border-radius: 6px;
   border: 1px solid var(--border-color-inputs);
   max-height: 500px;
   overflow-y: auto;
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace; /* Monospace for code-like output */
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.95em;
   color: var(--text-color);
   line-height: 1.5;
 }
 
-/* ===== Login Page Specific Styles ===== */
-.login-page-wrapper { /* New wrapper for centering login box */
+
+.login-page-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    flex-grow: 1; /* Takes up available space to center vertically */
+    flex-grow: 1;
     padding: 20px;
 }
-
-.login-container { /* This is the main box for login form elements */
-  max-width: 480px; /* Slightly wider */
+.login-container {
+  max-width: 480px;
   width: 100%;
-  margin: 0; /* Removed margin auto, as wrapper handles centering */
-  padding: 35px 45px; /* More padding */
+  margin: 0;
+  padding: 35px 45px;
   background: var(--container-bg-color);
-  border-radius: 10px; /* Softer radius */
-  box-shadow: 0 6px 20px rgba(38, 70, 83, 0.1); /* Subtle Dark Slate shadow */
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(38, 70, 83, 0.1);
   text-align: center;
 }
-
 .login-container h2 {
-  font-size: 2.4em; /* Larger heading for login */
+  font-size: 2.4em;
   margin-bottom: 25px;
 }
-
 .login-container .form-group {
   margin-bottom: 20px;
   text-align: left;
 }
 
-/* Login button is targeted by button[type="submit"] */
-#error-message { /* For login error message */
+#error-message {
     color: var(--error-red);
     background-color: var(--error-bg-red);
     border: 1px solid var(--error-red);
@@ -628,151 +518,193 @@ button:disabled {
     margin-top: 20px;
     font-family: var(--font-body);
     font-size: 0.95em;
-    text-align: center; /* Ensure it's centered */
-    display: none; /* Controlled by JS */
+    text-align: center;
+    /* display: none; */ /* Controlled by JS, should be empty if no error */
 }
-
-#error-message:not(:empty) { /* Show only if it has content */
+#error-message:not(:empty) {
     display: block;
 }
 
-/* ===== Generator Page Specific Layout & Sections ===== */
+
 .generator-layout {
     display: grid;
-    grid-template-columns: 1fr; /* Single column by default */
+    grid-template-columns: 1fr;
     gap: 30px;
 }
 
-@media (min-width: 992px) { /* For larger screens */
+@media (min-width: 992px) {
     .generator-layout {
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Responsive columns */
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     }
 }
 
 .form-section {
     margin-bottom: 25px;
     padding: 25px;
-    background-color: #fdfdfd; /* Very slightly off-white for sections */
+    background-color: #fdfdfd;
     border-radius: 8px;
     border: 1px solid var(--border-color-light);
 }
-
-.form-section h4 { /* Sub-section headings within generator */
+.form-section h4 {
     margin-top: 0;
     font-family: var(--font-heading);
-    font-weight: 600; /* Urbanist SemiBold */
+    font-weight: 600;
     color: var(--primary-color);
     font-size: 1.4em;
     margin-bottom: 20px;
 }
 
-.difficulty-split-container { /* Wrapper for difficulty inputs */
+.difficulty-split-container {
     margin-bottom: 18px;
 }
-
-.difficulty-split-container > label { /* Main label for "Difficulty Split" */
-    font-size: 1.1em; /* Make it a bit more prominent */
+.difficulty-split-container > label {
+    font-size: 1.1em;
     margin-bottom: 12px;
 }
-
 .difficulty-split {
     display: flex;
     gap: 15px;
-    align-items: flex-start; /* Align items to top */
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    align-items: flex-start;
+    flex-wrap: wrap;
 }
-
 .difficulty-split > div {
     flex: 1;
-    min-width: 100px; /* Ensure they don't get too squished */
+    min-width: 100px;
 }
-
-.difficulty-split label { /* Labels for Easy, Medium, Hard */
+.difficulty-split label {
     font-size: 0.95em;
-    font-weight: 400; /* Inter Regular */
+    font-weight: 400;
     margin-bottom: 6px;
 }
-
 #difficultyTotalMessage {
-    font-size: 0.9em;
+    font-size:0.9em;
     color: var(--text-color);
-    margin-top: 10px;
+    margin-top:10px;
     font-family: var(--font-body);
 }
-
 #difficultySum {
-    font-weight: 500; /* Inter Medium */
+    font-weight: 500;
 }
 
-/* Grouping for generator buttons */
+
 .generator-actions, .output-actions {
     display: flex;
-    justify-content: center; /* Center buttons */
-    gap: 15px; /* Space between buttons */
+    justify-content: center;
+    gap: 15px;
     margin-top: 25px;
     flex-wrap: wrap;
 }
-
 #generateBtn, #downloadBtn {
-    min-width: 220px; /* Give buttons a decent minimum width */
+    min-width: 220px;
 }
 
-/* Specific for the original logout button on generator.html if not in header */
 .generator-page-logout-btn-container {
     margin-top: 30px;
-    text-align: center; /* Or right if preferred */
+    text-align: center;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .container, .login-container {
+    /* Responsive .container for login/generator pages */
+    .login-container, 
+    .container:not(body > header > .container):not(body > section > .container):not(body > footer > .container) { /* Avoid over-styling home page containers */
         width: 95%;
         padding: 20px;
     }
-    
+
+    /* Hero responsive adjustments (already in home.html inline for its specific structure) */
+    /* Style.css general hero responsive if needed for other pages: */
+     .hero { /* General responsive for hero background or text if needed */
+        /* Example: adjust background position if needed */
+        /* background-position: 60% center; */ /* From home.html inline, might be useful */
+     }
+     .hero .hero-inner { /* For text block inside hero on mobile */
+        text-align: center; /* Center text on mobile */
+        padding: 0 1rem; /* Add some padding */
+     }
+
+
     h2 { font-size: 1.8em; }
     h3 { font-size: 1.5em; }
-    
-    header.app-header { padding: 15px 0; }
-    header.app-header .container { flex-direction: column; }
+
+    /* Header responsive */
+    header.app-header .container .header-wrap {
+      flex-direction: column; /* Stack logo and nav on mobile */
+      gap: 10px; /* Space between logo and nav when stacked */
+    }
+    header.app-header nav ul {
+      justify-content: center; /* Center nav items on mobile */
+      flex-wrap: wrap; /* Allow nav items to wrap */
+    }
     header.app-header .site-name { font-size: 1.3em; }
-    header.app-header nav { margin-top: 10px; }
-    header.app-header nav ul li { margin-left: 0; }
-    
-    .hero-inner {
-        flex-direction: column;
-        text-align: center;
-        padding: 2rem 1rem;
-    }
-    
-    .hero-copy {
-        max-width: 100%;
-        order: 2;
-    }
-    
-    .hero-img {
-        width: 100%;
-        object-position: center top;
-        order: 1;
-    }
+    /* header.app-header nav ul li { margin-left: 15px; } /* Use gap instead */
+
 
     .difficulty-split {
-        flex-direction: column; /* Stack difficulty inputs on small screens */
+        flex-direction: column;
         gap: 0;
     }
-    
     .difficulty-split > div {
         width: 100%;
         margin-bottom: 10px;
     }
-    
     .difficulty-split input[type="number"] {
         width: 100%;
     }
-    
-    .footer-flex {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-    }
 }
+
+form#questionForm br {
+    display: none;
+}
+
+
+
+/* === QUICK FIXES: header & hero from original style.css === */
+/*
+  This section is highly problematic as it assumes HTML structures
+  (like .logo-lg, .nav-list.tight, .hero-copy, .hero-img)
+  that are not consistently in home.html or might conflict.
+  It's better to integrate necessary changes into the main styles above
+  or remove these if they are causing more harm.
+
+  For example, the .hero background override is a major issue.
+  I'm commenting out this entire section.
+  Necessary parts should be merged above.
+*/
+/*
+.logo-lg {
+  height: 48px;
+  width: auto;
+}
+
+.nav-list.tight {
+  gap: 1.2rem;
+}
+
+.hero {
+  background: var(--background-color); /* THIS WAS OVERRIDING THE HERO IMAGE! */
+  overflow: hidden;
+}
+.hero-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  min-height: 70vh;
+}
+.hero-copy {
+  max-width: 520px;
+}
+.hero-img {
+  flex: 1 1 50%;
+  max-height: 70vh;
+  object-fit: cover;
+  object-position: 70% center;
+  border-radius: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .hero-inner       { flex-direction: column; text-align: center; }
+  .hero-img         { width: 100%; object-position: center top; }
+}
+*/
