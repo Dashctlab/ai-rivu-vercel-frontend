@@ -68,7 +68,7 @@ header.app-header .logo-container {
 
 /* Logo Styling */
 header.app-header .logo-image {
-  height: 40px;
+  height: 75px;
   width: auto; /* change as per aspect ratio*/
   background-color: var(--accent-color);
   /*border-radius: 50%; */
@@ -139,7 +139,11 @@ header.app-header nav ul li a:hover {
   align-items: flex-start;
   justify-content: center;
   min-height: 70vh;
-  padding: 2rem 0;
+  padding-top:    2rem;
+  padding-bottom: 2rem;
+  padding-left:   1rem;
+  padding-right:  0;
+  /*padding: 2rem 0;*/
 }
 
 .hero-copy {
@@ -158,7 +162,7 @@ header.app-header nav ul li a:hover {
 .hero h1 {
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: clamp(2rem, 6vw, 3rem);
+  font-size: clamp(2rem, 5vw, 3rem);
   margin-bottom: 1rem;
   color: var(--text-color);
 }
@@ -187,7 +191,7 @@ header.app-header nav ul li a:hover {
   border-radius: 4px;
   font-family: var(--font-button);
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.2rem;
   cursor: pointer;
   transition: background 0.25s, transform 0.25s;							   
 }
