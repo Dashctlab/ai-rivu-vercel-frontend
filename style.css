@@ -352,7 +352,7 @@ header.app-header nav ul li a:hover {
 
 /* Line connecting the steps */
 .process-flow::before {
-  content: "";
+  content: "--";
   position: absolute;
   top: 70px;
   left: 10%;
