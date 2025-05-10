@@ -51,7 +51,7 @@ body {
 header.app-header {
   background-color: var(--primary-color);
   color: var(--background-color); /* Off-white Text */
-  padding: 15px 0;
+  padding: 10px 0;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
@@ -69,19 +69,17 @@ header.app-header .logo-container {
 
 /* Logo Styling */
 header.app-header .logo-image {
-  height: 90px;
+  height: 100px;
   width: auto; /* change as per aspect ratio*/
   background-color: var(--accent-color);
   margin-right: 12px;
   display: block;
   vertical-align: middle;
-  /* Remove background color since we're using an actual image */
   background-color: transparent;
   /* Remove circle border-radius */
   border-radius: 0;
   /* Keep a subtle shadow for depth */
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-
 }
 
 
@@ -95,7 +93,7 @@ header.app-header nav ul {
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 15px;
 }
 
 header.app-header nav ul.tight {
