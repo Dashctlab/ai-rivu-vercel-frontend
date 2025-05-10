@@ -66,20 +66,34 @@ header.app-header .logo-container {
   align-items: center;
 }
 
+/* Logo Styling */
 header.app-header .logo-image {
   height: 40px;
-  width: 40px;
+  width: auto; /* change as per aspect ratio*/
   background-color: var(--accent-color);
-  border-radius: 50%;
+  /*border-radius: 50%; */
   margin-right: 12px;
-  display: flex;
-  justify-content: center;
+  display: block;
+  vertical-align: middle;
+    /* Remove background color since we're using an actual image */
+  background-color: transparent;
+  /* Remove circle border-radius */
+  border-radius: 0;
+  /* Keep a subtle shadow for depth */
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+
+  
+  /*justify-content: center;
   align-items: center;
   font-family: var(--font-heading);
-  font-weight: 600; /* Urbanist SemiBold */
+  font-weight: 600;
   font-size: 1.2em;
-  color: var(--text-color);
+  color: var(--text-color); */
+  /* Add a clear border to make it more visible */
+  /* border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
 }
+
 
 header.app-header .site-name {
   font-family: var(--font-heading);
@@ -112,23 +126,33 @@ header.app-header nav ul li a:hover {
 
 /* ===== Hero (19:8) ===== */
 .hero {
+  position: relative;
   background-color: var(--background-color);
   overflow: hidden;
   color: var(--text-color);
 }
 
 .hero-inner {
+  position: relative;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
   min-height: 70vh;
   padding: 2rem 0;
 }
 
 .hero-copy {
-  flex: 1;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
   max-width: 520px;
+  background-color: rgba(250, 249, 246, 0.8); /* Semi-transparent background */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .hero h1 {
@@ -145,11 +169,14 @@ header.app-header nav ul li a:hover {
 }
 
 .hero-img {
-  flex: 1;
-  max-height: 70vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  object-position: 70% center;
-  border-radius: 0.5rem;
+  object-position: center;
+  z-index: 1;
 }
 
 .primary-btn {
@@ -738,7 +765,21 @@ button:disabled {
     header.app-header .site-name { font-size: 1.3em; }
     header.app-header nav { margin-top: 10px; }
     header.app-header nav ul li { margin-left: 0; }
-    
+    header.app-header nav ul li a.login-btn {
+        background-color: var(--accent-color);
+        color: var(--text-color);
+        padding: 8px 16px;
+        border-radius: 4px;
+          font-weight: 600;
+        transition: background-color 0.25s, transform 0.25s;
+    }
+  
+    header.app-header nav ul li a.login-btn:hover {
+      background-color: #f1c75f;
+      transform: translateY(-2px);
+      opacity: 1; /* Override the default hover opacity */
+    }
+
     .hero-inner {
         flex-direction: column;
         text-align: center;
@@ -746,14 +787,19 @@ button:disabled {
     }
     
     .hero-copy {
+        position: relative;
+        width: 100%;
         max-width: 100%;
-        order: 2;
+        transform: none;
+        margin-top: 2rem;
     }
     
     .hero-img {
-        width: 100%;
-        object-position: center top;
-        order: 1;
+        width: relative;
+        /*object-position: center top;
+        order: 1; */
+      height: 50vh;
+      margin-bottom: 1rem;
     }
 
     .difficulty-split {
