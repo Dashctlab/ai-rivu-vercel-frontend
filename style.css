@@ -600,21 +600,26 @@ form br { display: none; }
   margin-bottom: 0; /* Override general input margin */
 }
 
-/* ===== Tables (Generator Page) ===== */
+/* ===== Tables (Generator Page) ===== OLD */
+
+
+/*
+
+
 #questionsTable {
   width: 100%;
   margin-bottom: 25px;
-  border-collapse: separate; /* Allows for border-radius on cells */
+  border-collapse: separate; /* Allows for border-radius on cells 
   border-spacing: 0;
   border: 1px solid var(--border-color-light);
-  border-radius: 8px; /* Rounded corners for the table */
-  overflow: hidden; /* To make border-radius work with th */
+  border-radius: 8px; /* Rounded corners for the table 
+  overflow: hidden; /* To make border-radius work with th *
 }
 
 #questionsTable th,
 #questionsTable td {
-  padding: 12px 15px; /* More padding */
-  text-align: left; /* Better for readability */
+  padding: 12px 15px; /* More padding *
+  text-align: left; /* Better for readability *
   border-bottom: 1px solid var(--border-color-light);
 }
 
@@ -625,22 +630,22 @@ form br { display: none; }
 
 #questionsTable th {
   background-color: var(--primary-color);
-  color: var(--background-color); /* Off-white text */
+  color: var(--background-color); /* Off-white text *
   font-family: var(--font-heading);
-  font-weight: 600; /* Urbanist Semibold */
+  font-weight: 600; /* Urbanist Semibold *
   font-size: 1.05em;
   text-align: center;
 }
 
 #questionsTable tbody tr:hover {
-    background-color: #f7fdfc; /* Very light teal hover */
+    background-color: #f7fdfc; /* Very light teal hover *
 }
 
 #questionsTable tfoot td {
     font-family: var(--font-heading);
-    font-weight: 600; /* Urbanist SemiBold */
-    background-color: #e6f5f3; /* Light teal for footer */
-    text-align: right !important; /* For "Overall Total Marks:" text */
+    font-weight: 600; /* Urbanist SemiBold *
+    background-color: #e6f5f3; /* Light teal for footer *
+    text-align: right !important; /* For "Overall Total Marks:" text *
 }
 
 #questionsTable tfoot #overallTotalMarks {
@@ -648,6 +653,85 @@ form br { display: none; }
     font-size: 1.1em;
     text-align: center !important;
 }
+
+
+*/
+
+/* ===== Tables (Generator Page) ===== NEW */
+
+
+/* Question rows styling */
+.question-rows-container {
+  margin-bottom: 20px;
+}
+
+#questionsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+
+#questionsTable th, 
+#questionsTable td {
+  padding: 8px 6px;
+  border: 1px solid #ddd;
+}
+
+#questionsTable th {
+  background-color: #f5f5f5;
+  text-align: left;
+  font-weight: 600;
+}
+
+#questionsTable select,
+#questionsTable input {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+#questionsTable .totalMarks {
+  font-weight: 600;
+  text-align: center;
+}
+
+.delete-row-btn {
+  background-color: #ff5757;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.delete-row-btn:hover {
+  background-color: #ff3333;
+}
+
+#addQuestionRowBtn {
+  padding: 8px 16px;
+  background-color: #2A9D8F;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+#addQuestionRowBtn:hover {
+  background-color: #218377;
+}
+
+
 
 /* ===== Buttons - General Styling ===== */
 button, .button { /* Added .button class for link-styled buttons if needed */
@@ -998,4 +1082,21 @@ button:disabled {
         align-items: center;
         gap: 20px;
     }
+
+  #questionsTable {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  #questionsTable th, 
+  #questionsTable td {
+    padding: 6px 4px;
+    font-size: 14px;
+  }
+  
+  #questionsTable select,
+  #questionsTable input {
+    padding: 4px;
+    font-size: 14px;
+  }
 }
