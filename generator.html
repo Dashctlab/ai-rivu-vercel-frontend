@@ -118,38 +118,49 @@
             </div>
           </div>
 
-          <div class="output-column"> <div class="form-section">
-                <h4>Question Types & Marks Distribution</h4>
-                <p class="mb-1" style="font-size:0.95em;">Specify the number of questions and marks for each type. Max 25 questions per type.</p>
-                <table id="questionsTable">
-                    <thead>
-                    <tr>
-                        <th>Question Type</th>
-                        <th>No. of Questions</th>
-                        <th>Marks per Question</th>
-                        <th>Total Marks</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <td colspan="3" style="text-align: right; font-weight:bold;">Overall Total Marks:</td>
-                        <td id="overallTotalMarks" style="font-weight:bold;">0</td>
-                    </tr>
-                    </tfoot>
-                </table>
-            </div>
-          </div>
+        <div class="form-section">
+          <h4>Question Types & Marks Distribution</h4>
+          <p class="mb-1" style="font-size:0.95em;">Specify question type, topic, number of questions (1–25), and marks per question. You can add up to 12 rows.</p>
+          <table id="questionsTable">
+            <thead>
+              <tr>
+                <th>Question Type</th>
+                <th>Topic</th>
+                <th>No. of Questions</th>
+                <th>Marks per Question</th>
+                <th>Marks</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2" style="text-align: right; font-weight:bold;">Total</td>
+                <td id="totalQuestions">0</td>
+                <td></td>
+                <td id="totalMarks">0</td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+          <button type="button" id="addRowBtn" class="secondary-btn" style="margin-top:0.5rem;">+ Add Row</button>
         </div>
 
-        <div class="button-group text-center" style="justify-content: center;">
-          <button type="submit" id="generateBtn" class="button-primary" disabled>
+
+          <div class="button-group text-center">
+                <button type="submit" id="generateBtn" class="primary-btn" disabled>Generate Question Paper</button>
             Generate Question Paper
-          </button>
+                </button>
         </div>
       </form>
 
+
+
+        <div class="output-column">
+        <textarea id="generatedPaper" readonly rows="20" style="width:100%; margin-top:1rem;"></textarea>
+
+
+              
       <div id="outputSection" style="display:none;">
         <h3>Generated Question Paper Preview</h3>
         <pre id="output"></pre>
@@ -176,7 +187,7 @@
           <img src="images/asmakam-logo.png" alt="Asmakam Labs logo">
         </div>
       </div>
-      <p>© <span id="yr"></span> Asmakam Labs · All Rights Reserved</p>
+      <p>© <span id="yr"></span> Asmakam Innovations · All Rights Reserved</p>
     </div>
   </footer>
 
@@ -184,7 +195,7 @@
 
     <script>document.getElementById("yr").textContent=new Date().getFullYear();
 
-    document.getElementById('currentYearFooter').textContent = new Date().getFullYear();
+    document.getElementById('yr').textContent = new Date().getFullYear();
 
     // Script to update difficulty sum dynamically
     const easyInput = document.getElementById('easy');
