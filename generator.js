@@ -21,7 +21,7 @@ const classSubjectMap = {
 // List of question types (No changes needed)
 const questionTypes = [
   'MCQ', 'Short Answer', 'Long Answer', 'True/False', 'Fill in the Blanks',
-  'Match the Following', 'Case Based', 'Diagram Based', 'Descriptive'
+  'Match the Following', 'Case Based', 'Diagram Based', 'Descriptive', 'Give reasons'
 ];
 
 // On page load (No changes needed)
@@ -33,23 +33,70 @@ document.addEventListener('DOMContentLoaded', () => {
   const tableBody = document.querySelector('#questionsTable tbody');
   const generateBtn = document.getElementById('generateBtn');
   const downloadBtn = document.getElementById('downloadBtn');
-
+  const addRowBtn = document.getElementById('addRowBtn');
   // Initially disable both class and subject
   classDropdown.disabled = true;
   subjectDropdown.disabled = true;
 
-  // Populate question types table
-  questionTypes.forEach(type => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${type}</td>
-      <td><input type="number" class="numQuestions" min="0" max="25" value="0"></td>
-      <td><input type="number" class="marksPerQuestion" min="0" value="0"></td>
-      <td class="totalMarks">0</td>
-    `;
-    tableBody.appendChild(row);
-  });
+  
+  let rowCount = 0;
+  const maxRows = 12;
 
+  function updateTotals() {
+    let totalQuestions = 0;
+    let totalMarks = 0;
+    tableBody.querySelectorAll('tr').forEach(row => {
+      const num = parseInt(row.querySelector('.numQuestions').value) || 0;
+      const per = parseFloat(row.querySelector('.marksPerQuestion').value) || 0;
+      const marks = num * per;
+      row.querySelector('.marksCell').textContent = marks;
+      totalQuestions += num;
+      totalMarks += marks;
+    });
+    document.getElementById('totalQuestions').textContent = totalQuestions;
+    document.getElementById('totalMarks').textContent = totalMarks;
+    generateBtn.disabled = !(tableBody.querySelectorAll('tr').length >= 1 && totalQuestions >= 1);
+    addRowBtn.disabled = tableBody.querySelectorAll('tr').length >= maxRows;
+  }
+
+  function createRow() {
+    if (rowCount >= maxRows) return;
+    rowCount++;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>
+        <select class="questionTypeSelect">
+          ${questionTypes.map(type => `<option value="${type}">${type}</option>`).join('')}
+        </select>
+      </td>
+      <td><input type="text" class="topicInput" /></td>
+      <td><input type="number" class="numQuestions" min="1" max="25" value="1" /></td>
+      <td><input type="number" class="marksPerQuestion" min="0" value="1" /></td>
+      <td class="marksCell">1</td>
+      <td><button type="button" class="deleteRowBtn">Delete</button></td>
+    `;
+
+    const numInput = tr.querySelector('.numQuestions');
+    const perInput = tr.querySelector('.marksPerQuestion');
+    const deleteBtn = tr.querySelector('.deleteRowBtn');
+
+    [numInput, perInput].forEach(el => el.addEventListener('input', updateTotals));
+    deleteBtn.addEventListener('click', () => {
+      if (tableBody.querySelectorAll('tr').length > 1) {
+        tr.remove();
+        rowCount--;
+        updateTotals();
+      }
+    });
+
+    tableBody.appendChild(tr);
+    updateTotals();
+  }
+
+  addRowBtn.addEventListener('click', createRow);
+  createRow();
+
+  
   // Curriculum → Enable Class
   curriculumDropdown.addEventListener('change', () => {
     const selectedCurriculum = curriculumDropdown.value;
