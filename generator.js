@@ -1,4 +1,5 @@
-const backendURL = 'https://ai-rivu-vercel-render-backend.onrender.com';
+const backendURL = window.env?.BACKEND_URL || 'https://ai-rivu-vercel-render-backend.onrender.com';
+// const backendURL = 'https://ai-rivu-vercel-render-backend.onrender.com';    // hard coded backend url
 let classDropdown, subjectDropdown, curriculumDropdown;
 
 // ---> ADDED: Global variable to store the raw generated text
