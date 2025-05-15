@@ -241,7 +241,18 @@ async function generateQuestionPaper(e) {
   };
 
   document.getElementById('outputSection').style.display = 'block';
-  document.getElementById('output').textContent = 'Generating, please wait... ✨';
+  const outputEl = document.getElementById('output');
+      outputEl.textContent = 'Generating';
+      let dotCount = 0;
+  const loadingInterval = setInterval(() => {
+      dotCount = (dotCount + 1) % 4; // cycles from 0 to 3
+      outputEl.textContent = 'Generating' + '.'.repeat(dotCount);
+  }, 500);
+
+
+  
+
+  
   generatedPaperText = ''; // Clear previous text
   document.getElementById('downloadBtn').style.display = 'none'; // Hide download btn initially
 
@@ -262,6 +273,9 @@ async function generateQuestionPaper(e) {
            throw new Error("Received invalid question data from server.");
       }
       document.getElementById('output').textContent = data.questions;
+
+      clearInterval(loadingInterval);
+
       generatedPaperText = data.questions; // Store the generated text
 
       const downloadBtn = document.getElementById('downloadBtn');
@@ -281,15 +295,21 @@ async function generateQuestionPaper(e) {
     } else {
       generatedPaperText = ''; // Clear stored text on error
       let errorData = { message: `Server responded with ${response.status}` };
+         clearInterval(loadingInterval);
+
       try {
          errorData = await response.json();
       } catch(e) { /* ignore json parsing error */ }
       document.getElementById('output').textContent = `Error: ${errorData.message || 'Failed to generate paper.'}`;
+         clearInterval(loadingInterval);
+
     }
   } catch (error) {
     console.error("Generation error:", error);
     generatedPaperText = ''; // Clear stored text on error
     document.getElementById('output').textContent = `Error generating paper: ${error.message}. Please check connection or server.`;
+       clearInterval(loadingInterval);
+
   } finally {
     generateBtn.disabled = false; // Re-enable button
   }
