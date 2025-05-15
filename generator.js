@@ -241,7 +241,7 @@ async function generateQuestionPaper(e) {
   };
 
   document.getElementById('outputSection').style.display = 'block';
-  document.getElementById('output').textContent = 'Generating, please wait...';
+  document.getElementById('output').textContent = 'Generating, please wait... ✨';
   generatedPaperText = ''; // Clear previous text
   document.getElementById('downloadBtn').style.display = 'none'; // Hide download btn initially
 
