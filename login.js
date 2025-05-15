@@ -1,3 +1,5 @@
+const backendURL = window.env?.BACKEND_URL || 'https://ai-rivu-vercel-render-backend.onrender.com';
+
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -5,7 +7,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
   const password = document.getElementById('password').value;
 
   try {
-    const response = await fetch('https://ai-rivu-vercel-render-backend.onrender.com/login', {
+    const response = await fetch(`${backendURL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
