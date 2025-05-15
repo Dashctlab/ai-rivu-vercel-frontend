@@ -14,12 +14,14 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     });
 
     const result = await response.json();
+    const errorMsg = document.getElementById('error-message');
 
     if (response.ok) {
       localStorage.setItem('userEmail', result.email);
       window.location.href = '/generator.html';
     } else {
-      document.getElementById('error-message').innerText = result.message || 'Invalid credentials';
+      errorMsg.innerText = result.message || 'Invalid credentials';
+      errorMsg.style.display = 'block';
     }
   } catch (err) {
     console.error('Login failed:', err);
