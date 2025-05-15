@@ -66,11 +66,17 @@
     </div>
   </footer>
 
+
+  
   <script>
     document.getElementById('currentYear').textContent = new Date().getFullYear();
   </script>
 
-
+<script>
+  window.env = {
+    BACKEND_URL: 'https://ai-rivu-backend-test.onrender.com'  // ← or main, based on the branch
+  };
+</script>
 
   
   <script src="login.js"></script>
