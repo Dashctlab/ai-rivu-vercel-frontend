@@ -121,7 +121,43 @@
           <div class="output-column"> <div class="form-section">
                 <h4>Question Types & Marks Distribution</h4>
                 <p class="mb-1" style="font-size:0.95em;">Specify the number of questions and marks for each type. Max 25 questions per type.</p>
-                <table id="questionsTable">
+  
+          <div class="question-rows-container">
+              <table id="questionsTable">
+                    <thead>
+                    <tr>
+                        <th>Question Type</th>
+                        <th>Topic</th>
+                        <th>No. of Questions</th>
+                        <th>Marks per Question</th>
+                        <th>Total Marks</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+              <tbody id="questionRowsBody">
+                <!-- Dynamic rows will be added here -->
+                    </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="2" style="text-align: right; font-weight:bold;">Totals:</td>
+                      <td id="totalQuestions" style="font-weight:bold;">0</td>
+                      <td></td>
+                      <td id="overallTotalMarks" style="font-weight:bold;">0</td>
+                      <td></td>
+                    </tr>
+                  </tfoot>
+              </table>
+    
+          <div class="add-row-container" style="margin-top: 10px; text-align: right;">
+            <button type="button" id="addQuestionRowBtn" class="button-accent">
+              <span>+ Add Question Type</span>
+            </button>
+          </div>
+        </div>
+            
+            
+<!--            
+            <table id="questionsTable">
                     <thead>
                     <tr>
                         <th>Question Type</th>
@@ -139,7 +175,9 @@
                     </tr>
                     </tfoot>
                 </table>
-            </div>
+    -->
+          
+          </div>
           </div>
         </div>
 
@@ -182,9 +220,7 @@
 
   <script>
 
-    <script>document.getElementById("yr").textContent=new Date().getFullYear();
-
-    document.getElementById('currentYearFooter').textContent = new Date().getFullYear();
+    document.getElementById("yr").textContent=new Date().getFullYear();
 
     // Script to update difficulty sum dynamically
     const easyInput = document.getElementById('easy');
