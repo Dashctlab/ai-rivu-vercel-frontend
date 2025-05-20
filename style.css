@@ -875,6 +875,77 @@ button:disabled {
     font-weight: 500; /* Inter Medium */
 }
 
+/* Question rows styling */
+.question-rows-container {
+  margin-bottom: 20px;
+}
+
+#questionsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+
+#questionsTable th, 
+#questionsTable td {
+  padding: 8px 6px;
+  border: 1px solid #ddd;
+}
+
+#questionsTable th {
+  background-color: #f5f5f5;
+  text-align: left;
+  font-weight: 600;
+}
+
+#questionsTable select,
+#questionsTable input {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+#questionsTable .totalMarks {
+  font-weight: 600;
+  text-align: center;
+}
+
+.delete-row-btn {
+  background-color: #ff5757;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.delete-row-btn:hover {
+  background-color: #ff3333;
+}
+
+#addQuestionRowBtn {
+  padding: 8px 16px;
+  background-color: #2A9D8F;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+#addQuestionRowBtn:hover {
+  background-color: #218377;
+}
+
 /* Grouping for generator buttons */
 .generator-actions, .output-actions {
     display: flex;
@@ -992,7 +1063,22 @@ button:disabled {
     .difficulty-split input[type="number"] {
         width: 100%;
     }
-    
+    #questionsTable {
+        display: block;
+        overflow-x: auto;
+    }
+      
+    #questionsTable th, 
+      #questionsTable td {
+        padding: 6px 4px;
+        font-size: 14px;
+    }
+      
+    #questionsTable select,
+      #questionsTable input {
+        padding: 4px;
+        font-size: 14px;
+    }
     .footer-flex {
         flex-direction: column;
         align-items: center;
