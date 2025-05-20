@@ -612,33 +612,7 @@
 	  border-radius: 8px; /* Rounded corners for the table */
 	  overflow: hidden; /* To make border-radius work with th */
 	}
-	
-	/* Improve input appearance in the Topic column */
-	#questionsTable input[type="text"] {
-	  width: 100%;
-	  padding: 8px 10px;
-	  margin-bottom: 0; /* Override the general margin */
-	}
 
-	/* Enhance the topic input placeholder styling */
-	#questionsTable input[type="text"]::placeholder {
-	  color: #aaa;
-	  font-style: italic;
-	  font-size: 0.9em;
-	}
-
-	/* Ensure consistent vertical alignment */
-	#questionsTable td {
-	  vertical-align: middle;
-	}
-
-	/* Make sure content doesn't get cut off in the Topic field */
-	#questionsTable input.topic-input {
-	  overflow: visible;
-	  text-overflow: ellipsis;
-	}
-	
-	
 	#questionsTable th,
 	#questionsTable td {
 
@@ -663,38 +637,7 @@
 	  font-size: 1.05em;
 	  text-align: center;
 	}
-	
-	/* Make the Topic column wider in the Question Types table */
-	#questionsTable th:nth-child(2),
-	#questionsTable td:nth-child(2) {
-	  width: 22%; /* Increase width for the Topic column */
-	  min-width: 180px; /* Set a minimum width to ensure it doesn't get too small */
-	}
-	/* Adjust other column widths to balance the table */
-	#questionsTable th:nth-child(1),
-	#questionsTable td:nth-child(1) {
-	  width: 20%; /* Question Type column */
-	  min-width: 150px;
-	}
 
-	#questionsTable th:nth-child(3),
-	#questionsTable td:nth-child(3),
-	#questionsTable th:nth-child(4),
-	#questionsTable td:nth-child(4),
-	#questionsTable th:nth-child(5),
-	#questionsTable td:nth-child(5) {
-	  width: 12%; /* Number columns (questions, marks per question, total marks) */
-	  min-width: 80px;
-	  text-align: center;
-	}
-
-	#questionsTable th:nth-child(6),
-	#questionsTable td:nth-child(6) {
-	  width: 10%; /* Action column */
-	  min-width: 60px;
-	  text-align: center;
-	}
-	
 	#questionsTable tbody tr:hover {
 		background-color: #f7fdfc; /* Very light teal hover */
 	}
@@ -764,7 +707,6 @@
 	#addQuestionRowBtn:hover {
 	  background-color: #218377;
 	}
-
 
 	/* ===== Buttons - General Styling ===== */
 	button, .button { /* Added .button class for link-styled buttons if needed */
