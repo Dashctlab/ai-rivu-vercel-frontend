@@ -1,3 +1,4 @@
+// Retain existing variables at the top of the file
 const backendURL = 'https://ai-rivu-vercel-render-backend.onrender.com';
 let classDropdown, subjectDropdown, curriculumDropdown;
 
@@ -18,36 +19,41 @@ const classSubjectMap = {
   'Class 10': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'General Knowledge']
 };
 
-// List of question types (No changes needed)
+// List of question types with new "Give Reasons" option
 const questionTypes = [
   'MCQ', 'Short Answer', 'Long Answer', 'True/False', 'Fill in the Blanks',
-  'Match the Following', 'Case Based', 'Diagram Based', 'Descriptive'
+  'Match the Following', 'Case Based', 'Diagram Based', 'Descriptive', 'Give Reasons'
 ];
 
-// On page load (No changes needed)
+// Track rows added
+let questionRowCount = 0;
+const MAX_QUESTION_ROWS = 12;
+
+// On page load
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize references
   curriculumDropdown = document.getElementById('curriculum');
   classDropdown = document.getElementById('className');
   subjectDropdown = document.getElementById('subject');
-  const tableBody = document.querySelector('#questionsTable tbody');
+  const tableBody = document.getElementById('questionRowsBody');
   const generateBtn = document.getElementById('generateBtn');
   const downloadBtn = document.getElementById('downloadBtn');
+  const addRowBtn = document.getElementById('addQuestionRowBtn');
 
   // Initially disable both class and subject
   classDropdown.disabled = true;
   subjectDropdown.disabled = true;
 
-  // Populate question types table
-  questionTypes.forEach(type => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${type}</td>
-      <td><input type="number" class="numQuestions" min="0" max="25" value="0"></td>
-      <td><input type="number" class="marksPerQuestion" min="0" value="0"></td>
-      <td class="totalMarks">0</td>
-    `;
-    tableBody.appendChild(row);
+  // Add initial row
+  addQuestionRow();
+
+  // Add row button event listener
+  addRowBtn.addEventListener('click', () => {
+    if (questionRowCount < MAX_QUESTION_ROWS) {
+      addQuestionRow();
+    } else {
+      alert(`Maximum ${MAX_QUESTION_ROWS} question types are allowed.`);
+    }
   });
 
   // Curriculum → Enable Class
@@ -95,19 +101,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Limit questions to max 25
-  document.querySelectorAll('.numQuestions').forEach(input => {
-    input.addEventListener('input', () => {
-      if (parseInt(input.value) > 25) {
-        input.value = 25;
-      }
-    });
-  });
+							  
+															   
+										   
+									   
+						 
+	   
+	   
+	 
 
-  // Calculate totals when input changes
-  document.querySelectorAll('.numQuestions, .marksPerQuestion').forEach(input => {
-    input.addEventListener('input', calculateTotals);
-  });
+										
+																				  
+													 
+	 
 
   // Validate form on input change
   document.getElementById('questionForm').addEventListener('input', validateForm);
@@ -120,14 +126,86 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Download button functionality
   downloadBtn.addEventListener('click', () => {
-    // Removed the try-catch here, it's better inside the async function
-downloadQuestionPaper();
+																		
+    downloadQuestionPaper();
   });
 
   console.log("generator.js loaded and dropdown logic active");
 });
 
-// Reset form fields (No changes needed)
+// Function to add a new question row
+function addQuestionRow() {
+  if (questionRowCount >= MAX_QUESTION_ROWS) return;
+  
+  questionRowCount++;
+  const rowId = `qrow-${Date.now()}`; // Unique ID for the row
+  const tbody = document.getElementById('questionRowsBody');
+  
+  const row = document.createElement('tr');
+  row.id = rowId;
+  row.innerHTML = `
+    <td>
+      <select class="question-type" required>
+        <option value="">Select Type</option>
+        ${questionTypes.map(type => `<option value="${type}">${type}</option>`).join('')}
+      </select>
+    </td>
+    <td>
+      <input type="text" class="topic" placeholder="Optional topic">
+    </td>
+    <td>
+      <input type="number" class="numQuestions" min="0" max="25" value="0" required>
+    </td>
+    <td>
+      <input type="number" class="marksPerQuestion" min="0" value="0" required>
+    </td>
+    <td class="totalMarks">0</td>
+    <td>
+      <button type="button" class="delete-row-btn" data-row-id="${rowId}" aria-label="Delete row">
+        <span>&times;</span>
+      </button>
+    </td>
+  `;
+  
+  tbody.appendChild(row);
+  
+  // Add event listeners to the new inputs
+  const numQuestionsInput = row.querySelector('.numQuestions');
+  const marksPerQuestionInput = row.querySelector('.marksPerQuestion');
+  
+  // Limit questions to max 25
+  numQuestionsInput.addEventListener('input', () => {
+    if (parseInt(numQuestionsInput.value) > 25) {
+      numQuestionsInput.value = 25;
+    }
+    calculateTotals();
+    validateForm();
+  });
+  
+  // Calculate totals when marks change
+  marksPerQuestionInput.addEventListener('input', () => {
+    calculateTotals();
+    validateForm();
+  });
+  
+  // Delete row button
+  const deleteBtn = row.querySelector('.delete-row-btn');
+  deleteBtn.addEventListener('click', () => {
+    if (questionRowCount > 1) {
+      row.remove();
+      questionRowCount--;
+      calculateTotals();
+      validateForm();
+    } else {
+      alert('At least one question type row is required.');
+    }
+  });
+  
+  calculateTotals();
+  validateForm();
+}
+
+// Reset form fields
 function resetFormFields() {
   document.getElementById('curriculum').selectedIndex = 0;
   classDropdown.innerHTML = '<option value="">Select Class</option>';
@@ -140,8 +218,10 @@ function resetFormFields() {
   document.getElementById('additionalConditions').value = '';
   document.querySelector('input[name="answerKeyFormat"][value="Brief"]').checked = true;
 
-  document.querySelectorAll('.numQuestions').forEach(input => input.value = 0);
-  document.querySelectorAll('.marksPerQuestion').forEach(input => input.value = 0);
+  // Clear all question rows and add a fresh one
+  document.getElementById('questionRowsBody').innerHTML = '';
+  questionRowCount = 0;
+  addQuestionRow();
 
   // Re-disable dropdowns
   classDropdown.disabled = true;
@@ -155,20 +235,26 @@ function resetFormFields() {
   document.getElementById('downloadBtn').style.display = 'none';
 }
 
-// Calculate total marks dynamically (No changes needed)
+// Calculate total marks dynamically
 function calculateTotals() {
   let overallTotal = 0;
-  document.querySelectorAll('#questionsTable tbody tr').forEach(row => {
+  let totalQuestions = 0;
+  
+  document.querySelectorAll('#questionRowsBody tr').forEach(row => {
     const num = parseInt(row.querySelector('.numQuestions').value) || 0;
     const marks = parseInt(row.querySelector('.marksPerQuestion').value) || 0;
     const total = num * marks;
+    
     row.querySelector('.totalMarks').textContent = total;
     overallTotal += total;
+    totalQuestions += num;
   });
+  
   document.getElementById('overallTotalMarks').textContent = overallTotal;
+  document.getElementById('totalQuestions').textContent = totalQuestions;
 }
 
-// Enable Generate Button only if mandatory fields filled (No changes needed)
+// Enable Generate Button only if mandatory fields filled
 function validateForm() {
   const curriculum = curriculumDropdown.value;
   const selectedClass = classDropdown.value;
@@ -177,32 +263,52 @@ function validateForm() {
   const medium = parseInt(document.getElementById('medium').value) || 0;
   const hard = parseInt(document.getElementById('hard').value) || 0;
   const generateBtn = document.getElementById('generateBtn');
-  // Ensure dropdowns are not disabled (meaning a valid selection path was followed)
-  const formReady = curriculum && selectedClass && selectedSubject && !classDropdown.disabled && !subjectDropdown.disabled;
-  generateBtn.disabled = !(formReady && (easy + medium + hard === 100));
+  
+  // Check for at least one valid question row
+  let hasValidRow = false;
+  document.querySelectorAll('#questionRowsBody tr').forEach(row => {
+    const type = row.querySelector('.question-type').value;
+    const num = parseInt(row.querySelector('.numQuestions').value) || 0;
+    if (type && num > 0) {
+      hasValidRow = true;
+    }
+  });
+  
+  // Ensure dropdowns are not disabled and at least one valid question type row
+  const formReady = curriculum && selectedClass && selectedSubject && 
+                   !classDropdown.disabled && !subjectDropdown.disabled && 
+                   hasValidRow && (easy + medium + hard === 100);
+                   
+  generateBtn.disabled = !formReady;
 }
 
-// Generate Question Paper ---> MODIFIED <---
+// Generate Question Paper
 async function generateQuestionPaper(e) {
   e.preventDefault();
 
   const generateBtn = document.getElementById('generateBtn');
   generateBtn.disabled = true; // Disable button during generation
 
-  const questionTypesSelected = [];
-  const questionDetails = []; // Also capture marks per type if needed for prompt
+								   
+  const questionDetails = []; // Capture all question details
 
-  document.querySelectorAll('#questionsTable tbody tr').forEach(row => {
-    const type = row.querySelector('td').textContent.trim();
+  document.querySelectorAll('#questionRowsBody tr').forEach(row => {
+    const type = row.querySelector('.question-type').value;
+    const topic = row.querySelector('.topic').value.trim();
     const num = parseInt(row.querySelector('.numQuestions').value) || 0;
     const marks = parseInt(row.querySelector('.marksPerQuestion').value) || 0;
-    if (num > 0) {
-      questionTypesSelected.push(type);
-      questionDetails.push({ type: type, num: num, marks: marks }); // Store details
+    
+    if (type && num > 0) {
+      questionDetails.push({ 
+        type: type, 
+        topic: topic, 
+        num: num, 
+        marks: marks 
+      });
     }
   });
 
-  if (questionTypesSelected.length === 0) {
+  if (questionDetails.length === 0) {
     alert("Please select at least one type of question with a non-zero number.");
     generateBtn.disabled = false; // Re-enable button
     return;
@@ -212,7 +318,7 @@ async function generateQuestionPaper(e) {
   const medium = document.getElementById('medium').value || 0;
   const hard = document.getElementById('hard').value || 0;
 
-  // ---> Capture needed info BEFORE potential reset
+  // Capture needed info BEFORE potential reset
   const currentSubject = document.getElementById('subject').value;
   const currentClassName = document.getElementById('className').value;
   const currentCurriculum = document.getElementById('curriculum').value;
@@ -224,18 +330,18 @@ async function generateQuestionPaper(e) {
   const currentTimeDurationText = selectedTimeOption ? selectedTimeOption.text : `${currentTimeDurationValue} Minutes`;
 
 
-  // Construct payload (Consider sending questionDetails if backend prompt needs num/marks per type)
+  // Construct payload
   const payload = {
     curriculum: currentCurriculum,
     className: currentClassName,
     subject: currentSubject,
     topic: document.getElementById('topic').value,
-    // numQuestions: questionTypesSelected.length, // Backend prompt seems to ignore this?
-    questionDetails: questionDetails, // Send detailed structure instead
+																						  
+    questionDetails: questionDetails, // Send detailed structure 
     difficultySplit: `${easy}%-${medium}%-${hard}%`,
     timeDuration: currentTimeDurationValue, // Send value (e.g., 60)
     additionalConditions: document.getElementById('additionalConditions').value,
-    questionTypes: questionTypesSelected, // Keep this for compatibility if backend uses it
+																						   
     answerKeyFormat: document.querySelector('input[name="answerKeyFormat"]:checked').value
   };
 
@@ -258,7 +364,7 @@ async function generateQuestionPaper(e) {
     if (response.ok) {
       const data = await response.json();
       if (!data.questions || typeof data.questions !== 'string') {
-           throw new Error("Received invalid question data from server.");
+        throw new Error("Received invalid question data from server.");
       }
       document.getElementById('output').textContent = data.questions;
       generatedPaperText = data.questions; // Store the generated text
@@ -266,22 +372,22 @@ async function generateQuestionPaper(e) {
       const downloadBtn = document.getElementById('downloadBtn');
       downloadBtn.style.display = 'inline-block';
 
-      // ---> Store the captured info in data attributes AFTER successful generation
+      // Store the captured info in data attributes AFTER successful generation
       downloadBtn.dataset.subject = currentSubject;
       downloadBtn.dataset.classname = currentClassName;
       downloadBtn.dataset.curriculum = currentCurriculum;
       downloadBtn.dataset.totalmarks = currentTotalMarks;
       downloadBtn.dataset.timedurationtext = currentTimeDurationText; // Store text like "1 Hour"
 
-      // Don't reset form immediately, let user download first maybe?
-      // Or reset only non-essential parts? For now, keeping the reset:
-      // resetFormFields(); // Consider if this is the best UX
+																	 
+																	   
+															  
 
     } else {
       generatedPaperText = ''; // Clear stored text on error
       let errorData = { message: `Server responded with ${response.status}` };
       try {
-         errorData = await response.json();
+        errorData = await response.json();
       } catch(e) { /* ignore json parsing error */ }
       document.getElementById('output').textContent = `Error: ${errorData.message || 'Failed to generate paper.'}`;
     }
@@ -295,12 +401,12 @@ async function generateQuestionPaper(e) {
 }
 
 
-// Download generated paper as Word file ---> MODIFIED <---
+// Download generated paper as Word file
 async function downloadQuestionPaper() {
     console.log("Starting download process...");
     const downloadBtn = document.getElementById('downloadBtn');
 
-    // ---> Read data from the button's data attributes and stored text
+    // Read data from the button's data attributes and stored text
     const subject = downloadBtn.dataset.subject;
     const className = downloadBtn.dataset.classname;
     const curriculum = downloadBtn.dataset.curriculum;
@@ -323,7 +429,7 @@ async function downloadQuestionPaper() {
 
     console.log("Processing output text for download...");
 
-    // ---> Construct metadata from stored data
+    // Construct metadata from stored data
     const metadata = {
       curriculum: curriculum,
       className: className,
@@ -369,9 +475,9 @@ async function downloadQuestionPaper() {
           const sectionHeaderRegex = new RegExp(
             // optional Markdown heading  ##  or  #  
             String.raw`^(?:#+\s*)?` +
-            // SECTION A,  PART 1,  etc.
+            // SECTION A,  PART 1,  etc.
             String.raw`(?:SECTION|PART)\s*([A-Z0-9]+)?\s*[:\-]?.*$` +
-            // OR any line that already contains “QUESTIONS” or “MARKS:”
+            // OR any line that already contains "QUESTIONS" or "MARKS:"
             String.raw`|^.*(QUESTIONS|MARKS:\s*\d+).*$`,
             'i'
           );
@@ -399,7 +505,7 @@ async function downloadQuestionPaper() {
               // ------ CONTINUATION LINE (options, extra text, etc.) ------
               if (currentSection.questions.length > 0) {
                    currentSection.questions[currentSection.questions.length - 1] +=
-                    '\n' + line.trim();      // keep “A)”, “B) …” so Word shows them
+                    '\n' + line.trim();      // keep "A)", "B) …" so Word shows them
               } else {
                   currentSection.questions.push(line); // first line in otherwise‑empty section
               }
@@ -513,7 +619,6 @@ async function downloadQuestionPaper() {
        }
     }
 }
-
 
 // Logout function (No changes needed)
 function logout() {
