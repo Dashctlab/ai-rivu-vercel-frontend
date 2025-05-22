@@ -1,15 +1,18 @@
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-
+  
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
 
   try {
-    await fetch(`${window.APP_CONFIG.BACKEND_URL}/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
+    const response = await fetch(
+  `${window.APP_CONFIG.BACKEND_URL}/login`,
+  {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  }
+);
 
     const result = await response.json();
 
