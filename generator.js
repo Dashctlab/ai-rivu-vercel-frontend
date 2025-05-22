@@ -339,15 +339,15 @@ async function generateQuestionPaper(e) {
 
 
   try {
-    const response = await fetch(`${backendURL}/generate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'useremail': localStorage.getItem('userEmail') || 'anonymous' // Send something even if not logged in? Adjust as needed
-      },
-      body: JSON.stringify(payload)
-    });
-
+    const response = await fetch(
+	  `${window.APP_CONFIG.BACKEND_URL}/login`,
+	  {
+	    method: 'POST',
+	    headers: { 'Content-Type': 'application/json' },
+	    body: JSON.stringify({ email, password })
+	  }
+	);
+	  
     if (response.ok) {
       const data = await response.json();
       if (!data.questions || typeof data.questions !== 'string') {
@@ -528,14 +528,14 @@ async function downloadQuestionPaper() {
     console.log("Sending payload to server:", JSON.stringify(payload, null, 2)); // Pretty print for easier debugging
 
     try {
-      const response = await fetch(`${backendURL}/download-docx`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'useremail': localStorage.getItem('userEmail') || 'anonymous' // Adjust as needed
-        },
-        body: JSON.stringify(payload)
-      });
+      const response = await fetch(
+	  `${window.APP_CONFIG.BACKEND_URL}/login`,
+	  {
+	    method: 'POST',
+	    headers: { 'Content-Type': 'application/json' },
+	    body: JSON.stringify({ email, password })
+	  }
+	);
 
       console.log("Server response status:", response.status);
 
