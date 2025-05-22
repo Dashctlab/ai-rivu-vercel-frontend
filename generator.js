@@ -1,5 +1,5 @@
 // Retain existing variables at the top of the file
-const backendURL = 'https://ai-rivu-vercel-render-backend.onrender.com';
+const backendURL = '${window.APP_CONFIG.BACKEND_URL}/generate';
 let classDropdown, subjectDropdown, curriculumDropdown;
 
 // ---> ADDED: Global variable to store the raw generated text
@@ -102,19 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 							  
-															   
-										   
-									   
-						 
-	   
-	   
-	 
-
-										
-																				  
-													 
-	 
-
   // Validate form on input change
   document.getElementById('questionForm').addEventListener('input', validateForm);
 

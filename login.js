@@ -5,7 +5,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
   const password = document.getElementById('password').value;
 
   try {
-    const response = await fetch('https://ai-rivu-vercel-render-backend.onrender.com/login', {
+    await fetch(`${window.APP_CONFIG.BACKEND_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
