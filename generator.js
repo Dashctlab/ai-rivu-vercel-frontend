@@ -343,7 +343,10 @@ async function generateQuestionPaper(e) {
 	  `${window.APP_CONFIG.BACKEND_URL}/generate`,
 	  {
 	    method: 'POST',
-	    headers: { 'Content-Type': 'application/json' },
+	    headers: { 
+		    'Content-Type': 'application/json',
+        'useremail': localStorage.getItem('userEmail') || 'anonymous' // Send something even if not logged in? Adjust as needed
+		  
 	    body: JSON.stringify(payload)
 	  }
 	);
@@ -532,8 +535,11 @@ async function downloadQuestionPaper() {
 	  `${window.APP_CONFIG.BACKEND_URL}/login`,
 	  {
 	    method: 'POST',
-	    headers: { 'Content-Type': 'application/json' },
-	    body: JSON.stringify({ email, password })
+	    headers: { 
+		    'Content-Type': 'application/json',
+          	    'useremail': localStorage.getItem('userEmail') || 'anonymous' // Adjust as needed
+        	      },
+	    body: JSON.stringify(payload)
 	  }
 	);
 
