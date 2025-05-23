@@ -340,11 +340,11 @@ async function generateQuestionPaper(e) {
 
   try {
     const response = await fetch(
-	  `${window.APP_CONFIG.BACKEND_URL}/login`,
+	  `${window.APP_CONFIG.BACKEND_URL}/generate`,
 	  {
 	    method: 'POST',
 	    headers: { 'Content-Type': 'application/json' },
-	    body: JSON.stringify({ email, password })
+	    body: JSON.stringify(payload)
 	  }
 	);
 	  
