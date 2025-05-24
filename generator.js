@@ -346,7 +346,7 @@ async function generateQuestionPaper(e) {
 	    headers: { 
 		    'Content-Type': 'application/json',
         'useremail': localStorage.getItem('userEmail') || 'anonymous' // Send something even if not logged in? Adjust as needed
-		  
+	    },
 	    body: JSON.stringify(payload)
 	  }
 	);
