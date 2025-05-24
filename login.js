@@ -6,7 +6,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 
   try {
     const response = await fetch(
-  `${window.APP_CONFIG.BACKEND_URL}/routes/login`,  //added route to test
+  `${window.APP_CONFIG.BACKEND_URL}/login`,  
   {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
