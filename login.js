@@ -19,15 +19,12 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     if (response.ok) {
       localStorage.setItem('userEmail', result.email);
       window.location.href = '/generator.html';
-    } 
-    
-
-
- } else if (response.status === 401) {
+  
+      } else if (response.status === 401) {
       document.getElementById('error-message').textContent = 'Invalid email or password.';
-    } else {
+      } else {
       document.getElementById('error-message').textContent = 'Something went wrong. Try again.';
-    }
+      }
 
 //    else {
   //    document.getElementById('error-message').innerText = result.message || 'Invalid credentials';
