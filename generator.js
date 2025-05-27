@@ -369,10 +369,6 @@ async function generateQuestionPaper(e) {
       downloadBtn.dataset.totalmarks = currentTotalMarks;
       downloadBtn.dataset.timedurationtext = currentTimeDurationText; // Store text like "1 Hour"
 
-																	 
-																	   
-															  
-
     } else {
       generatedPaperText = ''; // Clear stored text on error
       let errorData = { message: `Server responded with ${response.status}` };
@@ -532,7 +528,7 @@ async function downloadQuestionPaper() {
 
     try {
       const response = await fetch(
-	  `${window.APP_CONFIG.BACKEND_URL}/login`,
+	  `${window.APP_CONFIG.BACKEND_URL}/download-docx`,
 	  {
 	    method: 'POST',
 	    headers: { 
