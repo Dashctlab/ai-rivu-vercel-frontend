@@ -74,6 +74,24 @@
                 <option value="">-- Select Subject --</option>
               </select>
 
+
+              <!-- 🆕 NEW: Assessment Objective Selection -->
+              <label for="testObjective">What do you want to test? (Optional):</label>
+              <select id="testObjective" name="testObjective">
+                <option value="mixed">Mixed Assessment (Recommended)</option>
+                <option value="understanding">Concept Understanding</option>
+                <option value="application">Problem Solving & Application</option>
+                <option value="analysis">Critical Thinking & Analysis</option>
+              </select>
+
+              <!-- 🆕 NEW: Focus Level -->
+              <label for="focusLevel">Assessment Focus:</label>
+              <select id="focusLevel" name="focusLevel">
+                <option value="comprehensive">Comprehensive Test</option>
+                <option value="targeted">Specific Topic Focus</option>
+              <option value="skill">Specific Skill Testing</option>
+              </select>        
+            
               <label for="topic">Specific Topic(s) (Optional):</label>
               <input type="text" id="topic" name="topic" placeholder="e.g., Algebra, Photosynthesis, Indian History">
 

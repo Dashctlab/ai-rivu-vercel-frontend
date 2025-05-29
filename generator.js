@@ -1,22 +1,56 @@
-// Retain existing variables at the top of the file
+// Updated generator.js with curriculum-specific subject mapping
 const backendURL = '${window.APP_CONFIG.BACKEND_URL}/generate';
 let classDropdown, subjectDropdown, curriculumDropdown;
 
 // ---> ADDED: Global variable to store the raw generated text
 let generatedPaperText = '';
 
-// Class → Subject Mapping (No changes needed)
-const classSubjectMap = {
-  'Class 1': ['English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
-  'Class 2': ['English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
-  'Class 3': ['English', 'Mathematics', 'Environmental Studies', 'Computer Science', 'General Knowledge'],
-  'Class 4': ['English', 'Mathematics', 'Environmental Studies', 'Computer Science', 'General Knowledge'],
-  'Class 5': ['English', 'Mathematics', 'Environmental Studies', 'Computer Science', 'General Knowledge'],
-  'Class 6': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'General Knowledge'],
-  'Class 7': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'General Knowledge'],
-  'Class 8': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'General Knowledge'],
-  'Class 9': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'General Knowledge'],
-  'Class 10': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'General Knowledge']
+// ===== UPDATED: Curriculum-specific Class → Subject Mapping =====
+const curriculumSubjectMap = {
+  'CBSE': {
+    'Class 1': ['English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
+    'Class 2': ['English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
+    'Class 3': ['English', 'Mathematics', 'Environmental Studies', 'Computer Science', 'General Knowledge'],
+    'Class 4': ['English', 'Mathematics', 'Environmental Studies', 'Computer Science', 'General Knowledge'],
+    'Class 5': ['English', 'Mathematics', 'Environmental Studies', 'Computer Science', 'General Knowledge'],
+    'Class 6': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
+    'Class 7': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
+    'Class 8': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
+    'Class 9': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Information Technology', 'Sanskrit'],
+    'Class 10': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Information Technology', 'Sanskrit'],
+    'Class 11': ['English', 'Mathematics', 'Physics', 'Chemistry', 'Biology', 'Computer Science', 'Economics', 'Business Studies', 'Accountancy', 'Political Science', 'History', 'Geography', 'Psychology'],
+    'Class 12': ['English', 'Mathematics', 'Physics', 'Chemistry', 'Biology', 'Computer Science', 'Economics', 'Business Studies', 'Accountancy', 'Political Science', 'History', 'Geography', 'Psychology']
+  },
+  
+  'Karnataka State Board': {
+    'Class 1': ['English', 'Kannada', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
+    'Class 2': ['English', 'Kannada', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
+    'Class 3': ['English', 'Kannada', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
+    'Class 4': ['English', 'Kannada', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
+    'Class 5': ['English', 'Kannada', 'Mathematics', 'Science', 'Social Science', 'Computer Science'],
+    'Class 6': ['English', 'Kannada', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
+    'Class 7': ['English', 'Kannada', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
+    'Class 8': ['English', 'Kannada', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
+    'Class 9': ['English', 'Kannada', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
+    'Class 10': ['English', 'Kannada', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
+    'Class 11': ['English', 'Kannada', 'Physics', 'Chemistry', 'Mathematics', 'Biology', 'Computer Science', 'Economics', 'Business Studies', 'Accountancy', 'History', 'Political Science', 'Geography'],
+    'Class 12': ['English', 'Kannada', 'Physics', 'Chemistry', 'Mathematics', 'Biology', 'Computer Science', 'Economics', 'Business Studies', 'Accountancy', 'History', 'Political Science', 'Geography']
+  },
+  
+  'Tamil Nadu State Board': {
+    'Class 1': ['Tamil', 'English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
+    'Class 2': ['Tamil', 'English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
+    'Class 3': ['Tamil', 'English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
+    'Class 4': ['Tamil', 'English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
+    'Class 5': ['Tamil', 'English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
+    'Class 6': ['Tamil', 'English', 'Mathematics', 'Science', 'Social Science', 'Computer Science'],
+    'Class 7': ['Tamil', 'English', 'Mathematics', 'Science', 'Social Science', 'Computer Science'],
+    'Class 8': ['Tamil', 'English', 'Mathematics', 'Science', 'Social Science', 'Computer Science'],
+    'Class 9': ['Tamil', 'English', 'Mathematics', 'Science', 'Social Science', 'Computer Science'],
+    'Class 10': ['Tamil', 'English', 'Mathematics', 'Science', 'Social Science', 'Computer Science'],
+    'Class 11': ['Tamil', 'English', 'Physics', 'Chemistry', 'Mathematics', 'Biology', 'Computer Science', 'Commerce', 'Accountancy', 'Economics', 'History', 'Geography', 'Political Science'],
+    'Class 12': ['Tamil', 'English', 'Physics', 'Chemistry', 'Mathematics', 'Biology', 'Computer Science', 'Commerce', 'Accountancy', 'Economics', 'History', 'Geography', 'Political Science']
+  }
 };
 
 // List of question types with new "Give Reasons" option
@@ -28,6 +62,30 @@ const questionTypes = [
 // Track rows added
 let questionRowCount = 0;
 const MAX_QUESTION_ROWS = 12;
+
+// ===== UPDATED: Helper function to update subject dropdown based on curriculum and class =====
+function updateSubjectDropdown(curriculum, selectedClass) {
+  subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
+  
+  if (!curriculum || !selectedClass) {
+    subjectDropdown.disabled = true;
+    return;
+  }
+  
+  const subjects = curriculumSubjectMap[curriculum]?.[selectedClass] || [];
+  
+  if (subjects.length > 0) {
+    subjects.forEach(subject => {
+      const option = document.createElement('option');
+      option.value = subject;
+      option.textContent = subject;
+      subjectDropdown.appendChild(option);
+    });
+    subjectDropdown.disabled = false;
+  } else {
+    subjectDropdown.disabled = true;
+  }
+}
 
 // On page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -56,52 +114,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Curriculum → Enable Class
+  // ===== UPDATED: Curriculum → Enable Class (curriculum-specific) =====
   curriculumDropdown.addEventListener('change', () => {
     const selectedCurriculum = curriculumDropdown.value;
 
     // Reset class and subject
     classDropdown.innerHTML = '<option value="">Select Class</option>';
     classDropdown.disabled = true;
-
     subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
     subjectDropdown.disabled = true;
 
     if (selectedCurriculum) {
-      for (let i = 1; i <= 10; i++) {
+      // Populate classes based on selected curriculum
+      const availableClasses = Object.keys(curriculumSubjectMap[selectedCurriculum] || {});
+      availableClasses.forEach(className => {
         const option = document.createElement('option');
-        option.value = `Class ${i}`;
-        option.textContent = `Class ${i}`;
+        option.value = className;
+        option.textContent = className;
         classDropdown.appendChild(option);
-      }
-      classDropdown.disabled = false; // Enable class
-    }
-  });
-
-  // Class → Enable and populate Subject
-  classDropdown.addEventListener('change', () => {
-    subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
-    const selectedClass = classDropdown.value;
-
-    // Keep subject disabled until class is selected
-    if (!selectedClass) {
-      subjectDropdown.disabled = true;
-      return;
-    }
-
-    // Enable subject and populate options
-    subjectDropdown.disabled = false;
-    if (classSubjectMap[selectedClass]) {
-      classSubjectMap[selectedClass].forEach(subject => {
-        const option = document.createElement('option');
-        option.value = subject;
-        option.textContent = subject;
-        subjectDropdown.appendChild(option);
       });
+      classDropdown.disabled = false;
     }
   });
 
-							  
+  // ===== UPDATED: Class → Enable and populate Subject (curriculum-specific) =====
+  classDropdown.addEventListener('change', () => {
+    const selectedCurriculum = curriculumDropdown.value;
+    const selectedClass = classDropdown.value;
+    updateSubjectDropdown(selectedCurriculum, selectedClass);
+  });
+
   // Validate form on input change
   document.getElementById('questionForm').addEventListener('input', validateForm);
 
@@ -113,11 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Download button functionality
   downloadBtn.addEventListener('click', () => {
-																		
     downloadQuestionPaper();
   });
 
-  console.log("generator.js loaded and dropdown logic active");
+  console.log("generator.js loaded with curriculum-specific dropdown logic active");
 });
 
 // Function to add a new question row
@@ -198,6 +239,13 @@ function resetFormFields() {
   classDropdown.innerHTML = '<option value="">Select Class</option>';
   subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
   document.getElementById('topic').value = '';
+  
+  // Reset new assessment fields if they exist
+  const testObjectiveSelect = document.getElementById('testObjective');
+  const focusLevelSelect = document.getElementById('focusLevel');
+  if (testObjectiveSelect) testObjectiveSelect.selectedIndex = 0;
+  if (focusLevelSelect) focusLevelSelect.selectedIndex = 0;
+  
   document.getElementById('timeDuration').value = '60'; // Reset to default
   document.getElementById('easy').value = '0';
   document.getElementById('medium').value = '100'; // Reset to default
@@ -276,7 +324,6 @@ async function generateQuestionPaper(e) {
   const generateBtn = document.getElementById('generateBtn');
   generateBtn.disabled = true; // Disable button during generation
 
-								   
   const questionDetails = []; // Capture all question details
 
   document.querySelectorAll('#questionRowsBody tr').forEach(row => {
@@ -311,24 +358,24 @@ async function generateQuestionPaper(e) {
   const currentCurriculum = document.getElementById('curriculum').value;
   const currentTotalMarks = document.getElementById('overallTotalMarks').textContent;
   const currentTimeDurationValue = document.getElementById('timeDuration').value;
+  
   // Find the selected time duration text (e.g., "1 Hour")
   const timeDurationSelect = document.getElementById('timeDuration');
   const selectedTimeOption = timeDurationSelect.options[timeDurationSelect.selectedIndex];
   const currentTimeDurationText = selectedTimeOption ? selectedTimeOption.text : `${currentTimeDurationValue} Minutes`;
 
-
-  // Construct payload
+  // ===== UPDATED: Construct payload with new assessment fields =====
   const payload = {
     curriculum: currentCurriculum,
     className: currentClassName,
     subject: currentSubject,
     topic: document.getElementById('topic').value,
-																						  
+    testObjective: document.getElementById('testObjective')?.value || 'mixed',  // 🆕 NEW
+    focusLevel: document.getElementById('focusLevel')?.value || 'comprehensive', // 🆕 NEW
     questionDetails: questionDetails, // Send detailed structure 
     difficultySplit: `${easy}%-${medium}%-${hard}%`,
     timeDuration: currentTimeDurationValue, // Send value (e.g., 60)
     additionalConditions: document.getElementById('additionalConditions').value,
-																						   
     answerKeyFormat: document.querySelector('input[name="answerKeyFormat"]:checked').value
   };
 
@@ -337,27 +384,39 @@ async function generateQuestionPaper(e) {
   generatedPaperText = ''; // Clear previous text
   document.getElementById('downloadBtn').style.display = 'none'; // Hide download btn initially
 
-
   try {
     const response = await fetch(
-	  `${window.APP_CONFIG.BACKEND_URL}/generate`,
-	  {
-	    method: 'POST',
-	    headers: { 
-		    'Content-Type': 'application/json',
-        'useremail': localStorage.getItem('userEmail') || 'anonymous' // Send something even if not logged in? Adjust as needed
-	    },
-	    body: JSON.stringify(payload)
-	  }
-	);
-	  
+      `${window.APP_CONFIG.BACKEND_URL}/generate`,
+      {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'useremail': localStorage.getItem('userEmail') || 'anonymous'
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+      
     if (response.ok) {
       const data = await response.json();
       if (!data.questions || typeof data.questions !== 'string') {
         throw new Error("Received invalid question data from server.");
       }
+      
       document.getElementById('output').textContent = data.questions;
       generatedPaperText = data.questions; // Store the generated text
+
+      // ===== NEW: Display pedagogical summary if available =====
+      if (data.pedagogicalSummary) {
+        const summaryElement = document.getElementById('pedagogicalSummary');
+        if (summaryElement) {
+          summaryElement.style.display = 'block';
+          const descriptionElement = document.getElementById('frameworkDescription');
+          if (descriptionElement) {
+            descriptionElement.textContent = data.pedagogicalSummary;
+          }
+        }
+      }
 
       const downloadBtn = document.getElementById('downloadBtn');
       downloadBtn.style.display = 'inline-block';
@@ -386,8 +445,7 @@ async function generateQuestionPaper(e) {
   }
 }
 
-
-// Download generated paper as Word file
+// Download generated paper as Word file (no changes needed to this function)
 async function downloadQuestionPaper() {
     console.log("Starting download process...");
     const downloadBtn = document.getElementById('downloadBtn');
@@ -528,16 +586,16 @@ async function downloadQuestionPaper() {
 
     try {
       const response = await fetch(
-	  `${window.APP_CONFIG.BACKEND_URL}/download-docx`,
-	  {
-	    method: 'POST',
-	    headers: { 
-		    'Content-Type': 'application/json',
-          	    'useremail': localStorage.getItem('userEmail') || 'anonymous' // Adjust as needed
-        	      },
-	    body: JSON.stringify(payload)
-	  }
-	);
+        `${window.APP_CONFIG.BACKEND_URL}/download-docx`,
+        {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'useremail': localStorage.getItem('userEmail') || 'anonymous'
+          },
+          body: JSON.stringify(payload)
+        }
+      );
 
       console.log("Server response status:", response.status);
 
