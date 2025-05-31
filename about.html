@@ -58,6 +58,7 @@
 </head>
 <body>
   <!-- HEADER -->
+  <div id="header-container"></div>    <!-- to check and remove if not working -->
   <header class="app-header">
     <div class="container">
       <div class="logo-container">
@@ -139,6 +140,9 @@
   </main>
 
   <!-- FOOTER -->
+  <div id="footer-container"></div> <!-- to remove if not working -->
+
+  
   <footer class="app-footer">
     <div class="container">
       <div class="footer-flex">
@@ -159,5 +163,22 @@
   <script>
     document.getElementById("yr").textContent = new Date().getFullYear();
   </script>
+
+
+  <!-- last updates-->
+
+  <script src="/config.js"></script>
+<script src="/shared/constants.js"></script>
+<script src="/shared/components.js"></script>
+<script>
+  initializeCommonComponents({
+    currentPage: 'about',
+    isAuthenticated: false
+  });
+</script>
+
+
+
+  
 </body>
 </html>
