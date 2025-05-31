@@ -5,30 +5,102 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI-RIVU • Home</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/shared/shared.css">
   <!-- Added Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Page-specific styles for features grid centering */
+    .features .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    
+    /* Center the 5th card */
+    .features .grid .card:nth-child(5) {
+      grid-column: 2 / span 1;
+    }
+    
+    /* Mobile responsiveness for features */
+    @media (max-width: 768px) {
+      .features .grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .features .grid .card:nth-child(5) {
+        grid-column: auto;
+      }
+    }
+    
+    /* Process flow connectors */
+    .process-flow {
+      display: flex;
+      justify-content: space-between;
+      max-width: 1000px;
+      margin: 0 auto;
+      position: relative;
+      padding: 20px 0;
+    }
+    
+    /* Connector line between steps */
+    .process-step {
+      position: relative;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    
+    /* Arrow connectors between steps */
+    .process-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      width: 100%;
+      height: 2px;
+      background-color: var(--primary-color);
+      z-index: -1;
+    }
+    
+    /* Arrow head */
+    .process-step:not(:last-child)::before {
+      content: '▶';
+      position: absolute;
+      top: 31px;
+      right: -15px;
+      color: var(--primary-color);
+      font-size: 18px;
+      z-index: 1;
+    }
+    
+    /* Mobile responsiveness for process flow */
+    @media (max-width: 768px) {
+      .process-flow {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 40px;
+      }
+      
+      .process-step {
+        width: 45%;
+      }
+      
+      /* Remove connectors on mobile */
+      .process-step:not(:last-child)::after,
+      .process-step:not(:last-child)::before {
+        display: none;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <!-- =============== HEADER =============== -->
-  <header class="app-header">
-    <div class="container">
-      <div class="logo-container">
-         <img src="images/ai-rivu-logo.png" alt="AI-RIVU Logo" class="logo-image">
-      </div>
-      <nav>
-        <ul class="nav-list tight">
-          <li><a href="/about.html">About</a></li>
-          <li><a href="/contact.html">Contact</a></li>
-          <!--
-          <li><a href="/login.html" class="login-btn">Login</a></li>
-          -->
-          <li><button class="primary-btn" onclick="location.href='/login.html'">Login</button></li>
-
-        </ul>
-      </nav>
-    </div>
-  </header>
+  <!-- Header Container -->
+  <div id="header-container"></div>
 
   <!-- =============== HERO =============== -->
   <section class="hero">
@@ -170,24 +242,19 @@
     </div>
   </section>
 
-  <!-- ================= FOOTER ================= -->
-  <footer class="app-footer">
-    <div class="container">
-      <div class="footer-flex">
-        <div>
-          <ul class="footer-links">
-            <li><a href="/about.html">About&nbsp;Us</a></li>
-            <li><a href="/contact.html">Contact&nbsp;Us</a></li>
-          </ul>
-        </div>
-        <div class="footer-logo">
-          <img src="images/asmakam-logo.png" alt="Asmakam Labs logo">
-        </div>
-      </div>
-      <p>© <span id="yr"></span> Asmakam Innovations · All Rights Reserved</p>
-    </div>
-  </footer>
+  <!-- Footer Container -->
+  <div id="footer-container"></div>
 
-  <script>document.getElementById("yr").textContent=new Date().getFullYear();</script>
+  <!-- Scripts -->
+  <script src="/config.js"></script>
+  <script src="/shared/constants.js"></script>
+  <script src="/shared/components.js"></script>
+  <script>
+    // Initialize page with shared components
+    initializeCommonComponents({
+      currentPage: 'home',
+      isAuthenticated: false
+    });
+  </script>
 </body>
 </html>
