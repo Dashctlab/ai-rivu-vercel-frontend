@@ -3,99 +3,392 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Question Paper Generator - AI-RIVU</title>
+  <title>Create Question Paper - AI-RIVU</title>
   <link rel="stylesheet" href="style.css">
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const userEmail = localStorage.getItem('userEmail');
-      if (!userEmail) {
-        window.location.href = '/login.html';
-      } else {
-        // Display user email if element exists
-        const userDisplay = document.getElementById('userEmailDisplay');
-        if (userDisplay) {
-          userDisplay.textContent = `User: ${userEmail}`;
-        }
+  <link rel="stylesheet" href="/shared/shared.css">
+  <style>
+    /* Generator-specific beautiful styles */
+    .generator-hero {
+      background: linear-gradient(135deg, rgba(42, 157, 143, 0.05) 0%, rgba(233, 196, 106, 0.05) 100%);
+      padding: 2rem 0;
+      margin-bottom: 2rem;
+    }
+    
+    .generator-title {
+      text-align: center;
+      color: var(--text-color);
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .generator-subtitle {
+      text-align: center;
+      color: var(--secondary-text-color);
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+    
+    /* Progress indicator */
+    .progress-bar {
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+    }
+    
+    .progress-bar::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #e0e0e0;
+      z-index: -1;
+    }
+    
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    
+    .progress-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .progress-step.active .progress-circle {
+      background: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+    
+    .progress-step.completed .progress-circle {
+      background: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+    
+    .progress-label {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: var(--secondary-text-color);
+    }
+    
+    /* Beautiful form sections */
+    .form-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    
+    .form-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: box-shadow 0.3s;
+    }
+    
+    .form-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+    
+    .form-card h3 {
+      color: var(--primary-color);
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .form-card h3::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: var(--accent-color);
+      border-radius: 2px;
+    }
+    
+    /* Better form inputs */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+    
+    .form-group select,
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s;
+      background: white;
+    }
+    
+    .form-group select:focus,
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.1);
+    }
+    
+    /* Question builder section */
+    .question-builder {
+      grid-column: 1 / -1;
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    
+    .question-table-wrapper {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    
+    .question-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .question-table th {
+      background: var(--primary-color);
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-weight: 500;
+    }
+    
+    .question-table td {
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .question-table select,
+    .question-table input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+    
+    .add-question-btn {
+      background: var(--accent-color);
+      color: var(--text-color);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .add-question-btn:hover {
+      background: #d8b350;
+      transform: translateY(-2px);
+    }
+    
+    /* Generate button */
+    .generate-section {
+      text-align: center;
+      margin: 3rem 0;
+    }
+    
+    .generate-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 16px 48px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(42, 157, 143, 0.3);
+    }
+    
+    .generate-btn:hover:not(:disabled) {
+      background: #22867a;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(42, 157, 143, 0.4);
+    }
+    
+    .generate-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    
+    /* Output section */
+    .output-wrapper {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-top: 2rem;
+    }
+    
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .generator-title {
+        font-size: 1.5rem;
       }
-    });
-  </script>
+      
+      .progress-bar {
+        display: none; /* Hide on mobile for space */
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .form-card {
+        padding: 1.5rem;
+      }
+      
+      .question-table {
+        font-size: 0.9rem;
+      }
+      
+      .generate-btn {
+        width: 100%;
+        padding: 14px 32px;
+      }
+    }
+    
+    /* Difficulty inputs inline */
+    .difficulty-inputs {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    
+    .difficulty-inputs .input-group {
+      flex: 1;
+    }
+    
+    .difficulty-inputs input {
+      width: 100%;
+      text-align: center;
+    }
+    
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--primary-color);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s;
+    }
+    
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
+  <!-- Header Container -->
+  <div id="header-container"></div>
 
- <!-- =============== HEADER =============== -->
-  <header class="app-header">
+  <!-- Generator Hero Section -->
+  <section class="generator-hero">
     <div class="container">
-      <div class="logo-container">
-       <a href="/home.html" aria-label="Home page">
-         <img src="images/ai-rivu-logo.png" alt="AI-RIVU Logo" class="logo-image">
-       </a>
+      <h1 class="generator-title">Let's Create Your Question Paper</h1>
+      <p class="generator-subtitle">Simple, fast, and perfectly aligned to your curriculum</p>
+      
+      <!-- Progress Bar -->
+      <div class="progress-bar">
+        <div class="progress-step active">
+          <div class="progress-circle">1</div>
+          <div class="progress-label">Basic Info</div>
+        </div>
+        <div class="progress-step">
+          <div class="progress-circle">2</div>
+          <div class="progress-label">Questions</div>
+        </div>
+        <div class="progress-step">
+          <div class="progress-circle">3</div>
+          <div class="progress-label">Generate</div>
+        </div>
       </div>
-      <nav>
-        <ul class="nav-list tight">
-          <li><a href="/about.html">About</a></li>
-          <li><a href="/contact.html">Contact</a></li>
-        <li><span id="userEmailDisplay">User: Loading...</span></li>
-        <li><button onclick="logout()" class="logout-button">Logout</button></li>
-          
-        </ul>
-      </nav>
     </div>
-  </header>
+  </section>
 
-
-
- <!-- =============== main content =============== -->
-  
+  <!-- Main Form Section -->
   <main class="main-content">
-    <div class="container">
-      <br>
-      <h2>Create Your Custom Question Paper</h2>
-  <!--    <p class="text-center mb-2" style="font-size: 1.1em;">Fill in the details below to generate your unique assessment.</p> -->
-
+    <div class="container form-container">
       <form id="questionForm">
-        <div class="generator-layout">
-          <div class="form-column"> <div class="form-section">
-              <h4>Core Details</h4>
-              <label for="curriculum">Select Curriculum Board:</label>
+        <div class="form-grid">
+          <!-- Left Column - Core Details -->
+          <div class="form-card">
+            <h3>Basic Information</h3>
+            
+            <div class="form-group">
+              <label for="curriculum">Curriculum Board</label>
               <select id="curriculum" name="curriculum" required>
-                <option value="">-- Select Curriculum --</option>
+                <option value="">Select your board...</option>
                 <option value="CBSE">CBSE</option>
                 <option value="Karnataka State Board">Karnataka State Board</option>
                 <option value="Tamil Nadu State Board">Tamil Nadu State Board</option>
-                </select>
+              </select>
+            </div>
 
-              <label for="className">Select Class/Grade:</label>
+            <div class="form-group">
+              <label for="className">Class/Grade</label>
               <select id="className" name="className" required disabled>
-                <option value="">-- Select Class --</option>
+                <option value="">First select a board</option>
               </select>
+            </div>
 
-              <label for="subject">Select Subject:</label>
+            <div class="form-group">
+              <label for="subject">Subject</label>
               <select id="subject" name="subject" required disabled>
-                <option value="">-- Select Subject --</option>
+                <option value="">First select a class</option>
               </select>
+            </div>
 
+            <div class="form-group">
+              <label for="topic">Specific Topic (Optional)</label>
+              <input type="text" id="topic" name="topic" placeholder="e.g., Algebra, Photosynthesis">
+            </div>
 
-              <!-- 🆕 NEW: Assessment Objective Selection -->
-              <label for="testObjective">What do you want to test? (Optional):</label>
-              <select id="testObjective" name="testObjective">
-                <option value="mixed">Mixed Assessment (Recommended)</option>
-                <option value="understanding">Concept Understanding</option>
-                <option value="application">Problem Solving & Application</option>
-                <option value="analysis">Critical Thinking & Analysis</option>
-              </select>
-
-              <!-- 🆕 NEW: Focus Level -->
-              <label for="focusLevel">Assessment Focus:</label>
-              <select id="focusLevel" name="focusLevel">
-                <option value="comprehensive">Comprehensive Test</option>
-                <option value="targeted">Specific Topic Focus</option>
-              <option value="skill">Specific Skill Testing</option>
-              </select>        
-            
-              <label for="topic">Specific Topic(s) (Optional):</label>
-              <input type="text" id="topic" name="topic" placeholder="e.g., Algebra, Photosynthesis, Indian History">
-
-              <label for="timeDuration">Exam Time Duration:</label>
+            <div class="form-group">
+              <label for="timeDuration">Exam Duration</label>
               <select id="timeDuration" name="timeDuration" required>
                 <option value="30">30 Minutes</option>
                 <option value="60" selected>1 Hour</option>
@@ -104,152 +397,195 @@
                 <option value="180">3 Hours</option>
               </select>
             </div>
+          </div>
 
-            <div class="form-section">
-              <h4>Difficulty & Format</h4>
-              <label>Difficulty Split (Total must be 100%):</label>
-              <div class="difficulty-split">
-                <div>
-                  <label for="easy">Easy %</label>
-                  <input type="number" id="easy" name="easy" value="0" min="0" max="100" required>
+          <!-- Right Column - Assessment Details -->
+          <div class="form-card">
+            <h3>Assessment Settings</h3>
+            
+            <div class="form-group">
+              <label for="testObjective">What are you testing?</label>
+              <select id="testObjective" name="testObjective">
+                <option value="mixed">Mixed Assessment (Recommended)</option>
+                <option value="understanding">Concept Understanding</option>
+                <option value="application">Problem Solving Skills</option>
+                <option value="analysis">Critical Thinking</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="focusLevel">Assessment Scope</label>
+              <select id="focusLevel" name="focusLevel">
+                <option value="comprehensive">Full Chapter Test</option>
+                <option value="targeted">Specific Topics Only</option>
+                <option value="skill">Skill-Based Testing</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Difficulty Distribution (%)</label>
+              <div class="difficulty-inputs">
+                <div class="input-group">
+                  <label style="font-size: 0.9rem; font-weight: normal;">Easy</label>
+                  <input type="number" id="easy" name="easy" value="30" min="0" max="100" required>
                 </div>
-                <div>
-                  <label for="medium">Medium %</label>
-                  <input type="number" id="medium" name="medium" value="100" min="0" max="100" required>
+                <div class="input-group">
+                  <label style="font-size: 0.9rem; font-weight: normal;">Medium</label>
+                  <input type="number" id="medium" name="medium" value="50" min="0" max="100" required>
                 </div>
-                <div>
-                  <label for="hard">Hard %</label>
-                  <input type="number" id="hard" name="hard" value="0" min="0" max="100" required>
+                <div class="input-group">
+                  <label style="font-size: 0.9rem; font-weight: normal;">Hard</label>
+                  <input type="number" id="hard" name="hard" value="20" min="0" max="100" required>
                 </div>
               </div>
-              <p id="difficultyTotalMessage" style="font-size:0.9em; color: #264653; margin-top:5px;">Current Total: <span id="difficultySum">100</span>%</p>
+              <p id="difficultyTotalMessage" style="font-size:0.85rem; margin-top:0.5rem;">
+                Total: <span id="difficultySum">100</span>%
+              </p>
+            </div>
 
+            <div class="form-group">
+              <label for="additionalConditions">Special Instructions (Optional)</label>
+              <textarea id="additionalConditions" name="additionalConditions" 
+                placeholder="e.g., Include diagrams, focus on practical applications" 
+                rows="3"></textarea>
+            </div>
 
-              <label for="additionalConditions">Additional Instructions/Conditions (Optional):</label>
-              <textarea id="additionalConditions" name="additionalConditions" placeholder="e.g., All questions are compulsory. Diagrams should be neatly drawn."></textarea>
-
-              <label>Answer Key Format:</label>
-              <div class="radio-group">
-                  <label><input type="radio" name="answerKeyFormat" value="Brief" checked> Brief</label>
-                  <label><input type="radio" name="answerKeyFormat" value="Detailed"> Detailed</label>
+            <div class="form-group">
+              <label>Answer Key Format</label>
+              <div style="display: flex; gap: 2rem;">
+                <label style="font-weight: normal;">
+                  <input type="radio" name="answerKeyFormat" value="Brief" checked> Brief
+                </label>
+                <label style="font-weight: normal;">
+                  <input type="radio" name="answerKeyFormat" value="Detailed"> Detailed
+                </label>
               </div>
             </div>
           </div>
 
-          <div class="output-column"> <div class="form-section">
-                <h4>Question Types & Marks Distribution</h4>
-                <p class="mb-1" style="font-size:0.95em;">Specify the number of questions and marks for each type. Max 25 questions per type.</p>
-  
-          <div class="question-rows-container">
-              <table id="questionsTable">
-                    <thead>
-                    <tr>
-                        <th>Question Type</th>
-                        <th>Topic</th>
-                        <th>No. of Questions</th>
-                        <th>Marks per Question</th>
-                        <th>Total Marks</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-              <tbody id="questionRowsBody">
-                <!-- Dynamic rows will be added here -->
-                    </tbody>
-                  <tfoot>
-                    <tr>
-                      <td colspan="2" style="text-align: right; font-weight:bold;">Totals:</td>
-                      <td id="totalQuestions" style="font-weight:bold;">0</td>
-                      <td></td>
-                      <td id="overallTotalMarks" style="font-weight:bold;">0</td>
-                      <td></td>
-                    </tr>
-                  </tfoot>
+          <!-- Question Builder Section -->
+          <div class="question-builder">
+            <h3>Question Types & Distribution</h3>
+            <p style="color: #666; margin-bottom: 1rem;">Add different types of questions for your paper</p>
+            
+            <div class="question-table-wrapper">
+              <table class="question-table" id="questionsTable">
+                <thead>
+                  <tr>
+                    <th>Question Type</th>
+                    <th>Topic (Optional)</th>
+                    <th style="width: 120px;">No. of Questions</th>
+                    <th style="width: 120px;">Marks Each</th>
+                    <th style="width: 100px;">Total</th>
+                    <th style="width: 60px;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="questionRowsBody">
+                  <!-- Dynamic rows -->
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="2" style="text-align: right; font-weight: bold;">Grand Total:</td>
+                    <td id="totalQuestions" style="font-weight: bold; text-align: center;">0</td>
+                    <td></td>
+                    <td id="overallTotalMarks" style="font-weight: bold; text-align: center;">0</td>
+                    <td></td>
+                  </tr>
+                </tfoot>
               </table>
-    
-          <div class="add-row-container" style="margin-top: 10px; text-align: right;">
-            <button type="button" id="addQuestionRowBtn" class="button-accent">
-              <span>+ Add Question Type</span>
-            </button>
-          </div>
-        </div>
+            </div>
             
-            
-<!--            
-            <table id="questionsTable">
-                    <thead>
-                    <tr>
-                        <th>Question Type</th>
-                        <th>No. of Questions</th>
-                        <th>Marks per Question</th>
-                        <th>Total Marks</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <td colspan="3" style="text-align: right; font-weight:bold;">Overall Total Marks:</td>
-                        <td id="overallTotalMarks" style="font-weight:bold;">0</td>
-                    </tr>
-                    </tfoot>
-                </table>
-    -->
-          
-          </div>
+            <div style="text-align: right; margin-top: 1rem;">
+              <button type="button" id="addQuestionRowBtn" class="add-question-btn">
+                + Add Question Type
+              </button>
+            </div>
           </div>
         </div>
 
-        <div class="button-group text-center" style="justify-content: center;">
-          <button type="submit" id="generateBtn" class="button-primary" disabled>
-            Generate Question Paper
+        <!-- Generate Button -->
+        <div class="generate-section">
+          <button type="submit" id="generateBtn" class="generate-btn" disabled>
+            Generate My Question Paper
           </button>
         </div>
       </form>
 
-     <div id="outputSection" style="display:none;">
-  
-      <div id="pedagogicalSummary" style="display:none;">
-          <h4>📚 Assessment Framework</h4>
-          <div class="framework-summary" style="background-color: rgba(42, 157, 143, 0.05); padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--primary-color);">
-          <p id="frameworkDescription" style="margin: 0; color: var(--text-color); font-weight: 500;"></p>
+      <!-- Output Section -->
+      <div id="outputSection" class="output-wrapper" style="display:none;">
+        <div id="pedagogicalSummary" style="display:none;">
+          <div style="background: rgba(42, 157, 143, 0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">📚 Assessment Framework Applied</h4>
+            <p id="frameworkDescription" style="margin: 0; color: var(--text-color);"></p>
           </div>
-      </div>
-  
+        </div>
         
-        <h3>Generated Question Paper Preview</h3>
-        <pre id="output"></pre>
-        <div class="button-group text-center" style="justify-content: center;">
-            <button id="downloadBtn" class="button-accent">
-                Download as Word (.docx)
-            </button>
+        <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">Your Question Paper is Ready!</h3>
+        <pre id="output" style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; border: 1px solid #e0e0e0;"></pre>
+        
+        <div style="text-align: center; margin-top: 2rem;">
+          <button id="downloadBtn" class="generate-btn" style="background: var(--accent-color); color: var(--text-color);">
+            Download as Word Document
+          </button>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- ================= FOOTER ================= -->
-  <footer class="app-footer">
-    <div class="container">
-      <div class="footer-flex">
-        <div>
-          <ul class="footer-links">
-          <li><a href="/about.html">About</a></li>
-          <li><a href="/contact.html">Contact</a></li>
-          </ul>
-        </div>
-        <div class="footer-logo">
-          <img src="images/asmakam-logo.png" alt="Asmakam Labs logo">
-        </div>
-      </div>
-      <p>© <span id="yr"></span> Asmakam Innovations · All Rights Reserved</p>
-    </div>
-  </footer>
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
 
+  <!-- Footer Container -->
+  <div id="footer-container"></div>
+
+  <!-- Scripts -->
+  <script src="/config.js"></script>
+  <script src="/shared/constants.js"></script>
+  <script src="/shared/components.js"></script>
   <script>
-
-    document.getElementById("yr").textContent=new Date().getFullYear();
-
-    // Script to update difficulty sum dynamically
+    // Check authentication and initialize
+    document.addEventListener("DOMContentLoaded", () => {
+      const userEmail = localStorage.getItem('userEmail');
+      if (!userEmail) {
+        window.location.href = '/login.html';
+      } else {
+        // Initialize page with shared components
+        initializeCommonComponents({
+          currentPage: 'generator',
+          isAuthenticated: true,
+          userEmail: userEmail
+        });
+        
+        // Update progress indicators
+        updateProgressBar(1);
+      }
+    });
+    
+    // Progress bar update function
+    function updateProgressBar(step) {
+      const steps = document.querySelectorAll('.progress-step');
+      steps.forEach((s, index) => {
+        if (index < step) {
+          s.classList.add('completed');
+        } else if (index === step - 1) {
+          s.classList.add('active');
+        } else {
+          s.classList.remove('active', 'completed');
+        }
+      });
+    }
+    
+    // Show toast notification
+    function showToast(message, duration = 3000) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, duration);
+    }
+    
+    // Update difficulty sum with better styling
     const easyInput = document.getElementById('easy');
     const mediumInput = document.getElementById('medium');
     const hardInput = document.getElementById('hard');
@@ -257,22 +593,25 @@
     const difficultyTotalMessage = document.getElementById('difficultyTotalMessage');
 
     function updateDifficultySum() {
-        const easy = parseInt(easyInput.value) || 0;
-        const medium = parseInt(mediumInput.value) || 0;
-        const hard = parseInt(hardInput.value) || 0;
-        const total = easy + medium + hard;
-        difficultySumSpan.textContent = total;
-        if (total !== 100) {
-            difficultyTotalMessage.style.color = '#D8000C'; // Error red
-        } else {
-            difficultyTotalMessage.style.color = '#2A9D8F'; // Teal Green for success
-        }
-        // This validation will also be handled by validateForm in generator.js
+      const easy = parseInt(easyInput.value) || 0;
+      const medium = parseInt(mediumInput.value) || 0;
+      const hard = parseInt(hardInput.value) || 0;
+      const total = easy + medium + hard;
+      difficultySumSpan.textContent = total;
+      
+      if (total !== 100) {
+        difficultyTotalMessage.style.color = '#e74c3c';
+        difficultySumSpan.style.fontWeight = 'bold';
+      } else {
+        difficultyTotalMessage.style.color = '#27ae60';
+        difficultySumSpan.style.fontWeight = 'normal';
+      }
     }
+    
     easyInput.addEventListener('input', updateDifficultySum);
     mediumInput.addEventListener('input', updateDifficultySum);
     hardInput.addEventListener('input', updateDifficultySum);
   </script>
-  <script src="/config.js"></script>
-  <script src="generator.js"></script> </body>
+  <script src="generator.js"></script>
+</body>
 </html>
