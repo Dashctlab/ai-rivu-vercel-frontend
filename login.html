@@ -3,75 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - AI-RIVU Question Paper Generator</title>
+  <title>Login - AI-RIVU</title>
   <link rel="stylesheet" href="style.css">
-  </head>
-<body>
+  <link rel="stylesheet" href="/shared/shared.css">
+  <style>
+    /* Beautiful login page styles */
+    .login-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(42, 157, 143, 0.03) 0%, rgba(233, 196, 106, 0.03) 100%);
+      padding: 20px;
+    }
+    
+    .login-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
+      max-width: 400px;
+      width: 100%;
+    }
+    
+    .login-header {
+      background: var(--primary-color);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+    
+    .login-header h2 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: white;
+    }
+    
+    .login-header p {
+      margin: 0.5rem 0 0;
+      opacity: 0.9;
+      font-size: 1rem;
+    }
+    
+    .login-body {
+      padding: 2.5rem 2rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text-color);
+      font-weight: 500;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+    
+    .form-group input:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.1);
+    }
+    
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 1rem;
+    }
+    
+    .login-btn:hover {
+      background: #22867a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(42, 157, 143, 0.3);
+    }
+    
+    .demo-info {
+      background: rgba(42, 157, 143, 0.05);
+      border: 1px solid rgba(42, 157, 143, 0.2);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .demo-info strong {
+      color: var(--primary-color);
+    }
+    
+    .error-message {
+      background: #fee;
+      color: #c33;
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 1rem;
+      display: none;
+      font-size: 0.9rem;
+    }
+    
+    .error-message.show {
+      display: block;
+    }
+    
+    /* Loading state */
+    .login-btn.loading {
+      background: #22867a;
+      pointer-events: none;
+    }
+    
+    .login-btn.loading::after {
+      content: '';
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      margin-left: 8px;
+      border: 2px solid white;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 0.6s linear infinite;
+    }
+  </style>
+</head>
+<body style="margin: 0; background: linear-gradient(135deg, rgba(42, 157, 143, 0.03) 0%, rgba(233, 196, 106, 0.03) 100%);">
+  <!-- No header for login page - cleaner look -->
 
-<!-- =============== HEADER =============== -->
-  <header class="app-header">
-    <div class="container">
-      <div class="logo-container">
-           <a href="/home.html" aria-label="Home page">
-             <img src="images/ai-rivu-logo.png" alt="AI-RIVU Logo" class="logo-image">
-           </a>
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="login-header">
+        <img src="/images/ai-rivu-logo.png" alt="AI-RIVU" style="height: 60px; margin-bottom: 1rem; filter: brightness(0) invert(1);">
+        <h2>Welcome Back!</h2>
+        <p>Login to create question papers</p>
       </div>
-      <nav>
-        <ul class="nav-list tight">
-          <li><a href="/about.html">About</a></li>
-          <li><a href="/contact.html">Contact</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-
-
-<!-- =============== main content =============== -->
-
-  <main class="main-content login-page-wrapper">
-    <div class="login-container">
-      <h2>Welcome!</h2>
-      <p style="font-family: var(--font-body); color: var(--secondary-text-color); margin-bottom: 25px;">
-        Please login to access the Staging Question Paper Generator.
-      </p>
-      <form id="loginForm">
-        <div class="form-group">
-          <label for="email">User ID</label>
-          <input type="email" id="email" required placeholder="e.g., teacher@example.com">
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" required placeholder="Enter your password">
-        </div>
-        <button type="submit">Login Securely</button>
-      </form>
-      <p id="error-message" style="color: red; font-weight: bold;"></p> </div>
-  </main>
-
-  <!-- ================= FOOTER ================= -->
-  <footer class="app-footer">
-    <div class="container">
-      <div class="footer-flex">
-        <div>
-          <ul class="footer-links">
-          <li><a href="/about.html">About</a></li>
-          <li><a href="/contact.html">Contact</a></li>
-          </ul>
-        </div>
-        <div class="footer-logo">
-          <img src="images/asmakam-logo.png" alt="Asmakam Labs logo">
+      
+      <div class="login-body">
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" required placeholder="teacher@school.com" autocomplete="email">
+          </div>
+          
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" required placeholder="Enter your password" autocomplete="current-password">
+          </div>
+          
+          <button type="submit" class="login-btn" id="loginButton">
+            Login to AI-RIVU
+          </button>
+        </form>
+        
+        <div id="error-message" class="error-message"></div>
+        
+        <div class="demo-info">
+          <strong>Demo Account:</strong><br>
+          Email: teacher@lnvn.com<br>
+          Password: Contact admin
         </div>
       </div>
-      <p>© <span id="yr"></span> Asmakam Innovations · All Rights Reserved</p>
     </div>
-  </footer>
+  </div>
 
-  <script>
-    document.getElementById('yr').textContent = new Date().getFullYear();
-  </script>
-
-
+  <!-- Scripts -->
   <script src="/config.js"></script>
+  <script src="/shared/constants.js"></script>
+  <script src="/shared/components.js"></script>
   <script src="login.js"></script>
 </body>
 </html>
