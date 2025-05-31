@@ -1,5 +1,5 @@
 // Updated generator.js with curriculum-specific subject mapping
-const backendURL = '${window.APP_CONFIG.BACKEND_URL}/generate';
+const backendURL = `${window.APP_CONFIG.BACKEND_URL}/generate`;
 let classDropdown, subjectDropdown, curriculumDropdown;
 
 // ---> ADDED: Global variable to store the raw generated text
@@ -454,218 +454,233 @@ async function downloadQuestionPaper() {
     const subject = downloadBtn.dataset.subject;
     const className = downloadBtn.dataset.classname;
     const curriculum = downloadBtn.dataset.curriculum;
-    const totalMarks = downloadBtn.dataset.totalmarks;
-    const timeDurationText = downloadBtn.dataset.timedurationtext; // Use the stored text like "1 Hour"
-    const text = generatedPaperText; // Use the stored text
+    const timeDurationText = downloadBtn.dataset.timedurationtext;
+    const text = generatedPaperText;
 
-    // Basic check if data is available
-    if (!subject || !text || !className || !curriculum || !totalMarks || !timeDurationText) {
+    // 🆕 FIX: Calculate actual total marks
+    const actualTotalMarks = document.getElementById('overallTotalMarks').textContent || '0';
+
+    // Basic validation
+    if (!subject || !text || !className || !curriculum || !timeDurationText) {
          alert("Required data for download is missing or incomplete. Please generate the paper again.");
-         console.error("Missing data attributes/text for download. Attributes:", downloadBtn.dataset, "Text available:", !!text);
          return;
     }
 
-     // Check if text content is valid
-     if (!text || text.trim() === '' || text.includes('Generating, please wait...') || text.includes('Error:')) {
+    if (!text || text.trim() === '' || text.includes('Generating, please wait...') || text.includes('Error:')) {
          alert("No valid content to download. Please generate a question paper first.");
          return;
-     }
+    }
 
     console.log("Processing output text for download...");
 
-    // Construct metadata from stored data
-    const metadata = {
-      curriculum: curriculum,
-      className: className,
-      totalMarks: totalMarks,
-      timeDuration: timeDurationText // Use the text format (e.g., "1 Hour")
-    };
+    // 🆕 IMPROVED: Clean text preprocessing
+    let cleanedText = text
+        .replace(/\*\*/g, '') // Remove markdown bold
+        .replace(/^(question paper|curriculum board|class|subject|total time).*$/gmi, '') // Remove header info
+        .replace(/^general instructions \/ questions.*$/gmi, '') // Remove mixed header
+        .replace(/^\d+\.\s*(tamil nadu state board|cbse|karnataka state board).*$/gmi, (match) => {
+            // Clean curriculum headers - remove numbering
+            return match.replace(/^\d+\.\s*/, '');
+        });
 
-    // Parse the text to identify sections and questions
-    const sections = [];
-    const answerKey = [];
-    let currentSection = null;
-    let isAnswerKey = false;
-    const lines = text.split('\n');
+    // 🆕 IMPROVED: Better answer key detection and separation
+    const answerKeyMarkers = [
+        /^(\*\*|__)?answer key(\*\*|__)?$/i,
+        /^---+.*answer key.*---+$/i,
+        /^answer key:?$/i,
+        /^\*\*answer key\*\*$/i,
+        /^-{3,}$/  // Separator lines
+    ];
 
+    // Split text at answer key
+    let questionPart = '';
+    let answerPart = '';
+    let answerKeyFound = false;
+    
+    const lines = cleanedText.split('\n');
+    
     for (let i = 0; i < lines.length; i++) {
-      let line = lines[i].trim().replace(/\*\*/g, '');   // strip Markdown bold
-      if (/^(\*\*?)?(question paper|curriculum board|class|subject|total time)/i.test(line)) {
-        continue;           // ignore; don't add to sections or questions
+        const line = lines[i].trim();
+        
+        // Check if this line is an answer key header or separator
+        const isAnswerKeyHeader = answerKeyMarkers.some(regex => regex.test(line));
+        
+        if (isAnswerKeyHeader && !answerKeyFound) {
+            answerKeyFound = true;
+            // Skip any separator lines that might follow
+            let j = i + 1;
+            while (j < lines.length && /^[-=_\s]*$/.test(lines[j].trim())) {
+                j++;
+            }
+            i = j - 1;
+            continue;
         }
-        if (!line) continue; // Skip empty lines
-
-        // Improved Answer Key detection
-        if (/^(\*\*|__)?answer key(\*\*|__)?$/i.test(line)) {
-          isAnswerKey = true;
-          // Check if the next line is also part of the header (like a separator ===)
-          if (i + 1 < lines.length && /^-+|=+$/.test(lines[i + 1].trim())) {
-              i++; // Skip the separator line
-          }
-          continue;
-        }
-
-        if (isAnswerKey) {
-           // Process answer key lines: Keep numbering if present, otherwise add as is
-           const answerMatch = line.match(/^(\d+\.?\)?)\s*(.*)$/); // Match "1.", "1)", "1" etc.
-           if (answerMatch) {
-                answerKey.push(answerMatch[2].trim());        // keep answer ONLY
-           } else if (line) { // Only add non-empty lines
-               answerKey.push(line); // Add line as is if no standard numbering
-           }
+        
+        if (answerKeyFound) {
+            // Only add non-empty, non-separator lines to answer part
+            if (line && !line.match(/^[-=_\s]*$/) && !answerKeyMarkers.some(regex => regex.test(line))) {
+                answerPart += lines[i] + '\n';
+            }
         } else {
-           // Process question paper lines
-           // Regex to detect potential section headers (more flexible)
-          const sectionHeaderRegex = new RegExp(
-            // optional Markdown heading  ##  or  #  
-            String.raw`^(?:#+\s*)?` +
-            // SECTION A,  PART 1,  etc.
-            String.raw`(?:SECTION|PART)\s*([A-Z0-9]+)?\s*[:\-]?.*$` +
-            // OR any line that already contains "QUESTIONS" or "MARKS:"
-            String.raw`|^.*(QUESTIONS|MARKS:\s*\d+).*$`,
-            'i'
-          );
-           // Regex to detect numbered list items (more robust)
-           // Matches "1.", "1)", "a.", "a)", "(i)" etc.
-           const numberedItemRegex = /^\s*(\d+\.|\(?[a-z]\)|\(?[ivx]+\))\s+/i;
-
-          if (sectionHeaderRegex.test(line) && line.length < 80) {
-              // ------- SECTION HEADER -------
-              currentSection = { title: line, questions: [] };
-              sections.push(currentSection);
-          
-          } else if (                             // ONE (and only one) else‑if
-              currentSection &&
-              numberedItemRegex.test(line) &&
-              /[?]|[:.]$/.test(line)              // heuristic: looks like a real question stem
-          ) {
-              // -------- NEW QUESTION --------
-              // strip the numbering and store the stem
-              currentSection.questions.push(
-                  line.replace(numberedItemRegex, '').trim()
-              );
-          
-          } else if (currentSection) {
-              // ------ CONTINUATION LINE (options, extra text, etc.) ------
-              if (currentSection.questions.length > 0) {
-                   currentSection.questions[currentSection.questions.length - 1] +=
-                    '\n' + line.trim();      // keep "A)", "B) …" so Word shows them
-              } else {
-                  currentSection.questions.push(line); // first line in otherwise‑empty section
-              }
-          
-          } else if (line) {
-              // -------- TEXT BEFORE ANY SECTION FOUND --------
-              currentSection = {
-                  title: 'General Instructions / Questions',
-                  questions: [line]
-              };
-              sections.push(currentSection);
-          }
+            // Add to question part, but skip answer key markers and separators
+            if (!isAnswerKeyHeader && line && !line.match(/^[-=_\s]*$/)) {
+                questionPart += lines[i] + '\n';
+            }
         }
     }
 
-    // Ensure we have at least one section if questions were expected
-    if (sections.length === 0 && !isAnswerKey && text.trim() !== '') {
-      console.warn("Parsing resulted in no sections, adding default.");
-      sections.push({
-        title: "Questions",
-        questions: ["Could not automatically parse sections. Full text included.", text] // Include full text
-      });
+    // 🆕 IMPROVED: Parse questions with better structure detection
+    const sections = [];
+    let currentSection = null;
+    const questionLines = questionPart.split('\n');
+
+    for (let i = 0; i < questionLines.length; i++) {
+        let line = questionLines[i].trim();
+        
+        // Skip empty lines
+        if (!line) continue;
+
+        // 🆕 IMPROVED: Better section header detection
+        const sectionHeaderRegex = /^(section|part|பிரிவு)\s*([a-zA-Z0-9அ-ஹ]+)?[\s:\-]*(.*)/i;
+        
+        // Detect curriculum info lines (should be treated as general info, not questions)
+        const curriculumInfoRegex = /^(tamil nadu state board|cbse|karnataka state board|time allowed|maximum marks|time:)/i;
+        
+        if (sectionHeaderRegex.test(line) && line.length < 100) {
+            // This is a section header
+            currentSection = { title: line, questions: [] };
+            sections.push(currentSection);
+        } else if (curriculumInfoRegex.test(line)) {
+            // This is curriculum/exam info - add to a general info section
+            if (!currentSection || currentSection.title !== 'Exam Information') {
+                currentSection = { title: 'Exam Information', questions: [] };
+                sections.push(currentSection);
+            }
+            currentSection.questions.push(line);
+        } else if (currentSection) {
+            // 🆕 IMPROVED: Better question detection
+            const numberedQuestionRegex = /^\s*(\d+)[\.\)]\s*(.*)/;
+            
+            if (numberedQuestionRegex.test(line)) {
+                // This is a new numbered question
+                const match = line.match(numberedQuestionRegex);
+                const questionText = match[2].trim();
+                
+                // Skip if this looks like curriculum info that got numbered
+                if (!curriculumInfoRegex.test(questionText)) {
+                    currentSection.questions.push(questionText);
+                }
+            } else if (currentSection.questions.length > 0) {
+                // This is a continuation of the previous question (like MCQ options)
+                const lastIndex = currentSection.questions.length - 1;
+                currentSection.questions[lastIndex] += '\n' + line;
+            } else if (line.length > 0 && !curriculumInfoRegex.test(line)) {
+                // First content in section (not curriculum info)
+                currentSection.questions.push(line);
+            }
+        } else {
+            // No current section, but we have content - create a default section
+            if (!curriculumInfoRegex.test(line)) {
+                currentSection = { title: 'Questions', questions: [line] };
+                sections.push(currentSection);
+            }
+        }
     }
 
-    // Prepare the payload using the retrieved and parsed data
-    const payload = {
-      subject: subject,
-      metadata: metadata,
-      sections: sections,
-      answerKey: answerKey
+    // 🆕 IMPROVED: Parse answer key more carefully
+    const answerKey = [];
+    if (answerPart.trim()) {
+        const answerLines = answerPart.split('\n');
+        
+        for (const line of answerLines) {
+            const trimmed = line.trim();
+            if (!trimmed) continue;
+            
+            // Skip section headers in answer key
+            if (/^(section|part|பிரிவு)/i.test(trimmed)) continue;
+            
+            // Clean answer text - remove question numbers and common prefixes
+            let cleanAnswer = trimmed
+                .replace(/^\d+[\.\)]\s*/, '') // Remove leading numbers
+                .replace(/^answer\s*:?\s*/i, '') // Remove "Answer:" prefix
+                .replace(/^ans\s*:?\s*/i, '') // Remove "Ans:" prefix
+                .trim();
+            
+            if (cleanAnswer) {
+                answerKey.push(cleanAnswer);
+            }
+        }
+    }
+
+    // Construct metadata with fixed total marks
+    const metadata = {
+        curriculum: curriculum,
+        className: className,
+        totalMarks: actualTotalMarks, // 🆕 FIX: Use actual calculated marks
+        timeDuration: timeDurationText
     };
 
-    console.log("Sending payload to server:", JSON.stringify(payload, null, 2)); // Pretty print for easier debugging
+    // Prepare the payload
+    const payload = {
+        subject: subject,
+        metadata: metadata,
+        sections: sections,
+        answerKey: answerKey
+    };
+
+    console.log("Sending payload to server:", JSON.stringify(payload, null, 2));
 
     try {
-      const response = await fetch(
-        `${window.APP_CONFIG.BACKEND_URL}/download-docx`,
-        {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'useremail': localStorage.getItem('userEmail') || 'anonymous'
-          },
-          body: JSON.stringify(payload)
+        const response = await fetch(
+            `${window.APP_CONFIG.BACKEND_URL}/download-docx`,
+            {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'useremail': localStorage.getItem('userEmail') || 'anonymous'
+                },
+                body: JSON.stringify(payload)
+            }
+        );
+
+        if (!response.ok) {
+            let errorData = { message: `Server responded with status ${response.status}` };
+            try {
+                errorData = await response.json();
+            } catch (e) {
+                console.warn("Could not parse error response as JSON");
+            }
+            throw new Error(`Download failed: ${errorData.message || response.statusText}`);
         }
-      );
 
-      console.log("Server response status:", response.status);
-
-      if (!response.ok) {
-        let errorData = { message: `Server responded with status ${response.status}` };
-        try {
-          // Try to get specific error message from backend JSON response
-          errorData = await response.json();
-        } catch (e) {
-          console.warn("Could not parse error response as JSON. Response text:", await response.text());
+        const blob = await response.blob();
+        
+        if (blob.size === 0) {
+            throw new Error("Received empty file from server.");
         }
-        console.error("Download failed with status:", response.status, errorData);
-        throw new Error(`Download failed: ${errorData.message || response.statusText}`);
-      }
 
-      console.log("Download response received, processing blob...");
-      const blob = await response.blob();
+        // Download the file
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        const safeSubject = subject.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        a.download = `Question_Paper_${safeSubject || 'Untitled'}.docx`;
+        document.body.appendChild(a);
+        a.click();
 
-       // Check blob type - should be WordprocessingML
-       if (!blob.type.includes('officedocument.wordprocessingml.document')) {
-           console.warn(`Received blob of type ${blob.type}, expected Word document. Attempting download anyway.`);
-       }
+        // Cleanup
+        window.URL.revokeObjectURL(url);
+        a.remove();
 
-      console.log("Blob received with type:", blob.type, "Size:", blob.size);
-      if (blob.size === 0) {
-           throw new Error("Received empty file from server.");
-      }
-
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.style.display = 'none'; // Hide the link
-      a.href = url;
-      // Sanitize filename slightly
-      const safeSubject = subject.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-      a.download = `Question_Paper_${safeSubject || 'Untitled'}.docx`;
-      document.body.appendChild(a);
-      console.log("Triggering download...");
-      a.click();
-
-      // Cleanup
-      window.URL.revokeObjectURL(url);
-      a.remove();
-
-      console.log("Download initiated successfully");
+        console.log("Download completed successfully");
 
     } catch (error) {
-       console.error("Download error:", error);
-       alert(`Failed to download Word file: ${error.message}`);
-
-       // Fallback method - try downloading the raw text (keep this)
-       try {
-         console.log("Attempting fallback download method as text file...");
-         const fallbackBlob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-         const fallbackUrl = window.URL.createObjectURL(fallbackBlob);
-         const fallbackA = document.createElement('a');
-         fallbackA.style.display = 'none';
-         fallbackA.href = fallbackUrl;
-         const safeSubject = subject.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-         fallbackA.download = `Question_Paper_${safeSubject || 'Untitled'}_RAW.txt`;
-         document.body.appendChild(fallbackA);
-         fallbackA.click();
-         window.URL.revokeObjectURL(fallbackUrl);
-         fallbackA.remove();
-         console.log("Fallback download (text) completed");
-       } catch (fallbackError) {
-         console.error("Fallback download also failed:", fallbackError);
-         alert('Primary download failed, and fallback text download also failed.');
-       }
+        console.error("Download error:", error);
+        alert(`Failed to download Word file: ${error.message}`);
     }
 }
+
 
 // Logout function (No changes needed)
 function logout() {
