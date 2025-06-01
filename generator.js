@@ -387,6 +387,12 @@ async function generateQuestionPaper(e) {
   if (!validateForm() || isGenerating) {
     return;
   }
+      // ADD device detection
+    const deviceInfo = {
+        screenSize: `${window.screen.width}x${window.screen.height}`,
+        viewport: `${window.innerWidth}x${window.innerHeight}`,
+        userAgent: navigator.userAgent
+    };
 
   showLoadingProgress();
 
@@ -437,6 +443,7 @@ async function generateQuestionPaper(e) {
       headers: { 
         'Content-Type': 'application/json',
         'useremail': localStorage.getItem('userEmail') || 'anonymous'
+        'X-Screen-Size': deviceInfo.screenSize
       },
       body: JSON.stringify(payload)
     });
