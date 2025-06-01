@@ -1,7 +1,7 @@
-// Shared UI Components
+// Enhanced Shared UI Components with Mobile Support
 
 /**
- * Renders the common header
+ * Renders the common header with mobile navigation
  * @param {Object} options - Configuration options
  * @param {string} options.currentPage - Current page identifier
  * @param {boolean} options.isAuthenticated - Whether user is logged in
@@ -98,10 +98,196 @@ function initializeCommonComponents(pageConfig = {}) {
     footerContainer.innerHTML = renderFooter();
   }
   
+  // Add mobile navigation toggle if needed
+  setupMobileNavigation();
+  
   // Add common event listeners
   document.addEventListener('DOMContentLoaded', () => {
     // Add any common initialization here
   });
+}
+
+/**
+ * Setup mobile navigation functionality
+ */
+function setupMobileNavigation() {
+  // Add mobile menu styles if not already present
+  if (!document.getElementById('mobile-nav-styles')) {
+    const mobileStyles = document.createElement('style');
+    mobileStyles.id = 'mobile-nav-styles';
+    mobileStyles.textContent = `
+      .mobile-menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+      }
+      
+      @media (max-width: 768px) {
+        .mobile-menu-toggle {
+          display: block;
+        }
+        
+        .nav-list {
+          display: none;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: var(--primary-color);
+          flex-direction: column;
+          padding: 1rem;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          z-index: 1000;
+        }
+        
+        .nav-list.mobile-open {
+          display: flex;
+        }
+        
+        .nav-list li {
+          margin: 0.5rem 0;
+          text-align: center;
+        }
+        
+        .nav-list li a {
+          display: block;
+          padding: 0.75rem;
+          border-radius: 4px;
+          transition: background 0.3s;
+        }
+        
+        .nav-list li a:hover {
+          background: rgba(255,255,255,0.1);
+        }
+        
+        #userEmailDisplay {
+          color: white;
+          font-size: 0.9rem;
+          padding: 0.5rem;
+        }
+        
+        .logout-button {
+          background: var(--accent-color);
+          color: var(--text-color);
+          border: none;
+          padding: 0.5rem 1rem;
+          border-radius: 4px;
+          cursor: pointer;
+          font-weight: 600;
+        }
+        
+        .primary-btn {
+          background: var(--accent-color);
+          color: var(--text-color);
+          border: none;
+          padding: 0.75rem 1.5rem;
+          border-radius: 4px;
+          cursor: pointer;
+          font-weight: 600;
+          text-decoration: none;
+          display: inline-block;
+        }
+      }
+    `;
+    document.head.appendChild(mobileStyles);
+  }
+}
+
+/**
+ * Show notification message
+ */
+function showNotification(message, type = 'success', duration = 3000) {
+  // Remove existing notifications
+  const existingNotifications = document.querySelectorAll('.notification');
+  existingNotifications.forEach(notif => notif.remove());
+  
+  // Create new notification
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.textContent = message;
+  
+  // Add to page
+  document.body.appendChild(notification);
+  
+  // Auto remove after duration
+  setTimeout(() => {
+    if (notification && notification.parentNode) {
+      notification.parentNode.removeChild(notification);
+    }
+  }, duration);
+}
+
+/**
+ * Utility function to get user authentication status
+ */
+function isUserAuthenticated() {
+  return !!localStorage.getItem('userEmail');
+}
+
+/**
+ * Utility function to get current user email
+ */
+function getCurrentUserEmail() {
+  return localStorage.getItem('userEmail');
+}
+
+/**
+ * Utility function to format user display name
+ */
+function formatUserDisplayName(email) {
+  if (!email) return '';
+  return email.split('@')[0];
+}
+
+/**
+ * Handle responsive navigation for mobile
+ */
+function handleMobileNavigation() {
+  const header = document.querySelector('.app-header');
+  if (!header) return;
+  
+  // Add mobile menu toggle button if not present
+  const existingToggle = header.querySelector('.mobile-menu-toggle');
+  if (!existingToggle) {
+    const nav = header.querySelector('nav');
+    const navList = header.querySelector('.nav-list');
+    
+    if (nav && navList) {
+      const toggleButton = document.createElement('button');
+      toggleButton.className = 'mobile-menu-toggle';
+      toggleButton.innerHTML = '☰';
+      toggleButton.setAttribute('aria-label', 'Toggle mobile menu');
+      
+      // Insert toggle button before nav
+      nav.insertBefore(toggleButton, navList);
+      
+      // Add click handler
+      toggleButton.addEventListener('click', () => {
+        navList.classList.toggle('mobile-open');
+        toggleButton.innerHTML = navList.classList.contains('mobile-open') ? '✕' : '☰';
+      });
+      
+      // Close menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!header.contains(e.target)) {
+          navList.classList.remove('mobile-open');
+          toggleButton.innerHTML = '☰';
+        }
+      });
+      
+      // Close menu when window is resized to desktop
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+          navList.classList.remove('mobile-open');
+          toggleButton.innerHTML = '☰';
+        }
+      });
+    }
+  }
 }
 
 // Make functions available globally
@@ -109,3 +295,16 @@ window.renderHeader = renderHeader;
 window.renderFooter = renderFooter;
 window.logout = logout;
 window.initializeCommonComponents = initializeCommonComponents;
+window.showNotification = showNotification;
+window.isUserAuthenticated = isUserAuthenticated;
+window.getCurrentUserEmail = getCurrentUserEmail;
+window.formatUserDisplayName = formatUserDisplayName;
+window.handleMobileNavigation = handleMobileNavigation;
+
+// Auto-setup mobile navigation when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  // Small delay to ensure header is rendered
+  setTimeout(() => {
+    handleMobileNavigation();
+  }, 100);
+});
