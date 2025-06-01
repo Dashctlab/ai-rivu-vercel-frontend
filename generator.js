@@ -9,53 +9,6 @@ let generatedPaperText = '';
 let isGenerating = false;
 let progressTimeout1, progressTimeout2, progressTimeout3;
 
-// ===== CURRICULUM-SPECIFIC CLASS → SUBJECT MAPPING =====
-const curriculumSubjectMap = {
-  'CBSE': {
-    'Class 1': ['English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
-    'Class 2': ['English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
-    'Class 3': ['English', 'Mathematics', 'Environmental Studies', 'Computer Science', 'General Knowledge'],
-    'Class 4': ['English', 'Mathematics', 'Environmental Studies', 'Computer Science', 'General Knowledge'],
-    'Class 5': ['English', 'Mathematics', 'Environmental Studies', 'Computer Science', 'General Knowledge'],
-    'Class 6': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
-    'Class 7': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
-    'Class 8': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
-    'Class 9': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Information Technology', 'Sanskrit'],
-    'Class 10': ['English', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Information Technology', 'Sanskrit'],
-    'Class 11': ['English', 'Mathematics', 'Physics', 'Chemistry', 'Biology', 'Computer Science', 'Economics', 'Business Studies', 'Accountancy', 'Political Science', 'History', 'Geography', 'Psychology'],
-    'Class 12': ['English', 'Mathematics', 'Physics', 'Chemistry', 'Biology', 'Computer Science', 'Economics', 'Business Studies', 'Accountancy', 'Political Science', 'History', 'Geography', 'Psychology']
-  },
-  
-  'Karnataka State Board': {
-    'Class 1': ['English', 'Kannada', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
-    'Class 2': ['English', 'Kannada', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
-    'Class 3': ['English', 'Kannada', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
-    'Class 4': ['English', 'Kannada', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
-    'Class 5': ['English', 'Kannada', 'Mathematics', 'Science', 'Social Science', 'Computer Science'],
-    'Class 6': ['English', 'Kannada', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
-    'Class 7': ['English', 'Kannada', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
-    'Class 8': ['English', 'Kannada', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
-    'Class 9': ['English', 'Kannada', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
-    'Class 10': ['English', 'Kannada', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
-    // Class 11 & 12 intentionally excluded for Karnataka
-  },
-  
-  'Tamil Nadu State Board': {
-    'Class 1': ['Tamil', 'English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
-    'Class 2': ['Tamil', 'English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
-    'Class 3': ['Tamil', 'English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
-    'Class 4': ['Tamil', 'English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
-    'Class 5': ['Tamil', 'English', 'Mathematics', 'Environmental Studies', 'General Knowledge'],
-    'Class 6': ['Tamil', 'English', 'Mathematics', 'Science', 'Social Science', 'Computer Science'],
-    'Class 7': ['Tamil', 'English', 'Mathematics', 'Science', 'Social Science', 'Computer Science'],
-    'Class 8': ['Tamil', 'English', 'Mathematics', 'Science', 'Social Science', 'Computer Science'],
-    'Class 9': ['Tamil', 'English', 'Mathematics', 'Science', 'Social Science', 'Computer Science'],
-    'Class 10': ['Tamil', 'English', 'Mathematics', 'Science', 'Social Science', 'Computer Science'],
-    'Class 11': ['Tamil', 'English', 'Physics', 'Chemistry', 'Mathematics', 'Biology', 'Computer Science', 'Commerce', 'Accountancy', 'Economics', 'History', 'Geography', 'Political Science'],
-    'Class 12': ['Tamil', 'English', 'Physics', 'Chemistry', 'Mathematics', 'Biology', 'Computer Science', 'Commerce', 'Accountancy', 'Economics', 'History', 'Geography', 'Political Science']
-  }
-};
-
 // List of question types
 const questionTypes = [
   'MCQ', 'Short Answer', 'Long Answer', 'True/False', 'Fill in the Blanks',
@@ -238,57 +191,92 @@ function showToast(message, duration = 3000, isError = false) {
 }
 
 // ===== HELPER FUNCTIONS =====
-function updateSubjectDropdown(curriculum, selectedClass) {
+
+async function updateSubjectDropdown(curriculum, selectedClass) {
   if (!subjectDropdown) return;
   
-  subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
+  subjectDropdown.innerHTML = '<option value="">Loading subjects...</option>';
+  subjectDropdown.disabled = true;
   
   if (!curriculum || !selectedClass) {
-    subjectDropdown.disabled = true;
+    subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
     return;
   }
   
-  const subjects = curriculumSubjectMap[curriculum]?.[selectedClass] || [];
-  
-  if (subjects.length > 0) {
-    subjects.forEach(subject => {
-      const option = document.createElement('option');
-      option.value = subject;
-      option.textContent = subject;
-      subjectDropdown.appendChild(option);
-    });
-    subjectDropdown.disabled = false;
-  } else {
-    subjectDropdown.disabled = true;
+  try {
+    const response = await fetch(`${window.APP_CONFIG.BACKEND_URL}/api/curriculum?board=${encodeURIComponent(curriculum)}&class=${encodeURIComponent(selectedClass)}`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to load subjects');
+    }
+    
+    const data = await response.json();
+    const subjects = data.subjects || [];
+    
+    subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
+    
+    if (subjects.length > 0) {
+      subjects.forEach(subject => {
+        const option = document.createElement('option');
+        option.value = subject;
+        option.textContent = subject;
+        subjectDropdown.appendChild(option);
+      });
+      subjectDropdown.disabled = false;
+    } else {
+      subjectDropdown.innerHTML = '<option value="">No subjects available</option>';
+    }
+  } catch (error) {
+    console.error('Error loading subjects:', error);
+    subjectDropdown.innerHTML = '<option value="">Error loading subjects</option>';
+    showToast('Unable to load subjects. Please check your connection and try again.', 5000, true);
   }
 }
 
-function updateClassDropdown(curriculum) {
+
+
+async function updateClassDropdown(curriculum) {
   if (!classDropdown || !subjectDropdown) return;
   
-  classDropdown.innerHTML = '<option value="">Select Class</option>';
+  classDropdown.innerHTML = '<option value="">Loading classes...</option>';
   classDropdown.disabled = true;
   subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
   subjectDropdown.disabled = true;
 
-  if (curriculum) {
-    const availableClasses = Object.keys(curriculumSubjectMap[curriculum] || {});
+  if (!curriculum) {
+    classDropdown.innerHTML = '<option value="">Select Class</option>';
+    return;
+  }
+
+  try {
+    const response = await fetch(`${window.APP_CONFIG.BACKEND_URL}/api/curriculum?board=${encodeURIComponent(curriculum)}`);
     
-    // Filter out Class 11 & 12 for Karnataka State Board
-    const filteredClasses = curriculum === 'Karnataka State Board' 
-      ? availableClasses.filter(cls => !['Class 11', 'Class 12'].includes(cls))
-      : availableClasses;
-      
-    filteredClasses.forEach(className => {
-      const option = document.createElement('option');
-      option.value = className;
-      option.textContent = className;
-      classDropdown.appendChild(option);
-    });
-    classDropdown.disabled = false;
+    if (!response.ok) {
+      throw new Error('Failed to load classes');
+    }
+    
+    const data = await response.json();
+    const classes = data.classes || [];
+    
+    classDropdown.innerHTML = '<option value="">Select Class</option>';
+    
+    if (classes.length > 0) {
+      classes.forEach(className => {
+        const option = document.createElement('option');
+        option.value = className;
+        option.textContent = className;
+        classDropdown.appendChild(option);
+      });
+      classDropdown.disabled = false;
+    } else {
+      classDropdown.innerHTML = '<option value="">No classes available</option>';
+    }
+  } catch (error) {
+    console.error('Error loading classes:', error);
+    classDropdown.innerHTML = '<option value="">Error loading classes</option>';
+    showToast('Unable to load classes. Please check your connection and try again.', 5000, true);
   }
 }
-
 // ===== QUESTION ROW MANAGEMENT =====
 function addQuestionRow() {
   if (questionRowCount >= MAX_QUESTION_ROWS) return;
@@ -777,14 +765,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Curriculum change handler
-  curriculumDropdown.addEventListener('change', () => {
-    updateClassDropdown(curriculumDropdown.value);
+  curriculumDropdown.addEventListener('change', async () => {
+   await updateClassDropdown(curriculumDropdown.value);
     validateForm();
   });
 
   // Class change handler
-  classDropdown.addEventListener('change', () => {
-    updateSubjectDropdown(curriculumDropdown.value, classDropdown.value);
+  classDropdown.addEventListener('change', async () => {
+    await updateSubjectDropdown(curriculumDropdown.value, classDropdown.value);
     validateForm();
   });
 
