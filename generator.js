@@ -442,7 +442,7 @@ async function generateQuestionPaper(e) {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'useremail': localStorage.getItem('userEmail') || 'anonymous'
+        'useremail': localStorage.getItem('userEmail') || 'anonymous',
         'X-Screen-Size': deviceInfo.screenSize
       },
       body: JSON.stringify(payload)
