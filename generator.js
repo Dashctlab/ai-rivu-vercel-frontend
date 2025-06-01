@@ -1,4 +1,4 @@
-// Enhanced generator.js with Phase 1 improvements
+// Complete Enhanced generator.js with all functionality
 const backendURL = `${window.APP_CONFIG.BACKEND_URL}/generate`;
 let classDropdown, subjectDropdown, curriculumDropdown;
 
@@ -37,7 +37,7 @@ const curriculumSubjectMap = {
     'Class 8': ['English', 'Kannada', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
     'Class 9': ['English', 'Kannada', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
     'Class 10': ['English', 'Kannada', 'Mathematics', 'Science', 'Social Science', 'Computer Science', 'Sanskrit'],
-    // Note: Class 11 & 12 hidden for Karnataka State Board
+    // Class 11 & 12 intentionally excluded for Karnataka
   },
   
   'Tamil Nadu State Board': {
@@ -95,11 +95,11 @@ function validateForm() {
   const errors = [];
   
   // Check required fields
-  const curriculum = curriculumDropdown.value;
-  const selectedClass = classDropdown.value;
-  const selectedSubject = subjectDropdown.value;
-  const assessment = document.getElementById('assessment').value;
-  const specificTopic = document.getElementById('specificTopic').value;
+  const curriculum = curriculumDropdown?.value || '';
+  const selectedClass = classDropdown?.value || '';
+  const selectedSubject = subjectDropdown?.value || '';
+  const assessment = document.getElementById('assessment')?.value || '';
+  const specificTopic = document.getElementById('specificTopic')?.value || '';
   
   if (!curriculum) {
     errors.push('Please select a Curriculum Board');
@@ -122,9 +122,9 @@ function validateForm() {
   }
   
   // Check difficulty percentages
-  const easy = parseInt(document.getElementById('easy').value) || 0;
-  const medium = parseInt(document.getElementById('medium').value) || 0;
-  const hard = parseInt(document.getElementById('hard').value) || 0;
+  const easy = parseInt(document.getElementById('easy')?.value) || 0;
+  const medium = parseInt(document.getElementById('medium')?.value) || 0;
+  const hard = parseInt(document.getElementById('hard')?.value) || 0;
   
   if (easy + medium + hard !== 100) {
     errors.push('Difficulty percentages must add up to 100%');
@@ -133,8 +133,8 @@ function validateForm() {
   // Check for at least one valid question row
   let hasValidRow = false;
   document.querySelectorAll('#questionRowsBody tr').forEach(row => {
-    const type = row.querySelector('.question-type').value;
-    const num = parseInt(row.querySelector('.numQuestions').value) || 0;
+    const type = row.querySelector('.question-type')?.value || '';
+    const num = parseInt(row.querySelector('.numQuestions')?.value) || 0;
     if (type && num > 0) {
       hasValidRow = true;
     }
@@ -149,7 +149,9 @@ function validateForm() {
   
   // Enable/disable generate button
   const generateBtn = document.getElementById('generateBtn');
-  generateBtn.disabled = errors.length > 0 || isGenerating;
+  if (generateBtn) {
+    generateBtn.disabled = errors.length > 0 || isGenerating;
+  }
   
   return errors.length === 0;
 }
@@ -162,23 +164,33 @@ function showLoadingProgress() {
   const outputSection = document.getElementById('outputSection');
   
   isGenerating = true;
-  loadingProgress.classList.add('show');
-  outputSection.style.display = 'none';
-  generateBtn.classList.add('loading');
-  generateBtn.disabled = true;
-  generateBtn.textContent = 'Generating...';
+  
+  if (loadingProgress) loadingProgress.classList.add('show');
+  if (outputSection) outputSection.style.display = 'none';
+  
+  if (generateBtn) {
+    generateBtn.classList.add('loading');
+    generateBtn.disabled = true;
+    generateBtn.textContent = 'Generating...';
+  }
   
   // Progressive messages
   progressTimeout1 = setTimeout(() => {
-    progressMessage.textContent = 'AI is still thinking and working on your paper...';
+    if (progressMessage) {
+      progressMessage.textContent = 'AI is still thinking and working on your paper...';
+    }
   }, 10000);
   
   progressTimeout2 = setTimeout(() => {
-    progressMessage.textContent = 'AI is working hard to create the perfect paper for you...';
+    if (progressMessage) {
+      progressMessage.textContent = 'AI is working hard to create the perfect paper for you...';
+    }
   }, 20000);
   
   progressTimeout3 = setTimeout(() => {
-    progressMessage.textContent = 'Almost there! AI is finalizing your question paper...';
+    if (progressMessage) {
+      progressMessage.textContent = 'Almost there! AI is finalizing your question paper...';
+    }
   }, 30000);
 }
 
@@ -187,10 +199,14 @@ function hideLoadingProgress() {
   const generateBtn = document.getElementById('generateBtn');
   
   isGenerating = false;
-  loadingProgress.classList.remove('show');
-  generateBtn.classList.remove('loading');
-  generateBtn.disabled = false;
-  generateBtn.textContent = 'Generate My Question Paper';
+  
+  if (loadingProgress) loadingProgress.classList.remove('show');
+  
+  if (generateBtn) {
+    generateBtn.classList.remove('loading');
+    generateBtn.disabled = false;
+    generateBtn.textContent = 'Generate My Question Paper';
+  }
   
   // Clear timeouts
   clearTimeout(progressTimeout1);
@@ -206,13 +222,25 @@ function showTeacherFriendlyError(errorType, technicalError = '') {
   
   // Log technical error for admin
   console.error('Technical Error:', technicalError);
+}
+
+function showToast(message, duration = 3000, isError = false) {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
   
-  // You can also send this to your logging service
-  // logTechnicalError(errorType, technicalError);
+  toast.textContent = message;
+  toast.classList.toggle('error', isError);
+  toast.classList.add('show');
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, duration);
 }
 
 // ===== HELPER FUNCTIONS =====
 function updateSubjectDropdown(curriculum, selectedClass) {
+  if (!subjectDropdown) return;
+  
   subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
   
   if (!curriculum || !selectedClass) {
@@ -236,6 +264,8 @@ function updateSubjectDropdown(curriculum, selectedClass) {
 }
 
 function updateClassDropdown(curriculum) {
+  if (!classDropdown || !subjectDropdown) return;
+  
   classDropdown.innerHTML = '<option value="">Select Class</option>';
   classDropdown.disabled = true;
   subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
@@ -266,6 +296,8 @@ function addQuestionRow() {
   questionRowCount++;
   const rowId = `qrow-${Date.now()}`;
   const tbody = document.getElementById('questionRowsBody');
+  
+  if (!tbody) return;
   
   const row = document.createElement('tr');
   row.id = rowId;
@@ -301,18 +333,22 @@ function addQuestionRow() {
   const numQuestionsInput = row.querySelector('.numQuestions');
   const marksPerQuestionInput = row.querySelector('.marksPerQuestion');
   
-  numQuestionsInput.addEventListener('input', () => {
-    if (parseInt(numQuestionsInput.value) > 25) {
-      numQuestionsInput.value = 25;
-    }
-    calculateTotals();
-    validateForm();
-  });
+  if (numQuestionsInput) {
+    numQuestionsInput.addEventListener('input', () => {
+      if (parseInt(numQuestionsInput.value) > 25) {
+        numQuestionsInput.value = 25;
+      }
+      calculateTotals();
+      validateForm();
+    });
+  }
   
-  marksPerQuestionInput.addEventListener('input', () => {
-    calculateTotals();
-    validateForm();
-  });
+  if (marksPerQuestionInput) {
+    marksPerQuestionInput.addEventListener('input', () => {
+      calculateTotals();
+      validateForm();
+    });
+  }
   
   // Delete button (only if not first row)
   const deleteBtn = row.querySelector('.delete-row-btn');
@@ -336,17 +372,24 @@ function calculateTotals() {
   let totalQuestions = 0;
   
   document.querySelectorAll('#questionRowsBody tr').forEach(row => {
-    const num = parseInt(row.querySelector('.numQuestions').value) || 0;
-    const marks = parseInt(row.querySelector('.marksPerQuestion').value) || 0;
+    const num = parseInt(row.querySelector('.numQuestions')?.value) || 0;
+    const marks = parseInt(row.querySelector('.marksPerQuestion')?.value) || 0;
     const total = num * marks;
     
-    row.querySelector('.totalMarks').textContent = total;
+    const totalMarksCell = row.querySelector('.totalMarks');
+    if (totalMarksCell) {
+      totalMarksCell.textContent = total;
+    }
+    
     overallTotal += total;
     totalQuestions += num;
   });
   
-  document.getElementById('overallTotalMarks').textContent = overallTotal;
-  document.getElementById('totalQuestions').textContent = totalQuestions;
+  const overallTotalElement = document.getElementById('overallTotalMarks');
+  const totalQuestionsElement = document.getElementById('totalQuestions');
+  
+  if (overallTotalElement) overallTotalElement.textContent = overallTotal;
+  if (totalQuestionsElement) totalQuestionsElement.textContent = totalQuestions;
 }
 
 // ===== MAIN GENERATION FUNCTION =====
@@ -361,10 +404,10 @@ async function generateQuestionPaper(e) {
 
   const questionDetails = [];
   document.querySelectorAll('#questionRowsBody tr').forEach(row => {
-    const type = row.querySelector('.question-type').value;
-    const topic = row.querySelector('.topic').value.trim();
-    const num = parseInt(row.querySelector('.numQuestions').value) || 0;
-    const marks = parseInt(row.querySelector('.marksPerQuestion').value) || 0;
+    const type = row.querySelector('.question-type')?.value || '';
+    const topic = row.querySelector('.topic')?.value?.trim() || '';
+    const num = parseInt(row.querySelector('.numQuestions')?.value) || 0;
+    const marks = parseInt(row.querySelector('.marksPerQuestion')?.value) || 0;
     
     if (type && num > 0) {
       questionDetails.push({ 
@@ -382,22 +425,22 @@ async function generateQuestionPaper(e) {
   }
 
   // Map frontend fields to backend expectations
-  const assessment = document.getElementById('assessment').value;
-  const specificTopic = document.getElementById('specificTopic').value;
+  const assessment = document.getElementById('assessment')?.value || '';
+  const specificTopic = document.getElementById('specificTopic')?.value || '';
   
   // Backend compatibility mapping
   const payload = {
-    curriculum: curriculumDropdown.value,
-    className: classDropdown.value,
-    subject: subjectDropdown.value,
+    curriculum: curriculumDropdown?.value || '',
+    className: classDropdown?.value || '',
+    subject: subjectDropdown?.value || '',
     topic: assessment === 'Specific Topic' ? specificTopic : '', // Map to existing backend field
-    testObjective: document.getElementById('testObjective').value,
+    testObjective: document.getElementById('testObjective')?.value || 'mixed',
     focusLevel: assessment === 'Full' ? 'comprehensive' : 'targeted', // Map to existing backend field
     questionDetails: questionDetails,
-    difficultySplit: `${document.getElementById('easy').value}%-${document.getElementById('medium').value}%-${document.getElementById('hard').value}%`,
-    timeDuration: document.getElementById('timeDuration').value,
-    additionalConditions: document.getElementById('additionalConditions').value,
-    answerKeyFormat: document.querySelector('input[name="answerKeyFormat"]:checked').value
+    difficultySplit: `${document.getElementById('easy')?.value || 30}%-${document.getElementById('medium')?.value || 50}%-${document.getElementById('hard')?.value || 20}%`,
+    timeDuration: document.getElementById('timeDuration')?.value || '60',
+    additionalConditions: document.getElementById('additionalConditions')?.value || '',
+    answerKeyFormat: document.querySelector('input[name="answerKeyFormat"]:checked')?.value || 'Brief'
   };
 
   try {
@@ -418,7 +461,11 @@ async function generateQuestionPaper(e) {
       
       hideLoadingProgress();
       
-      document.getElementById('output').textContent = data.questions;
+      const outputElement = document.getElementById('output');
+      if (outputElement) {
+        outputElement.textContent = data.questions;
+      }
+      
       generatedPaperText = data.questions;
 
       // Show pedagogical summary if available
@@ -434,15 +481,25 @@ async function generateQuestionPaper(e) {
       }
 
       const downloadBtn = document.getElementById('downloadBtn');
-      downloadBtn.style.display = 'inline-block';
-      downloadBtn.dataset.subject = payload.subject;
-      downloadBtn.dataset.classname = payload.className;
-      downloadBtn.dataset.curriculum = payload.curriculum;
-      downloadBtn.dataset.totalmarks = document.getElementById('overallTotalMarks').textContent;
-      downloadBtn.dataset.timedurationtext = document.getElementById('timeDuration').options[document.getElementById('timeDuration').selectedIndex].text;
+      if (downloadBtn) {
+        downloadBtn.style.display = 'inline-block';
+        downloadBtn.dataset.subject = payload.subject;
+        downloadBtn.dataset.classname = payload.className;
+        downloadBtn.dataset.curriculum = payload.curriculum;
+        downloadBtn.dataset.totalmarks = document.getElementById('overallTotalMarks')?.textContent || '0';
+        
+        const timeDurationSelect = document.getElementById('timeDuration');
+        if (timeDurationSelect) {
+          const selectedOption = timeDurationSelect.options[timeDurationSelect.selectedIndex];
+          downloadBtn.dataset.timedurationtext = selectedOption ? selectedOption.text : '1 Hour';
+        }
+      }
 
-      document.getElementById('outputSection').style.display = 'block';
-      document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
+      const outputSection = document.getElementById('outputSection');
+      if (outputSection) {
+        outputSection.style.display = 'block';
+        outputSection.scrollIntoView({ behavior: 'smooth' });
+      }
       
       showToast('Your question paper has been generated successfully!', 3000);
 
@@ -477,17 +534,18 @@ async function generateQuestionPaper(e) {
   }
 }
 
-// ===== DOWNLOAD FUNCTION (Unchanged) =====
+// ===== DOWNLOAD FUNCTION =====
 async function downloadQuestionPaper() {
     console.log("Starting download process...");
     const downloadBtn = document.getElementById('downloadBtn');
+    if (!downloadBtn) return;
 
     const subject = downloadBtn.dataset.subject;
     const className = downloadBtn.dataset.classname;
     const curriculum = downloadBtn.dataset.curriculum;
     const timeDurationText = downloadBtn.dataset.timedurationtext;
     const text = generatedPaperText;
-    const actualTotalMarks = document.getElementById('overallTotalMarks').textContent || '0';
+    const actualTotalMarks = document.getElementById('overallTotalMarks')?.textContent || '0';
 
     if (!subject || !text || !className || !curriculum || !timeDurationText) {
          showToast("Required data for download is missing. Please generate the paper again.", 5000, true);
@@ -683,29 +741,40 @@ async function downloadQuestionPaper() {
 
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize dropdown references
   curriculumDropdown = document.getElementById('curriculum');
   classDropdown = document.getElementById('className');
   subjectDropdown = document.getElementById('subject');
-  const tableBody = document.getElementById('questionRowsBody');
+  
   const generateBtn = document.getElementById('generateBtn');
   const downloadBtn = document.getElementById('downloadBtn');
   const addRowBtn = document.getElementById('addQuestionRowBtn');
+
+  // Safety checks
+  if (!curriculumDropdown || !classDropdown || !subjectDropdown) {
+    console.error('Critical form elements not found');
+    return;
+  }
 
   // Initially disable class and subject
   classDropdown.disabled = true;
   subjectDropdown.disabled = true;
 
-  // Add initial row
+  // Add initial question row
   addQuestionRow();
 
-  // Event listeners
-  addRowBtn.addEventListener('click', () => {
-    if (questionRowCount < MAX_QUESTION_ROWS) {
-      addQuestionRow();
-    } else {
-      showToast(`Maximum ${MAX_QUESTION_ROWS} question types are allowed.`, 3000, true);
-    }
-  });
+  // ===== EVENT LISTENERS =====
+  
+  // Add question row button
+  if (addRowBtn) {
+    addRowBtn.addEventListener('click', () => {
+      if (questionRowCount < MAX_QUESTION_ROWS) {
+        addQuestionRow();
+      } else {
+        showToast(`Maximum ${MAX_QUESTION_ROWS} question types are allowed.`, 3000, true);
+      }
+    });
+  }
 
   // Curriculum change handler
   curriculumDropdown.addEventListener('change', () => {
@@ -722,16 +791,135 @@ document.addEventListener('DOMContentLoaded', () => {
   // Subject change handler
   subjectDropdown.addEventListener('change', validateForm);
 
-  // Form validation on any input change
-  document.getElementById('questionForm').addEventListener('input', validateForm);
-  document.getElementById('questionForm').addEventListener('change', validateForm);
+  // Assessment conditional logic
+  const assessmentSelect = document.getElementById('assessment');
+  const specificTopicGroup = document.getElementById('specificTopicGroup');
+  
+  if (assessmentSelect && specificTopicGroup) {
+    assessmentSelect.addEventListener('change', function() {
+      if (this.value === 'Specific Topic') {
+        specificTopicGroup.classList.add('show');
+        const specificTopicInput = document.getElementById('specificTopic');
+        if (specificTopicInput) {
+          specificTopicInput.required = true;
+        }
+      } else {
+        specificTopicGroup.classList.remove('show');
+        const specificTopicInput = document.getElementById('specificTopic');
+        if (specificTopicInput) {
+          specificTopicInput.required = false;
+          specificTopicInput.value = '';
+        }
+      }
+      validateForm();
+    });
+  }
 
-  // Form submission
-  document.getElementById('questionForm').addEventListener('submit', generateQuestionPaper);
+  // Answer key radio button styling
+  const radioOptions = document.querySelectorAll('.radio-option');
+  radioOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      radioOptions.forEach(opt => opt.classList.remove('selected'));
+      this.classList.add('selected');
+      
+      // Also check the actual radio button
+      const radioInput = this.querySelector('input[type="radio"]');
+      if (radioInput) {
+        radioInput.checked = true;
+      }
+    });
+  });
+
+  // Difficulty sum tracking
+  const easyInput = document.getElementById('easy');
+  const mediumInput = document.getElementById('medium');
+  const hardInput = document.getElementById('hard');
+  const difficultySumSpan = document.getElementById('difficultySum');
+  const difficultyTotalMessage = document.getElementById('difficultyTotalMessage');
+
+  function updateDifficultySum() {
+    const easy = parseInt(easyInput?.value) || 0;
+    const medium = parseInt(mediumInput?.value) || 0;
+    const hard = parseInt(hardInput?.value) || 0;
+    const total = easy + medium + hard;
+    
+    if (difficultySumSpan) {
+      difficultySumSpan.textContent = total;
+    }
+    
+    if (difficultyTotalMessage) {
+      if (total !== 100) {
+        difficultyTotalMessage.style.color = '#e74c3c';
+        if (difficultySumSpan) {
+          difficultySumSpan.style.fontWeight = 'bold';
+        }
+      } else {
+        difficultyTotalMessage.style.color = '#27ae60';
+        if (difficultySumSpan) {
+          difficultySumSpan.style.fontWeight = 'normal';
+        }
+      }
+    }
+    
+    validateForm();
+  }
+  
+  if (easyInput) easyInput.addEventListener('input', updateDifficultySum);
+  if (mediumInput) mediumInput.addEventListener('input', updateDifficultySum);
+  if (hardInput) hardInput.addEventListener('input', updateDifficultySum);
+
+  // Form validation on any input change
+  const questionForm = document.getElementById('questionForm');
+  if (questionForm) {
+    questionForm.addEventListener('input', validateForm);
+    questionForm.addEventListener('change', validateForm);
+    questionForm.addEventListener('submit', generateQuestionPaper);
+  }
 
   // Download button
-  downloadBtn.addEventListener('click', downloadQuestionPaper);
-  downloadBtn.style.display = 'none';
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', downloadQuestionPaper);
+    downloadBtn.style.display = 'none';
+  }
+
+  // Initial validation
+  validateForm();
 
   console.log("Enhanced generator.js loaded successfully");
 });
+
+// ===== UTILITY FUNCTIONS =====
+
+// Progress bar update function (if progress bar exists)
+function updateProgressBar(step) {
+  const steps = document.querySelectorAll('.progress-step');
+  steps.forEach((s, index) => {
+    s.classList.remove('active', 'completed');
+    if (index < step) {
+      s.classList.add('completed');
+    } else if (index === step - 1) {
+      s.classList.add('active');
+    }
+  });
+}
+
+// Logout function
+function logout() {
+  localStorage.removeItem('userEmail');
+  generatedPaperText = '';
+  const downloadBtn = document.getElementById('downloadBtn');
+  if (downloadBtn) {
+    // Clear data attributes on logout
+    delete downloadBtn.dataset.subject;
+    delete downloadBtn.dataset.classname;
+    delete downloadBtn.dataset.curriculum;
+    delete downloadBtn.dataset.totalmarks;
+    delete downloadBtn.dataset.timedurationtext;
+    downloadBtn.style.display = 'none';
+  }
+  window.location.href = '/login.html';
+}
+
+// Make functions globally available (for backward compatibility)
+window.updateProgressBar = updateProgressBar;
+window.logout = logout;
