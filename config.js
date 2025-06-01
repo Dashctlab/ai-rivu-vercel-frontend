@@ -1,5 +1,4 @@
 // config.js
-require('dotenv').config();
 window.APP_CONFIG = {
-  BACKEND_URL: `${BACKEND_URL}` // Gets replaced during deployment
+  BACKEND_URL: `https://ai-rivu-vercel-render-backend-staging.onrender.com`
 };
