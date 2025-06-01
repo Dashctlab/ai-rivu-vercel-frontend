@@ -259,20 +259,34 @@ function handleMobileNavigation() {
   const navList = header.querySelector('.nav-list');
   
   if (nav && navList) {
+    // Ensure nav is hidden by default on mobile
+    if (window.innerWidth <= 768) {
+      navList.classList.remove('mobile-open');
+    }
+    
     // Create mobile toggle button
     const toggleButton = document.createElement('button');
     toggleButton.className = 'mobile-menu-toggle';
     toggleButton.innerHTML = '☰';
     toggleButton.setAttribute('aria-label', 'Toggle mobile menu');
     
-    // Insert toggle button at the end of nav (right side)
+    // Insert toggle button at the end of nav
     nav.appendChild(toggleButton);
     
     // Add click handler
     toggleButton.addEventListener('click', (e) => {
+      e.preventDefault();
       e.stopPropagation();
-      navList.classList.toggle('mobile-open');
-      toggleButton.innerHTML = navList.classList.contains('mobile-open') ? '✕' : '☰';
+      
+      const isOpen = navList.classList.contains('mobile-open');
+      
+      if (isOpen) {
+        navList.classList.remove('mobile-open');
+        toggleButton.innerHTML = '☰';
+      } else {
+        navList.classList.add('mobile-open');
+        toggleButton.innerHTML = '✕';
+      }
     });
     
     // Close menu when clicking outside
@@ -283,16 +297,21 @@ function handleMobileNavigation() {
       }
     });
     
-    // Close menu when window is resized to desktop
+    // Handle window resize
     window.addEventListener('resize', () => {
       if (window.innerWidth > 768) {
         navList.classList.remove('mobile-open');
         toggleButton.innerHTML = '☰';
       }
     });
+    
+    // Ensure proper initial state
+    if (window.innerWidth <= 768) {
+      navList.classList.remove('mobile-open');
+      toggleButton.innerHTML = '☰';
+    }
   }
 }
-
 
 // Make functions available globally
 window.renderHeader = renderHeader;
