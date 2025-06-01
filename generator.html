@@ -473,29 +473,6 @@
   <!-- Header Container -->
   <div id="header-container"></div>
 
-  <!-- Generator Hero Section -->
-  <section class="generator-hero">
-    <div class="container">
-      <h1 class="generator-title">Let's Create Your Question Paper</h1>
-      <p class="generator-subtitle">Simple, fast, and perfectly aligned to your curriculum</p>
-      
-      <!-- Progress Bar -->
-      <div class="progress-bar">
-        <div class="progress-step active">
-          <div class="progress-circle">1</div>
-          <div class="progress-label">Basic Info</div>
-        </div>
-        <div class="progress-step">
-          <div class="progress-circle">2</div>
-          <div class="progress-label">Questions</div>
-        </div>
-        <div class="progress-step">
-          <div class="progress-circle">3</div>
-          <div class="progress-label">Generate</div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- Main Form Section -->
   <main class="main-content">
@@ -509,7 +486,7 @@
         <div class="form-grid">
           <!-- Left Column - Core Details -->
           <div class="form-card">
-            <h3>Basic Information</h3>
+            <h3>Paper Details</h3>
             
             <div class="form-group">
               <label for="curriculum">Curriculum Board</label>
@@ -559,22 +536,12 @@
                 <option value="analysis">Critical Thinking</option>
               </select>
             </div>
-
-            <div class="form-group">
-              <label for="timeDuration">Exam Duration</label>
-              <select id="timeDuration" name="timeDuration" required>
-                <option value="30">30 Minutes</option>
-                <option value="60" selected>1 Hour</option>
-                <option value="90">1.5 Hours</option>
-                <option value="120">2 Hours</option>
-                <option value="180">3 Hours</option>
-              </select>
-            </div>
+            
           </div>
 
           <!-- Right Column - Assessment Details -->
           <div class="form-card">
-            <h3>Assessment Settings</h3>
+            <h3>Paper Settings</h3>
 
             <div class="form-group">
               <label>Difficulty Distribution (%)</label>
@@ -597,6 +564,19 @@
               </p>
             </div>
 
+            
+          <div class="form-group">
+              <label for="timeDuration">Exam Duration</label>
+              <select id="timeDuration" name="timeDuration" required>
+                <option value="30">30 Minutes</option>
+                <option value="60" selected>1 Hour</option>
+                <option value="90">1.5 Hours</option>
+                <option value="120">2 Hours</option>
+                <option value="180">3 Hours</option>
+              </select>
+            </div>
+
+            
             <div class="form-group">
               <label for="additionalConditions">Special Instructions (Optional)</label>
               <textarea id="additionalConditions" name="additionalConditions" 
