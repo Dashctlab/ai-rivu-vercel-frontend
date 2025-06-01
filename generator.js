@@ -387,6 +387,12 @@ async function generateQuestionPaper(e) {
   if (!validateForm() || isGenerating) {
     return;
   }
+      // ADD device detection
+    const deviceInfo = {
+        screenSize: `${window.screen.width}x${window.screen.height}`,
+        viewport: `${window.innerWidth}x${window.innerHeight}`,
+        userAgent: navigator.userAgent
+    };
 
   showLoadingProgress();
 
@@ -437,6 +443,7 @@ async function generateQuestionPaper(e) {
       headers: { 
         'Content-Type': 'application/json',
         'useremail': localStorage.getItem('userEmail') || 'anonymous'
+        'X-Screen-Size': deviceInfo.screenSize
       },
       body: JSON.stringify(payload)
     });
@@ -456,18 +463,29 @@ async function generateQuestionPaper(e) {
       
       generatedPaperText = data.questions;
 
-      // Show pedagogical summary if available
-      if (data.pedagogicalSummary) {
+    // ADD query ID display
+    if (data.queryId) {
+        const queryIdElement = document.getElementById('queryIdDisplay');
+        if (queryIdElement) {
+            queryIdElement.textContent = data.queryId;
+            queryIdElement.style.display = 'inline';
+        }
+    }
+
+// Show pedagogical summary with query ID
+    if (data.pedagogicalSummary || data.queryId) {
         const summaryElement = document.getElementById('pedagogicalSummary');
         if (summaryElement) {
-          summaryElement.style.display = 'block';
-          const descriptionElement = document.getElementById('frameworkDescription');
-          if (descriptionElement) {
-            descriptionElement.textContent = data.pedagogicalSummary;
-          }
+            summaryElement.style.display = 'block';
+            
+            if (data.pedagogicalSummary) {
+                const descriptionElement = document.getElementById('frameworkDescription');
+                if (descriptionElement) {
+                    descriptionElement.textContent = data.pedagogicalSummary;
+                }
+            }
         }
-      }
-
+    }
       const downloadBtn = document.getElementById('downloadBtn');
       if (downloadBtn) {
         downloadBtn.style.display = 'inline-block';
