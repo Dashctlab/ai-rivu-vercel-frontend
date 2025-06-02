@@ -4,7 +4,8 @@ let classDropdown, subjectDropdown, curriculumDropdown;
 
 // Global variable to store the raw generated text
 let generatedPaperText = '';
-
+let currentQueryId = '';
+let qualityFeedbackSubmitted = false;
 // Loading states
 let isGenerating = false;
 let progressTimeout1, progressTimeout2, progressTimeout3;
@@ -54,22 +55,15 @@ function validateForm() {
   const assessment = document.getElementById('assessment')?.value || '';
   const specificTopic = document.getElementById('specificTopic')?.value || '';
   
-  if (!curriculum) {
-    errors.push('Please select a Curriculum Board');
-  }
+  // Update checklist items
+  updateChecklistItem('check-curriculum', curriculum, 'Curriculum Board');
+  updateChecklistItem('check-class', selectedClass, 'Class Selected');
+  updateChecklistItem('check-subject', selectedSubject, 'Subject Selected');
   
-  if (!selectedClass) {
-    errors.push('Please select a Class/Grade');
-  }
-  
-  if (!selectedSubject) {
-    errors.push('Please select a Subject');
-  }
-  
-  if (!assessment) {
-    errors.push('Please select Assessment type (Full or Specific Topic)');
-  }
-  
+  if (!curriculum) errors.push('Please select a Curriculum Board');
+  if (!selectedClass) errors.push('Please select a Class/Grade');
+  if (!selectedSubject) errors.push('Please select a Subject');
+  if (!assessment) errors.push('Please select Assessment type (Full or Specific Topic)');
   if (assessment === 'Specific Topic' && !specificTopic.trim()) {
     errors.push('Please enter the specific topic you want to focus on');
   }
@@ -83,21 +77,48 @@ function validateForm() {
     errors.push('Difficulty percentages must add up to 100%');
   }
   
-  // Check for at least one valid question row
+  // Enhanced question validation with limits
   let hasValidRow = false;
+  let totalQuestions = 0;
+  let questionTypeCount = 0;
+  let limitErrors = [];
+  
   document.querySelectorAll('#questionRowsBody tr').forEach(row => {
     const type = row.querySelector('.question-type')?.value || '';
     const num = parseInt(row.querySelector('.numQuestions')?.value) || 0;
+    
     if (type && num > 0) {
       hasValidRow = true;
+      questionTypeCount++;
+      totalQuestions += num;
+      
+      // Check individual section limit
+      if (num > 15) {
+        limitErrors.push(`${type} section has ${num} questions (max 15 allowed per section)`);
+      }
     }
   });
+  
+  // Check total limits
+  if (totalQuestions > 75) {
+    limitErrors.push(`Total questions: ${totalQuestions} (max 75 allowed)`);
+  }
+  
+  if (questionTypeCount > 10) {
+    limitErrors.push(`${questionTypeCount} question types (max 10 allowed)`);
+  }
+  
+  // Update checklist for questions and limits
+  updateChecklistItem('check-questions', hasValidRow, 'Question Types Added');
+  updateChecklistItem('check-limits', limitErrors.length === 0, 'Within Limits (≤75 questions)');
   
   if (!hasValidRow) {
     errors.push('Please add at least one question type with number of questions greater than 0');
   }
   
-  // Show validation errors or hide them
+  errors.push(...limitErrors);
+  
+  // Show validation errors
   showValidationMessage(errors);
   
   // Enable/disable generate button
@@ -107,6 +128,21 @@ function validateForm() {
   }
   
   return errors.length === 0;
+}
+
+// ADD new helper function for checklist updates:
+function updateChecklistItem(itemId, isValid, label) {
+  const item = document.getElementById(itemId);
+  if (item) {
+    const icon = item.querySelector('.check-icon');
+    if (isValid) {
+      icon.textContent = '✅';
+      item.style.color = '#27ae60';
+    } else {
+      icon.textContent = '⚪';
+      item.style.color = '#7f8c8d';
+    }
+  }
 }
 
 // ===== LOADING STATES =====
@@ -279,7 +315,10 @@ async function updateClassDropdown(curriculum) {
 }
 // ===== QUESTION ROW MANAGEMENT =====
 function addQuestionRow() {
-  if (questionRowCount >= MAX_QUESTION_ROWS) return;
+  if (questionRowCount >= 10) { // MAX_QUESTION_ROWS changed to 10
+    showToast('Maximum 10 question types allowed.', 3000, true);
+    return;
+  }
   
   questionRowCount++;
   const rowId = `qrow-${Date.now()}`;
@@ -289,23 +328,29 @@ function addQuestionRow() {
   
   const row = document.createElement('tr');
   row.id = rowId;
+  
+  // Set default values
+  const defaultType = questionRowCount === 1 ? 'Short Answer' : '';
+  const defaultQuestions = '5';
+  const defaultMarks = questionRowCount === 1 ? '1' : '0';
+  
   row.innerHTML = `
     <td>
       <select class="question-type" required>
         <option value="">Select Type</option>
-        ${questionTypes.map(type => `<option value="${type}">${type}</option>`).join('')}
+        ${questionTypes.map(type => `<option value="${type}" ${type === defaultType ? 'selected' : ''}>${type}</option>`).join('')}
       </select>
     </td>
     <td>
       <input type="text" class="topic" placeholder="Optional topic">
     </td>
     <td>
-      <input type="number" class="numQuestions" min="0" max="25" value="0" required>
+      <input type="number" class="numQuestions" min="0" max="15" value="${defaultQuestions}" required>
     </td>
     <td>
-      <input type="number" class="marksPerQuestion" min="0" value="0" required>
+      <input type="number" class="marksPerQuestion" min="0" value="${defaultMarks}" required>
     </td>
-    <td class="totalMarks">0</td>
+    <td class="totalMarks" style="text-align: center;">0</td>
     <td>
       ${questionRowCount === 1 ? '' : `
         <button type="button" class="delete-row-btn" data-row-id="${rowId}" aria-label="Delete row">
@@ -317,28 +362,25 @@ function addQuestionRow() {
   
   tbody.appendChild(row);
   
-  // Add event listeners
+  // Add event listeners with validation
   const numQuestionsInput = row.querySelector('.numQuestions');
   const marksPerQuestionInput = row.querySelector('.marksPerQuestion');
+  const typeSelect = row.querySelector('.question-type');
   
-  if (numQuestionsInput) {
-    numQuestionsInput.addEventListener('input', () => {
-      if (parseInt(numQuestionsInput.value) > 25) {
-        numQuestionsInput.value = 25;
-      }
-      calculateTotals();
-      validateForm();
-    });
-  }
+  [numQuestionsInput, marksPerQuestionInput, typeSelect].forEach(input => {
+    if (input) {
+      input.addEventListener('input', () => {
+        if (numQuestionsInput && parseInt(numQuestionsInput.value) > 15) {
+          numQuestionsInput.value = 15;
+          showToast('Maximum 15 questions per section allowed.', 3000, true);
+        }
+        calculateTotals();
+        validateForm();
+      });
+    }
+  });
   
-  if (marksPerQuestionInput) {
-    marksPerQuestionInput.addEventListener('input', () => {
-      calculateTotals();
-      validateForm();
-    });
-  }
-  
-  // Delete button (only if not first row)
+  // Delete button
   const deleteBtn = row.querySelector('.delete-row-btn');
   if (deleteBtn) {
     deleteBtn.addEventListener('click', () => {
@@ -347,12 +389,85 @@ function addQuestionRow() {
         questionRowCount--;
         calculateTotals();
         validateForm();
+        
+        // Re-enable add button if under limit
+        const addBtn = document.getElementById('addQuestionRowBtn');
+        if (addBtn && questionRowCount < 10) {
+          addBtn.disabled = false;
+        }
       }
     });
   }
   
+  // Disable add button if at limit
+  if (questionRowCount >= 10) {
+    const addBtn = document.getElementById('addQuestionRowBtn');
+    if (addBtn) {
+      addBtn.disabled = true;
+    }
+  }
+  
   calculateTotals();
   validateForm();
+}
+
+// ADD quality feedback handling:
+function setupQualityFeedback() {
+  const qualityOptions = document.querySelectorAll('.quality-option');
+  qualityOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      const radio = this.querySelector('input[type="radio"]');
+      radio.checked = true;
+      
+      // Visual feedback
+      const siblings = this.parentNode.querySelectorAll('.quality-option');
+      siblings.forEach(sibling => sibling.classList.remove('selected'));
+      this.classList.add('selected');
+      
+      // Check if all quality questions are answered
+      checkQualityFeedbackComplete();
+    });
+  });
+}
+
+function checkQualityFeedbackComplete() {
+  const outputQuality = document.querySelector('input[name="outputQuality"]:checked');
+  const questionQuality = document.querySelector('input[name="questionQuality"]:checked');
+  const curriculumAlignment = document.querySelector('input[name="curriculumAlignment"]:checked');
+  
+  if (outputQuality && questionQuality && curriculumAlignment && !qualityFeedbackSubmitted) {
+    // Submit quality feedback
+    submitQualityFeedback({
+      outputQuality: outputQuality.value,
+      questionQuality: questionQuality.value,
+      curriculumAlignment: curriculumAlignment.value
+    });
+  }
+}
+
+async function submitQualityFeedback(feedback) {
+  if (qualityFeedbackSubmitted) return;
+  
+  qualityFeedbackSubmitted = true;
+  
+  try {
+    await fetch(`${window.APP_CONFIG.BACKEND_URL}/api/quality-feedback`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'useremail': localStorage.getItem('userEmail') || 'anonymous'
+      },
+      body: JSON.stringify({
+        queryId: currentQueryId,
+        qualityFeedback: feedback
+      })
+    });
+    
+    console.log('Quality feedback submitted:', feedback);
+  } catch (error) {
+    console.error('Error submitting quality feedback:', error);
+    qualityFeedbackSubmitted = false; // Allow retry
+  }
 }
 
 function calculateTotals() {
@@ -453,61 +568,73 @@ async function generateQuestionPaper(e) {
       if (!data.questions || typeof data.questions !== 'string') {
         throw new Error("Invalid response format");
       }
-      
-      hideLoadingProgress();
-      
-      const outputElement = document.getElementById('output');
-      if (outputElement) {
-        outputElement.textContent = data.questions;
-      }
-      
-      generatedPaperText = data.questions;
+                hideLoadingProgress();
+           
+           // Store query ID
+           currentQueryId = data.queryId || '';
+           qualityFeedbackSubmitted = false;
+           
+           const outputElement = document.getElementById('output');
+           if (outputElement) {
+               outputElement.textContent = data.questions;
+           }
+           
+           generatedPaperText = data.questions;
 
-    // ADD query ID display
-    if (data.queryId) {
-        const queryIdElement = document.getElementById('queryIdDisplay');
-        if (queryIdElement) {
-            queryIdElement.textContent = data.queryId;
-            queryIdElement.style.display = 'inline';
-        }
-    }
+           // Display query ID
+           if (data.queryId) {
+               const queryIdElement = document.getElementById('queryIdDisplay');
+               if (queryIdElement) {
+                   queryIdElement.textContent = data.queryId;
+                   queryIdElement.style.display = 'inline';
+               }
+           }
 
-// Show pedagogical summary with query ID
-    if (data.pedagogicalSummary || data.queryId) {
-        const summaryElement = document.getElementById('pedagogicalSummary');
-        if (summaryElement) {
-            summaryElement.style.display = 'block';
-            
-            if (data.pedagogicalSummary) {
-                const descriptionElement = document.getElementById('frameworkDescription');
-                if (descriptionElement) {
-                    descriptionElement.textContent = data.pedagogicalSummary;
-                }
-            }
-        }
-    }
-      const downloadBtn = document.getElementById('downloadBtn');
-      if (downloadBtn) {
-        downloadBtn.style.display = 'inline-block';
-        downloadBtn.dataset.subject = payload.subject;
-        downloadBtn.dataset.classname = payload.className;
-        downloadBtn.dataset.curriculum = payload.curriculum;
-        downloadBtn.dataset.totalmarks = document.getElementById('overallTotalMarks')?.textContent || '0';
-        
-        const timeDurationSelect = document.getElementById('timeDuration');
-        if (timeDurationSelect) {
-          const selectedOption = timeDurationSelect.options[timeDurationSelect.selectedIndex];
-          downloadBtn.dataset.timedurationtext = selectedOption ? selectedOption.text : '1 Hour';
-        }
-      }
+           // Show pedagogical summary
+           if (data.pedagogicalSummary || data.queryId) {
+               const summaryElement = document.getElementById('pedagogicalSummary');
+               if (summaryElement) {
+                   summaryElement.style.display = 'block';
+                   
+                   if (data.pedagogicalSummary) {
+                       const descriptionElement = document.getElementById('frameworkDescription');
+                       if (descriptionElement) {
+                           descriptionElement.textContent = data.pedagogicalSummary;
+                       }
+                   }
+               }
+           }
 
-      const outputSection = document.getElementById('outputSection');
-      if (outputSection) {
-        outputSection.style.display = 'block';
-        outputSection.scrollIntoView({ behavior: 'smooth' });
-      }
-      
-      showToast('Your question paper has been generated successfully!', 3000);
+           // Show quality indicators
+           const qualityIndicators = document.getElementById('qualityIndicators');
+           if (qualityIndicators) {
+               qualityIndicators.style.display = 'block';
+               setupQualityFeedback();
+           }
+
+           // Update download button dataset
+           if (downloadBtn) {
+               downloadBtn.style.display = 'inline-block';
+               downloadBtn.dataset.subject = payload.subject;
+               downloadBtn.dataset.classname = payload.className;
+               downloadBtn.dataset.curriculum = payload.curriculum;
+               downloadBtn.dataset.totalmarks = document.getElementById('overallTotalMarks')?.textContent || '0';
+               
+               const timeDurationSelect = document.getElementById('timeDuration');
+               if (timeDurationSelect) {
+                   const selectedOption = timeDurationSelect.options[timeDurationSelect.selectedIndex];
+                   downloadBtn.dataset.timedurationtext = selectedOption ? selectedOption.text : '1 Hour';
+               }
+           }
+
+           const outputSection = document.getElementById('outputSection');
+           if (outputSection) {
+               outputSection.style.display = 'block';
+               outputSection.scrollIntoView({ behavior: 'smooth' });
+           }
+           
+           showToast('Your question paper has been generated successfully!', 3000);
+       }
 
     } else {
       let errorData = { message: `Server responded with ${response.status}` };
@@ -544,8 +671,14 @@ async function generateQuestionPaper(e) {
 async function downloadQuestionPaper() {
     console.log("Starting download process...");
     const downloadBtn = document.getElementById('downloadBtn');
+    const downloadStatus = document.getElementById('downloadStatus');
     if (!downloadBtn) return;
 
+    downloadBtn.disabled = true;
+    downloadBtn.style.opacity = '0.6';
+    downloadStatus.style.display = 'block';
+
+  
     const subject = downloadBtn.dataset.subject;
     const className = downloadBtn.dataset.classname;
     const curriculum = downloadBtn.dataset.curriculum;
@@ -708,43 +841,48 @@ async function downloadQuestionPaper() {
             }
         );
 
-        if (!response.ok) {
-            let errorData = { message: `Server responded with status ${response.status}` };
-            try {
-                errorData = await response.json();
-            } catch (e) {
-                console.warn("Could not parse error response as JSON");
-            }
-            throw new Error(`Download failed: ${errorData.message || response.statusText}`);
-        }
+       if (!response.ok) {
+           let errorData = { message: `Server responded with status ${response.status}` };
+           try {
+               errorData = await response.json();
+           } catch (e) {
+               console.warn("Could not parse error response as JSON");
+           }
+           throw new Error(`Download failed: ${errorData.message || response.statusText}`);
+       }
 
-        const blob = await response.blob();
-        
-        if (blob.size === 0) {
-            throw new Error("Received empty file from server.");
-        }
+       const blob = await response.blob();
+       
+       if (blob.size === 0) {
+           throw new Error("Received empty file from server.");
+       }
 
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        const safeSubject = subject.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-        a.download = `Question_Paper_${safeSubject || 'Untitled'}.docx`;
-        document.body.appendChild(a);
-        a.click();
+       const url = window.URL.createObjectURL(blob);
+       const a = document.createElement('a');
+       a.style.display = 'none';
+       a.href = url;
+       const safeSubject = subject.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+       a.download = `Question_Paper_${safeSubject || 'Untitled'}.docx`;
+       document.body.appendChild(a);
+       a.click();
 
-        window.URL.revokeObjectURL(url);
-        a.remove();
+       window.URL.revokeObjectURL(url);
+       a.remove();
 
-        showToast("Question paper downloaded successfully!", 3000);
-        console.log("Download completed successfully");
+       showToast("Question paper downloaded successfully!", 3000);
 
-    } catch (error) {
-        console.error("Download error:", error);
-        showTeacherFriendlyError('generation', `Download failed: ${error.message}`);
-    }
+   } catch (error) {
+       console.error("Download error:", error);
+       showToast(`Download failed: ${error.message}`, 5000, true);
+   } finally {
+       // Re-enable button and hide status
+       downloadBtn.disabled = false;
+       downloadBtn.style.opacity = '1';
+       downloadStatus.style.display = 'none';
+   }
 }
 
+      
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize dropdown references
