@@ -290,92 +290,79 @@ header.app-header nav ul li a:hover {
 }
 
 /* ===== How It Works Section ===== */
-/* How It Works Section - Desktop & Mobile Connectors */
 .how-it-works {
-  padding: 2rem 0;
+  padding: 3rem 0;
   background-color: rgba(42, 157, 143, 0.05);
 }
 
 .process-flow {
   display: flex;
-  justify-content: space-between;
-  max-width: 1000px;
+  justify-content: center;
+  align-items: center;
+  max-width: 1200px;
   margin: 0 auto;
-  position: relative;
-  padding: 20px 1rem;
+  padding: 2rem 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .process-step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem 1rem;
+  box-shadow: 0 4px 12px rgba(42, 157, 143, 0.1);
+  border: 2px solid var(--primary-color);
   text-align: center;
-  position: relative;
+  min-width: 180px;
   flex: 1;
-  z-index: 2;
+  max-width: 200px;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-/* Desktop connectors - arrows between steps */
-@media (min-width: 769px) {
-  .process-flow::before {
-    content: '';
-    position: absolute;
-    top: 70px;
-    left: 12%;
-    right: 12%;
-    height: 2px;
-    background: var(--primary-color);
-    z-index: 1;
-  }
-  
-  .process-step:not(:last-child)::after {
-    content: '▶';
-    position: absolute;
-    top: 61px;
-    right: -15px;
-    color: var(--primary-color);
-    font-size: 18px;
-    z-index: 3;
-    background: var(--background-color);
-    padding: 0 5px;
-  }
+.process-step:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(42, 157, 143, 0.2);
 }
 
-.process-icon {
-  width: 80px;
-  height: 80px;
+.step-number {
+  width: 40px;
+  height: 40px;
+  background: var(--primary-color);
+  color: white;
   border-radius: 50%;
-  background: rgba(42, 157, 143, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  color: var(--primary-color);
-  margin-bottom: 15px;
-  border: 2px solid var(--primary-color);
-  transition: all 0.3s;
-}
-
-.process-icon:hover {
-  background: rgba(42, 157, 143, 0.2);
-  transform: translateY(-2px);
-}
-
-.process-title {
-  font-family: var(--font-heading);
-  font-weight: 600;
   font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 auto 1rem;
+}
+
+.step-content h4 {
   color: var(--primary-color);
-  margin-bottom: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
   line-height: 1.3;
 }
 
-.process-subtitle {
-  font-size: 0.95rem;
-  color: var(--text-color);
-  line-height: 1.4;
+.step-content p {
+  color: var(--secondary-text-color);
+  font-size: 0.85rem;
+  margin: 0;
+  line-height: 1.2;
 }
 
+.process-connector {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  font-weight: 700;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+}
 /* ===== Why Section ===== */
 .why {
   background-color: var(--background-color);
@@ -1690,28 +1677,27 @@ button:disabled {
 
   .process-flow {
     flex-direction: column;
-    gap: 2rem;
-    align-items: center;
+    gap: 1.5rem;
+  }
+  
+  .process-connector {
+    transform: rotate(90deg);
+    font-size: 1.2rem;
   }
   
   .process-step {
+    max-width: 100%;
     width: 100%;
-    max-width: 300px;
   }
   
-  .process-icon {
-    width: 70px;
-    height: 70px;
-    font-size: 1.8rem;
+  .step-content h4 {
+    font-size: 0.95rem;
   }
   
-  .process-title {
-    font-size: 1.1rem;
+  .step-content p {
+    font-size: 0.8rem;
   }
-  
-  .process-subtitle {
-    font-size: 0.9rem;
-  }
+}
  .generate-section > div {
     flex-direction: column;
     align-items: center;
@@ -1737,12 +1723,19 @@ button:disabled {
   .quality-indicator {
     font-size: 0.8rem;
   }
-}
 
-
+@media (max-width: 480px) {
+  .process-step {
+    padding: 1.2rem 0.8rem;
+    min-width: auto;
+  }
   
+  .step-number {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
 }
-
 
 
 
