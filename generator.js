@@ -1,4 +1,4 @@
-// Complete Enhanced generator.js with all functionality
+// Complete Enhanced generator.js with all bug fixes
 const backendURL = `${window.APP_CONFIG.BACKEND_URL}/generate`;
 let classDropdown, subjectDropdown, curriculumDropdown;
 
@@ -6,9 +6,13 @@ let classDropdown, subjectDropdown, curriculumDropdown;
 let generatedPaperText = '';
 let currentQueryId = '';
 let qualityFeedbackSubmitted = false;
+
 // Loading states
 let isGenerating = false;
 let progressTimeout1, progressTimeout2, progressTimeout3;
+
+// Validation debouncing
+let validationTimeout;
 
 // List of question types
 const questionTypes = [
@@ -18,7 +22,7 @@ const questionTypes = [
 
 // Track rows added
 let questionRowCount = 0;
-const MAX_QUESTION_ROWS = 12;
+const MAX_QUESTION_ROWS = 10; // Changed from 12 to 10
 
 // ===== TEACHER-FRIENDLY ERROR MESSAGES =====
 const teacherFriendlyErrors = {
@@ -30,6 +34,14 @@ const teacherFriendlyErrors = {
   'server': 'Our service is temporarily unavailable. Please try again in a few minutes.',
   'default': 'Something went wrong. Please try again or contact support if the problem continues.'
 };
+
+// ===== BUG FIX #4: DEBOUNCED VALIDATION =====
+function debouncedValidateForm() {
+  clearTimeout(validationTimeout);
+  validationTimeout = setTimeout(() => {
+    validateForm();
+  }, 300);
+}
 
 // ===== VALIDATION FUNCTIONS =====
 function showValidationMessage(errors) {
@@ -130,17 +142,19 @@ function validateForm() {
   return errors.length === 0;
 }
 
-// ADD new helper function for checklist updates:
+// Helper function for checklist updates
 function updateChecklistItem(itemId, isValid, label) {
   const item = document.getElementById(itemId);
   if (item) {
     const icon = item.querySelector('.check-icon');
-    if (isValid) {
-      icon.textContent = '✅';
-      item.style.color = '#27ae60';
-    } else {
-      icon.textContent = '⚪';
-      item.style.color = '#7f8c8d';
+    if (icon) {
+      if (isValid) {
+        icon.textContent = '✅';
+        item.style.color = '#27ae60';
+      } else {
+        icon.textContent = '⚪';
+        item.style.color = '#7f8c8d';
+      }
     }
   }
 }
@@ -228,6 +242,7 @@ function showToast(message, duration = 3000, isError = false) {
 
 // ===== HELPER FUNCTIONS =====
 
+// BUG FIX #4: Enhanced async dropdown handling with proper error management
 async function updateSubjectDropdown(curriculum, selectedClass) {
   if (!subjectDropdown) return;
   
@@ -268,8 +283,6 @@ async function updateSubjectDropdown(curriculum, selectedClass) {
     showToast('Unable to load subjects. Please check your connection and try again.', 5000, true);
   }
 }
-
-
 
 async function updateClassDropdown(curriculum) {
   if (!classDropdown || !subjectDropdown) return;
@@ -313,9 +326,10 @@ async function updateClassDropdown(curriculum) {
     showToast('Unable to load classes. Please check your connection and try again.', 5000, true);
   }
 }
+
 // ===== QUESTION ROW MANAGEMENT =====
 function addQuestionRow() {
-  if (questionRowCount >= 10) { // MAX_QUESTION_ROWS changed to 10
+  if (questionRowCount >= MAX_QUESTION_ROWS) {
     showToast('Maximum 10 question types allowed.', 3000, true);
     return;
   }
@@ -375,7 +389,7 @@ function addQuestionRow() {
           showToast('Maximum 15 questions per section allowed.', 3000, true);
         }
         calculateTotals();
-        validateForm();
+        debouncedValidateForm(); // Use debounced version
       });
     }
   });
@@ -388,11 +402,11 @@ function addQuestionRow() {
         row.remove();
         questionRowCount--;
         calculateTotals();
-        validateForm();
+        debouncedValidateForm();
         
         // Re-enable add button if under limit
         const addBtn = document.getElementById('addQuestionRowBtn');
-        if (addBtn && questionRowCount < 10) {
+        if (addBtn && questionRowCount < MAX_QUESTION_ROWS) {
           addBtn.disabled = false;
         }
       }
@@ -400,7 +414,7 @@ function addQuestionRow() {
   }
   
   // Disable add button if at limit
-  if (questionRowCount >= 10) {
+  if (questionRowCount >= MAX_QUESTION_ROWS) {
     const addBtn = document.getElementById('addQuestionRowBtn');
     if (addBtn) {
       addBtn.disabled = true;
@@ -408,16 +422,18 @@ function addQuestionRow() {
   }
   
   calculateTotals();
-  validateForm();
+  debouncedValidateForm();
 }
 
-// ADD quality feedback handling:
+// Quality feedback handling
 function setupQualityFeedback() {
   const qualityOptions = document.querySelectorAll('.quality-option');
   qualityOptions.forEach(option => {
     option.addEventListener('click', function() {
       const radio = this.querySelector('input[type="radio"]');
-      radio.checked = true;
+      if (radio) {
+        radio.checked = true;
+      }
       
       // Visual feedback
       const siblings = this.parentNode.querySelectorAll('.quality-option');
@@ -502,12 +518,13 @@ async function generateQuestionPaper(e) {
   if (!validateForm() || isGenerating) {
     return;
   }
-      // ADD device detection
-    const deviceInfo = {
-        screenSize: `${window.screen.width}x${window.screen.height}`,
-        viewport: `${window.innerWidth}x${window.innerHeight}`,
-        userAgent: navigator.userAgent
-    };
+  
+  // Device detection
+  const deviceInfo = {
+    screenSize: `${window.screen.width}x${window.screen.height}`,
+    viewport: `${window.innerWidth}x${window.innerHeight}`,
+    userAgent: navigator.userAgent
+  };
 
   showLoadingProgress();
 
@@ -542,9 +559,9 @@ async function generateQuestionPaper(e) {
     curriculum: curriculumDropdown?.value || '',
     className: classDropdown?.value || '',
     subject: subjectDropdown?.value || '',
-    topic: assessment === 'Specific Topic' ? specificTopic : '', // Map to existing backend field
+    topic: assessment === 'Specific Topic' ? specificTopic : '',
     testObjective: document.getElementById('testObjective')?.value || 'mixed',
-    focusLevel: assessment === 'Full' ? 'comprehensive' : 'targeted', // Map to existing backend field
+    focusLevel: assessment === 'Full' ? 'comprehensive' : 'targeted',
     questionDetails: questionDetails,
     difficultySplit: `${document.getElementById('easy')?.value || 30}%-${document.getElementById('medium')?.value || 50}%-${document.getElementById('hard')?.value || 20}%`,
     timeDuration: document.getElementById('timeDuration')?.value || '60',
@@ -568,74 +585,74 @@ async function generateQuestionPaper(e) {
       if (!data.questions || typeof data.questions !== 'string') {
         throw new Error("Invalid response format");
       }
-                hideLoadingProgress();
-           
-           // Store query ID
-           currentQueryId = data.queryId || '';
-           qualityFeedbackSubmitted = false;
-           
-           const outputElement = document.getElementById('output');
-           if (outputElement) {
-               outputElement.textContent = data.questions;
-           }
-           
-           generatedPaperText = data.questions;
+      
+      hideLoadingProgress();
+      
+      // Store query ID
+      currentQueryId = data.queryId || '';
+      qualityFeedbackSubmitted = false;
+      
+      const outputElement = document.getElementById('output');
+      if (outputElement) {
+        outputElement.textContent = data.questions;
+      }
+      
+      generatedPaperText = data.questions;
 
-           // Display query ID
-           if (data.queryId) {
-               const queryIdElement = document.getElementById('queryIdDisplay');
-               if (queryIdElement) {
-                   queryIdElement.textContent = data.queryId;
-                   queryIdElement.style.display = 'inline';
-               }
-           }
+      // Display query ID
+      if (data.queryId) {
+        const queryIdElement = document.getElementById('queryIdDisplay');
+        if (queryIdElement) {
+          queryIdElement.textContent = data.queryId;
+          queryIdElement.style.display = 'inline';
+        }
+      }
 
-           // Show pedagogical summary
-           if (data.pedagogicalSummary || data.queryId) {
-               const summaryElement = document.getElementById('pedagogicalSummary');
-               if (summaryElement) {
-                   summaryElement.style.display = 'block';
-                   
-                   if (data.pedagogicalSummary) {
-                       const descriptionElement = document.getElementById('frameworkDescription');
-                       if (descriptionElement) {
-                           descriptionElement.textContent = data.pedagogicalSummary;
-                       }
-                   }
-               }
-           }
+      // Show pedagogical summary
+      if (data.pedagogicalSummary || data.queryId) {
+        const summaryElement = document.getElementById('pedagogicalSummary');
+        if (summaryElement) {
+          summaryElement.style.display = 'block';
+          
+          if (data.pedagogicalSummary) {
+            const descriptionElement = document.getElementById('frameworkDescription');
+            if (descriptionElement) {
+              descriptionElement.textContent = data.pedagogicalSummary;
+            }
+          }
+        }
+      }
 
-           // Show quality indicators
-           const qualityIndicators = document.getElementById('qualityIndicators');
-           if (qualityIndicators) {
-               qualityIndicators.style.display = 'block';
-               setupQualityFeedback();
-           }
+      // Show quality indicators
+      const qualityIndicators = document.getElementById('qualityIndicators');
+      if (qualityIndicators) {
+        qualityIndicators.style.display = 'block';
+        setupQualityFeedback();
+      }
 
-           // Update download button dataset
-           if (downloadBtn) {
-               downloadBtn.style.display = 'inline-block';
-               downloadBtn.dataset.subject = payload.subject;
-               downloadBtn.dataset.classname = payload.className;
-               downloadBtn.dataset.curriculum = payload.curriculum;
-               downloadBtn.dataset.totalmarks = document.getElementById('overallTotalMarks')?.textContent || '0';
-               
-               const timeDurationSelect = document.getElementById('timeDuration');
-               if (timeDurationSelect) {
-                   const selectedOption = timeDurationSelect.options[timeDurationSelect.selectedIndex];
-                   downloadBtn.dataset.timedurationtext = selectedOption ? selectedOption.text : '1 Hour';
-               }
-           }
+      // Update download button dataset
+      const downloadBtn = document.getElementById('downloadBtn');
+      if (downloadBtn) {
+        downloadBtn.style.display = 'inline-block';
+        downloadBtn.dataset.subject = payload.subject;
+        downloadBtn.dataset.classname = payload.className;
+        downloadBtn.dataset.curriculum = payload.curriculum;
+        downloadBtn.dataset.totalmarks = document.getElementById('overallTotalMarks')?.textContent || '0';
+        
+        const timeDurationSelect = document.getElementById('timeDuration');
+        if (timeDurationSelect) {
+          const selectedOption = timeDurationSelect.options[timeDurationSelect.selectedIndex];
+          downloadBtn.dataset.timedurationtext = selectedOption ? selectedOption.text : '1 Hour';
+        }
+      }
 
-           const outputSection = document.getElementById('outputSection');
-           if (outputSection) {
-               outputSection.style.display = 'block';
-               outputSection.scrollIntoView({ behavior: 'smooth' });
-           }
-           
-           showToast('Your question paper has been generated successfully!', 3000);
-       }
-
+      const outputSection = document.getElementById('outputSection');
+      if (outputSection) {
+        outputSection.style.display = 'block';
+        outputSection.scrollIntoView({ behavior: 'smooth' });
+      }
+      
+      showToast('Your question paper has been generated successfully!', 3000);
     } else {
       let errorData = { message: `Server responded with ${response.status}` };
       try {
@@ -669,271 +686,315 @@ async function generateQuestionPaper(e) {
 
 // ===== DOWNLOAD FUNCTION =====
 async function downloadQuestionPaper() {
-    console.log("Starting download process...");
-    const downloadBtn = document.getElementById('downloadBtn');
-    const downloadStatus = document.getElementById('downloadStatus');
-    if (!downloadBtn) return;
+  console.log("Starting download process...");
+  const downloadBtn = document.getElementById('downloadBtn');
+  const downloadStatus = document.getElementById('downloadStatus');
+  if (!downloadBtn) return;
 
-    downloadBtn.disabled = true;
-    downloadBtn.style.opacity = '0.6';
+  downloadBtn.disabled = true;
+  downloadBtn.style.opacity = '0.6';
+  if (downloadStatus) {
     downloadStatus.style.display = 'block';
+  }
 
+  const subject = downloadBtn.dataset.subject;
+  const className = downloadBtn.dataset.classname;
+  const curriculum = downloadBtn.dataset.curriculum;
+  const timeDurationText = downloadBtn.dataset.timedurationtext;
+  const text = generatedPaperText;
+  const actualTotalMarks = document.getElementById('overallTotalMarks')?.textContent || '0';
+
+  if (!subject || !text || !className || !curriculum || !timeDurationText) {
+    showToast("Required data for download is missing. Please generate the paper again.", 5000, true);
+    return;
+  }
+
+  if (!text || text.trim() === '' || text.includes('Generating, please wait...') || text.includes('Error:')) {
+    showToast("No valid content to download. Please generate a question paper first.", 5000, true);
+    return;
+  }
+
+  console.log("Processing output text for download...");
+
+  let cleanedText = text
+    .replace(/\*\*/g, '')
+    .replace(/^(question paper|curriculum board|class|subject|total time).*$/gmi, '')
+    .replace(/^general instructions \/ questions.*$/gmi, '')
+    .replace(/^\d+\.\s*(tamil nadu state board|cbse|karnataka state board).*$/gmi, (match) => {
+      return match.replace(/^\d+\.\s*/, '');
+    });
+
+  const answerKeyMarkers = [
+    /^(\*\*|__)?answer key(\*\*|__)?$/i,
+    /^---+.*answer key.*---+$/i,
+    /^answer key:?$/i,
+    /^\*\*answer key\*\*$/i,
+    /^-{3,}$/
+  ];
+
+  let questionPart = '';
+  let answerPart = '';
+  let answerKeyFound = false;
   
-    const subject = downloadBtn.dataset.subject;
-    const className = downloadBtn.dataset.classname;
-    const curriculum = downloadBtn.dataset.curriculum;
-    const timeDurationText = downloadBtn.dataset.timedurationtext;
-    const text = generatedPaperText;
-    const actualTotalMarks = document.getElementById('overallTotalMarks')?.textContent || '0';
-
-    if (!subject || !text || !className || !curriculum || !timeDurationText) {
-         showToast("Required data for download is missing. Please generate the paper again.", 5000, true);
-         return;
-    }
-
-    if (!text || text.trim() === '' || text.includes('Generating, please wait...') || text.includes('Error:')) {
-         showToast("No valid content to download. Please generate a question paper first.", 5000, true);
-         return;
-    }
-
-    console.log("Processing output text for download...");
-
-    let cleanedText = text
-        .replace(/\*\*/g, '')
-        .replace(/^(question paper|curriculum board|class|subject|total time).*$/gmi, '')
-        .replace(/^general instructions \/ questions.*$/gmi, '')
-        .replace(/^\d+\.\s*(tamil nadu state board|cbse|karnataka state board).*$/gmi, (match) => {
-            return match.replace(/^\d+\.\s*/, '');
-        });
-
-    const answerKeyMarkers = [
-        /^(\*\*|__)?answer key(\*\*|__)?$/i,
-        /^---+.*answer key.*---+$/i,
-        /^answer key:?$/i,
-        /^\*\*answer key\*\*$/i,
-        /^-{3,}$/
-    ];
-
-    let questionPart = '';
-    let answerPart = '';
-    let answerKeyFound = false;
+  const lines = cleanedText.split('\n');
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    const isAnswerKeyHeader = answerKeyMarkers.some(regex => regex.test(line));
     
-    const lines = cleanedText.split('\n');
+    if (isAnswerKeyHeader && !answerKeyFound) {
+      answerKeyFound = true;
+      let j = i + 1;
+      while (j < lines.length && /^[-=_\s]*$/.test(lines[j].trim())) {
+        j++;
+      }
+      i = j - 1;
+      continue;
+    }
     
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        const isAnswerKeyHeader = answerKeyMarkers.some(regex => regex.test(line));
+    if (answerKeyFound) {
+      if (line && !line.match(/^[-=_\s]*$/) && !answerKeyMarkers.some(regex => regex.test(line))) {
+        answerPart += lines[i] + '\n';
+      }
+    } else {
+      if (!isAnswerKeyHeader && line && !line.match(/^[-=_\s]*$/)) {
+        questionPart += lines[i] + '\n';
+      }
+    }
+  }
+
+  const sections = [];
+  let currentSection = null;
+  const questionLines = questionPart.split('\n');
+
+  for (let i = 0; i < questionLines.length; i++) {
+    let line = questionLines[i].trim();
+    
+    if (!line) continue;
+
+    const sectionHeaderRegex = /^(section|part|பிரிவு)\s*([a-zA-Z0-9அ-ஹ]+)?[\s:\-]*(.*)/i;
+    const curriculumInfoRegex = /^(tamil nadu state board|cbse|karnataka state board|time allowed|maximum marks|time:)/i;
+    
+    if (sectionHeaderRegex.test(line) && line.length < 100) {
+      currentSection = { title: line, questions: [] };
+      sections.push(currentSection);
+    } else if (curriculumInfoRegex.test(line)) {
+      if (!currentSection || currentSection.title !== 'Exam Information') {
+        currentSection = { title: 'Exam Information', questions: [] };
+        sections.push(currentSection);
+      }
+      currentSection.questions.push(line);
+    } else if (currentSection) {
+      const numberedQuestionRegex = /^\s*(\d+)[\.\)]\s*(.*)/;
+      
+      if (numberedQuestionRegex.test(line)) {
+        const match = line.match(numberedQuestionRegex);
+        const questionText = match[2].trim();
         
-        if (isAnswerKeyHeader && !answerKeyFound) {
-            answerKeyFound = true;
-            let j = i + 1;
-            while (j < lines.length && /^[-=_\s]*$/.test(lines[j].trim())) {
-                j++;
-            }
-            i = j - 1;
-            continue;
+        if (!curriculumInfoRegex.test(questionText)) {
+          currentSection.questions.push(questionText);
         }
-        
-        if (answerKeyFound) {
-            if (line && !line.match(/^[-=_\s]*$/) && !answerKeyMarkers.some(regex => regex.test(line))) {
-                answerPart += lines[i] + '\n';
-            }
-        } else {
-            if (!isAnswerKeyHeader && line && !line.match(/^[-=_\s]*$/)) {
-                questionPart += lines[i] + '\n';
-            }
-        }
+      } else if (currentSection.questions.length > 0) {
+        const lastIndex = currentSection.questions.length - 1;
+        currentSection.questions[lastIndex] += '\n' + line;
+      } else if (line.length > 0 && !curriculumInfoRegex.test(line)) {
+        currentSection.questions.push(line);
+      }
+    } else {
+      if (!curriculumInfoRegex.test(line)) {
+        currentSection = { title: 'Questions', questions: [line] };
+        sections.push(currentSection);
+      }
+    }
+  }
+
+  const answerKey = [];
+  if (answerPart.trim()) {
+    const answerLines = answerPart.split('\n');
+    
+    for (const line of answerLines) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      
+      if (/^(section|part|பிரிவு)/i.test(trimmed)) continue;
+      
+      let cleanAnswer = trimmed
+        .replace(/^\d+[\.\)]\s*/, '')
+        .replace(/^answer\s*:?\s*/i, '')
+        .replace(/^ans\s*:?\s*/i, '')
+        .trim();
+      
+      if (cleanAnswer) {
+        answerKey.push(cleanAnswer);
+      }
+    }
+  }
+
+  const metadata = {
+    curriculum: curriculum,
+    className: className,
+    totalMarks: actualTotalMarks,
+    timeDuration: timeDurationText
+  };
+
+  const payload = {
+    subject: subject,
+    metadata: metadata,
+    sections: sections,
+    answerKey: answerKey
+  };
+
+  console.log("Sending payload to server:", JSON.stringify(payload, null, 2));
+
+  try {
+    const response = await fetch(
+      `${window.APP_CONFIG.BACKEND_URL}/download-docx`,
+      {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'useremail': localStorage.getItem('userEmail') || 'anonymous'
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    if (!response.ok) {
+      let errorData = { message: `Server responded with status ${response.status}` };
+      try {
+        errorData = await response.json();
+      } catch (e) {
+        console.warn("Could not parse error response as JSON");
+      }
+      throw new Error(`Download failed: ${errorData.message || response.statusText}`);
     }
 
-    const sections = [];
-    let currentSection = null;
-    const questionLines = questionPart.split('\n');
-
-    for (let i = 0; i < questionLines.length; i++) {
-        let line = questionLines[i].trim();
-        
-        if (!line) continue;
-
-        const sectionHeaderRegex = /^(section|part|பிரிவு)\s*([a-zA-Z0-9அ-ஹ]+)?[\s:\-]*(.*)/i;
-        const curriculumInfoRegex = /^(tamil nadu state board|cbse|karnataka state board|time allowed|maximum marks|time:)/i;
-        
-        if (sectionHeaderRegex.test(line) && line.length < 100) {
-            currentSection = { title: line, questions: [] };
-            sections.push(currentSection);
-        } else if (curriculumInfoRegex.test(line)) {
-            if (!currentSection || currentSection.title !== 'Exam Information') {
-                currentSection = { title: 'Exam Information', questions: [] };
-                sections.push(currentSection);
-            }
-            currentSection.questions.push(line);
-        } else if (currentSection) {
-            const numberedQuestionRegex = /^\s*(\d+)[\.\)]\s*(.*)/;
-            
-            if (numberedQuestionRegex.test(line)) {
-                const match = line.match(numberedQuestionRegex);
-                const questionText = match[2].trim();
-                
-                if (!curriculumInfoRegex.test(questionText)) {
-                    currentSection.questions.push(questionText);
-                }
-            } else if (currentSection.questions.length > 0) {
-                const lastIndex = currentSection.questions.length - 1;
-                currentSection.questions[lastIndex] += '\n' + line;
-            } else if (line.length > 0 && !curriculumInfoRegex.test(line)) {
-                currentSection.questions.push(line);
-            }
-        } else {
-            if (!curriculumInfoRegex.test(line)) {
-                currentSection = { title: 'Questions', questions: [line] };
-                sections.push(currentSection);
-            }
-        }
+    const blob = await response.blob();
+    
+    if (blob.size === 0) {
+      throw new Error("Received empty file from server.");
     }
 
-    const answerKey = [];
-    if (answerPart.trim()) {
-        const answerLines = answerPart.split('\n');
-        
-        for (const line of answerLines) {
-            const trimmed = line.trim();
-            if (!trimmed) continue;
-            
-            if (/^(section|part|பிரிவு)/i.test(trimmed)) continue;
-            
-            let cleanAnswer = trimmed
-                .replace(/^\d+[\.\)]\s*/, '')
-                .replace(/^answer\s*:?\s*/i, '')
-                .replace(/^ans\s*:?\s*/i, '')
-                .trim();
-            
-            if (cleanAnswer) {
-                answerKey.push(cleanAnswer);
-            }
-        }
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    const safeSubject = subject.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    a.download = `Question_Paper_${safeSubject || 'Untitled'}.docx`;
+    document.body.appendChild(a);
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+    a.remove();
+
+    showToast("Question paper downloaded successfully!", 3000);
+
+  } catch (error) {
+    console.error("Download error:", error);
+    showToast(`Download failed: ${error.message}`, 5000, true);
+  } finally {
+    // Re-enable button and hide status
+    downloadBtn.disabled = false;
+    downloadBtn.style.opacity = '1';
+    if (downloadStatus) {
+      downloadStatus.style.display = 'none';
     }
-
-    const metadata = {
-        curriculum: curriculum,
-        className: className,
-        totalMarks: actualTotalMarks,
-        timeDuration: timeDurationText
-    };
-
-    const payload = {
-        subject: subject,
-        metadata: metadata,
-        sections: sections,
-        answerKey: answerKey
-    };
-
-    console.log("Sending payload to server:", JSON.stringify(payload, null, 2));
-
-    try {
-        const response = await fetch(
-            `${window.APP_CONFIG.BACKEND_URL}/download-docx`,
-            {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'useremail': localStorage.getItem('userEmail') || 'anonymous'
-                },
-                body: JSON.stringify(payload)
-            }
-        );
-
-       if (!response.ok) {
-           let errorData = { message: `Server responded with status ${response.status}` };
-           try {
-               errorData = await response.json();
-           } catch (e) {
-               console.warn("Could not parse error response as JSON");
-           }
-           throw new Error(`Download failed: ${errorData.message || response.statusText}`);
-       }
-
-       const blob = await response.blob();
-       
-       if (blob.size === 0) {
-           throw new Error("Received empty file from server.");
-       }
-
-       const url = window.URL.createObjectURL(blob);
-       const a = document.createElement('a');
-       a.style.display = 'none';
-       a.href = url;
-       const safeSubject = subject.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-       a.download = `Question_Paper_${safeSubject || 'Untitled'}.docx`;
-       document.body.appendChild(a);
-       a.click();
-
-       window.URL.revokeObjectURL(url);
-       a.remove();
-
-       showToast("Question paper downloaded successfully!", 3000);
-
-   } catch (error) {
-       console.error("Download error:", error);
-       showToast(`Download failed: ${error.message}`, 5000, true);
-   } finally {
-       // Re-enable button and hide status
-       downloadBtn.disabled = false;
-       downloadBtn.style.opacity = '1';
-       downloadStatus.style.display = 'none';
-   }
+  }
 }
 
-      
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize dropdown references
+  // Check authentication first
+  const userEmail = localStorage.getItem('userEmail');
+  if (!userEmail) {
+    window.location.href = '/login.html';
+    return;
+  }
+
+  // Initialize page with shared components
+  initializeCommonComponents({
+    currentPage: 'generator',
+    isAuthenticated: true,
+    userEmail: userEmail
+  });
+  
+  // BUG FIX #1: Wait for components to be ready, then initialize form
+  setTimeout(() => {
+    initializeFormElements();
+  }, 100);
+});
+
+// BUG FIX #1: Proper form initialization with safety checks
+function initializeFormElements() {
+  // 1. Initialize dropdown references with safety checks
   curriculumDropdown = document.getElementById('curriculum');
   classDropdown = document.getElementById('className');
   subjectDropdown = document.getElementById('subject');
   
-  const generateBtn = document.getElementById('generateBtn');
-  const downloadBtn = document.getElementById('downloadBtn');
-  const addRowBtn = document.getElementById('addQuestionRowBtn');
-
-  // Safety checks
+  // 2. Safety checks before proceeding
   if (!curriculumDropdown || !classDropdown || !subjectDropdown) {
     console.error('Critical form elements not found');
+    showToast('Form initialization error. Please refresh the page.', 5000, true);
     return;
   }
 
-  // Initially disable class and subject
+  // 3. Set initial states
   classDropdown.disabled = true;
   subjectDropdown.disabled = true;
 
-  // Add initial question row
+  // 4. Set up all event listeners BEFORE adding rows and validation
+  setupEventListeners();
+  
+  // 5. Add initial question row AFTER safety checks
   addQuestionRow();
 
-  // ===== EVENT LISTENERS =====
-  
-  // Add question row button
-  if (addRowBtn) {
-    addRowBtn.addEventListener('click', () => {
-      if (questionRowCount < MAX_QUESTION_ROWS) {
-        addQuestionRow();
-      } else {
-        showToast(`Maximum ${MAX_QUESTION_ROWS} question types are allowed.`, 3000, true);
-      }
-    });
-  }
-
-  // Curriculum change handler
-  curriculumDropdown.addEventListener('change', async () => {
-   await updateClassDropdown(curriculumDropdown.value);
+  // 6. Run initial validation LAST with delay
+  setTimeout(() => {
     validateForm();
+  }, 200);
+  
+  console.log('Form elements initialized successfully');
+}
+
+// BUG FIX #1: Consolidated event listener setup
+function setupEventListeners() {
+  // Curriculum change handler with proper async handling
+  curriculumDropdown.addEventListener('change', async () => {
+    try {
+      // Show loading state
+      classDropdown.innerHTML = '<option value="">Loading classes...</option>';
+      classDropdown.disabled = true;
+      subjectDropdown.innerHTML = '<option value="">Select class first</option>';
+      subjectDropdown.disabled = true;
+      
+      await updateClassDropdown(curriculumDropdown.value);
+      debouncedValidateForm();
+    } catch (error) {
+      console.error('Error updating class dropdown:', error);
+      classDropdown.innerHTML = '<option value="">Error loading classes</option>';
+      showToast('Unable to load classes. Please try again.', 3000, true);
+      debouncedValidateForm();
+    }
   });
 
-  // Class change handler
+  // Class change handler with proper async handling
   classDropdown.addEventListener('change', async () => {
-    await updateSubjectDropdown(curriculumDropdown.value, classDropdown.value);
-    validateForm();
+    try {
+      subjectDropdown.innerHTML = '<option value="">Loading subjects...</option>';
+      subjectDropdown.disabled = true;
+      
+      await updateSubjectDropdown(curriculumDropdown.value, classDropdown.value);
+      debouncedValidateForm();
+    } catch (error) {
+      console.error('Error updating subject dropdown:', error);
+      subjectDropdown.innerHTML = '<option value="">Error loading subjects</option>';
+      showToast('Unable to load subjects. Please try again.', 3000, true);
+      debouncedValidateForm();
+    }
   });
 
   // Subject change handler
-  subjectDropdown.addEventListener('change', validateForm);
+  subjectDropdown.addEventListener('change', debouncedValidateForm);
 
   // Assessment conditional logic
   const assessmentSelect = document.getElementById('assessment');
@@ -955,7 +1016,7 @@ document.addEventListener('DOMContentLoaded', () => {
           specificTopicInput.value = '';
         }
       }
-      validateForm();
+      debouncedValidateForm();
     });
   }
 
@@ -978,59 +1039,66 @@ document.addEventListener('DOMContentLoaded', () => {
   const easyInput = document.getElementById('easy');
   const mediumInput = document.getElementById('medium');
   const hardInput = document.getElementById('hard');
-  const difficultySumSpan = document.getElementById('difficultySum');
-  const difficultyTotalMessage = document.getElementById('difficultyTotalMessage');
 
-  function updateDifficultySum() {
-    const easy = parseInt(easyInput?.value) || 0;
-    const medium = parseInt(mediumInput?.value) || 0;
-    const hard = parseInt(hardInput?.value) || 0;
-    const total = easy + medium + hard;
-    
-    if (difficultySumSpan) {
-      difficultySumSpan.textContent = total;
-    }
-    
-    if (difficultyTotalMessage) {
-      if (total !== 100) {
-        difficultyTotalMessage.style.color = '#e74c3c';
-        if (difficultySumSpan) {
-          difficultySumSpan.style.fontWeight = 'bold';
-        }
-      } else {
-        difficultyTotalMessage.style.color = '#27ae60';
-        if (difficultySumSpan) {
-          difficultySumSpan.style.fontWeight = 'normal';
-        }
-      }
-    }
-    
-    validateForm();
+  if (easyInput && mediumInput && hardInput) {
+    [easyInput, mediumInput, hardInput].forEach(input => {
+      input.addEventListener('input', () => {
+        updateDifficultySum();
+        debouncedValidateForm();
+      });
+    });
   }
-  
-  if (easyInput) easyInput.addEventListener('input', updateDifficultySum);
-  if (mediumInput) mediumInput.addEventListener('input', updateDifficultySum);
-  if (hardInput) hardInput.addEventListener('input', updateDifficultySum);
 
-  // Form validation on any input change
+  // Form submission
   const questionForm = document.getElementById('questionForm');
   if (questionForm) {
-    questionForm.addEventListener('input', validateForm);
-    questionForm.addEventListener('change', validateForm);
     questionForm.addEventListener('submit', generateQuestionPaper);
   }
 
+  // Add question row button
+  const addRowBtn = document.getElementById('addQuestionRowBtn');
+  if (addRowBtn) {
+    addRowBtn.addEventListener('click', () => {
+      if (questionRowCount < MAX_QUESTION_ROWS) {
+        addQuestionRow();
+      } else {
+        showToast('Maximum 10 question types allowed.', 3000, true);
+      }
+    });
+  }
+
   // Download button
+  const downloadBtn = document.getElementById('downloadBtn');
   if (downloadBtn) {
     downloadBtn.addEventListener('click', downloadQuestionPaper);
     downloadBtn.style.display = 'none';
   }
+}
 
-  // Initial validation
-  validateForm();
+// Update difficulty sum with better styling
+function updateDifficultySum() {
+  const easyInput = document.getElementById('easy');
+  const mediumInput = document.getElementById('medium');
+  const hardInput = document.getElementById('hard');
+  const difficultySumSpan = document.getElementById('difficultySum');
+  const difficultyTotalMessage = document.getElementById('difficultyTotalMessage');
 
-  console.log("Enhanced generator.js loaded successfully");
-});
+  if (!easyInput || !mediumInput || !hardInput || !difficultySumSpan || !difficultyTotalMessage) return;
+
+  const easy = parseInt(easyInput.value) || 0;
+  const medium = parseInt(mediumInput.value) || 0;
+  const hard = parseInt(hardInput.value) || 0;
+  const total = easy + medium + hard;
+  difficultySumSpan.textContent = total;
+  
+  if (total !== 100) {
+    difficultyTotalMessage.style.color = '#e74c3c';
+    difficultySumSpan.style.fontWeight = 'bold';
+  } else {
+    difficultyTotalMessage.style.color = '#27ae60';
+    difficultySumSpan.style.fontWeight = 'normal';
+  }
+}
 
 // ===== UTILITY FUNCTIONS =====
 
@@ -1047,13 +1115,19 @@ function updateProgressBar(step) {
   });
 }
 
-// Logout function
+// BUG FIX #5: Enhanced logout function with proper cleanup
 function logout() {
   localStorage.removeItem('userEmail');
+  
+  // Clear generated paper data
   generatedPaperText = '';
+  currentQueryId = '';
+  qualityFeedbackSubmitted = false;
+  
+  // Clear download button data
   const downloadBtn = document.getElementById('downloadBtn');
   if (downloadBtn) {
-    // Clear data attributes on logout
+    // Clear all dataset properties
     delete downloadBtn.dataset.subject;
     delete downloadBtn.dataset.classname;
     delete downloadBtn.dataset.curriculum;
@@ -1061,9 +1135,29 @@ function logout() {
     delete downloadBtn.dataset.timedurationtext;
     downloadBtn.style.display = 'none';
   }
+  
+  // Hide output section
+  const outputSection = document.getElementById('outputSection');
+  if (outputSection) {
+    outputSection.style.display = 'none';
+  }
+  
+  // Clear form data
+  if (curriculumDropdown) curriculumDropdown.value = '';
+  if (classDropdown) {
+    classDropdown.innerHTML = '<option value="">First select a board</option>';
+    classDropdown.disabled = true;
+  }
+  if (subjectDropdown) {
+    subjectDropdown.innerHTML = '<option value="">First select a class</option>';
+    subjectDropdown.disabled = true;
+  }
+  
   window.location.href = '/login.html';
 }
 
 // Make functions globally available (for backward compatibility)
 window.updateProgressBar = updateProgressBar;
 window.logout = logout;
+window.debouncedValidateForm = debouncedValidateForm;
+window.showToast = showToast;

@@ -1,4 +1,4 @@
-// Enhanced Shared UI Components with Mobile Support
+// Enhanced Shared UI Components with Mobile Support - BUG FIX #2
 
 /**
  * Renders the common header with mobile navigation
@@ -34,7 +34,8 @@ function renderHeader(options = {}) {
           </a>
         </div>
         <nav>
-          <ul class="nav-list tight">
+          <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">☰</button>
+          <ul class="nav-list">
             ${navLinks}
             ${authSection}
           </ul>
@@ -71,14 +72,34 @@ function renderFooter() {
 }
 
 /**
- * Global logout function
+ * Global logout function with enhanced cleanup
  */
 function logout() {
   localStorage.removeItem('userEmail');
+  
   // Clear any other stored data
   if (typeof generatedPaperText !== 'undefined') {
     generatedPaperText = '';
   }
+  
+  // Clear download button data if it exists
+  const downloadBtn = document.getElementById('downloadBtn');
+  if (downloadBtn) {
+    // Clear all dataset properties
+    delete downloadBtn.dataset.subject;
+    delete downloadBtn.dataset.classname;
+    delete downloadBtn.dataset.curriculum;
+    delete downloadBtn.dataset.totalmarks;
+    delete downloadBtn.dataset.timedurationtext;
+    downloadBtn.style.display = 'none';
+  }
+  
+  // Hide output section if it exists
+  const outputSection = document.getElementById('outputSection');
+  if (outputSection) {
+    outputSection.style.display = 'none';
+  }
+  
   window.location.href = '/login.html';
 }
 
@@ -98,103 +119,289 @@ function initializeCommonComponents(pageConfig = {}) {
     footerContainer.innerHTML = renderFooter();
   }
   
-  // Add mobile navigation toggle if needed
-  setupMobileNavigation();
-  
-  // Add common event listeners
-  document.addEventListener('DOMContentLoaded', () => {
-    // Add any common initialization here
-  });
+  // Initialize mobile navigation after rendering
+  setTimeout(() => {
+    setupMobileNavigation();
+  }, 50);
 }
 
 /**
- * Setup mobile navigation functionality
+ * BUG FIX #2: Unified mobile navigation setup
  */
 function setupMobileNavigation() {
-  // Add mobile menu styles if not already present
-  if (!document.getElementById('mobile-nav-styles')) {
-    const mobileStyles = document.createElement('style');
-    mobileStyles.id = 'mobile-nav-styles';
-    mobileStyles.textContent = `
+  // First, inject mobile navigation styles if not already present
+  injectMobileStyles();
+  
+  // Then setup mobile navigation functionality
+  handleMobileNavigation();
+}
+
+/**
+ * BUG FIX #2: Inject mobile navigation styles dynamically
+ */
+function injectMobileStyles() {
+  // Check if styles already exist
+  if (document.getElementById('mobile-nav-styles')) {
+    return;
+  }
+  
+  const mobileStyles = document.createElement('style');
+  mobileStyles.id = 'mobile-nav-styles';
+  mobileStyles.textContent = `
+    /* Mobile Navigation Styles */
+    .mobile-menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.8rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      z-index: 1001;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .mobile-menu-toggle:hover {
+      transform: scale(1.1);
+    }
+    
+    /* Desktop: Hide mobile toggle, show nav normally */
+    @media (min-width: 769px) {
       .mobile-menu-toggle {
-        display: none;
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.5rem;
-        cursor: pointer;
-        padding: 0.5rem;
+        display: none !important;
       }
       
-      @media (max-width: 768px) {
-        .mobile-menu-toggle {
-          display: block;
+      .nav-list {
+        display: flex !important;
+        position: static !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        flex-direction: row !important;
+        align-items: center;
+        gap: 1rem;
+      }
+      
+      .nav-list li {
+        margin: 0 !important;
+      }
+      
+      .nav-list li a {
+        padding: 0.5rem !important;
+        border-radius: 4px !important;
+      }
+    }
+    
+    /* Mobile: Show toggle, hide nav by default */
+    @media (max-width: 768px) {
+      .mobile-menu-toggle {
+        display: block !important;
+      }
+      
+      .nav-list {
+        display: none !important;
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        background: var(--primary-color);
+        flex-direction: column;
+        padding: 1.5rem;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        z-index: 1000;
+        min-width: 200px;
+        border-radius: 12px;
+        border: 2px solid rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+      }
+      
+      .nav-list.mobile-open {
+        display: flex !important;
+        animation: slideIn 0.3s ease-out;
+      }
+      
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
         }
-        
-        .nav-list {
-          display: none;
-          position: absolute;
-          top: 100%;
-          left: 0;
-          right: 0;
-          background: var(--primary-color);
-          flex-direction: column;
-          padding: 1rem;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-          z-index: 1000;
-        }
-        
-        .nav-list.mobile-open {
-          display: flex;
-        }
-        
-        .nav-list li {
-          margin: 0.5rem 0;
-          text-align: center;
-        }
-        
-        .nav-list li a {
-          display: block;
-          padding: 0.75rem;
-          border-radius: 4px;
-          transition: background 0.3s;
-        }
-        
-        .nav-list li a:hover {
-          background: rgba(255,255,255,0.1);
-        }
-        
-        #userEmailDisplay {
-          color: white;
-          font-size: 0.9rem;
-          padding: 0.5rem;
-        }
-        
-        .logout-button {
-          background: var(--accent-color);
-          color: var(--text-color);
-          border: none;
-          padding: 0.5rem 1rem;
-          border-radius: 4px;
-          cursor: pointer;
-          font-weight: 600;
-        }
-        
-        .primary-btn {
-          background: var(--accent-color);
-          color: var(--text-color);
-          border: none;
-          padding: 0.75rem 1.5rem;
-          border-radius: 4px;
-          cursor: pointer;
-          font-weight: 600;
-          text-decoration: none;
-          display: inline-block;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
       }
-    `;
-    document.head.appendChild(mobileStyles);
+      
+      .nav-list li {
+        margin: 0.75rem 0;
+        text-align: center;
+      }
+      
+      .nav-list li a {
+        display: block;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        transition: all 0.3s;
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      
+      .nav-list li a:hover {
+        background: rgba(255,255,255,0.15);
+        transform: translateY(-1px);
+      }
+      
+      .nav-list li a.active {
+        background: rgba(255,255,255,0.2);
+        font-weight: 600;
+      }
+      
+      .nav-list .primary-btn {
+        background: var(--accent-color) !important;
+        color: var(--text-color) !important;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        margin: 0.5rem 0;
+        transition: all 0.3s;
+        cursor: pointer;
+      }
+      
+      .nav-list .primary-btn:hover {
+        background: #d8b350 !important;
+        transform: translateY(-1px);
+      }
+      
+      .logout-button {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+        width: 100%;
+      }
+      
+      .logout-button:hover {
+        background: #c0392b;
+        transform: translateY(-1px);
+      }
+      
+      #userEmailDisplay {
+        color: white;
+        font-size: 0.9rem;
+        padding: 0.5rem;
+        background: rgba(255,255,255,0.1);
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+      
+      /* Ensure header layout on mobile */
+      .app-header .container {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        flex-direction: row !important;
+        gap: 0 !important;
+      }
+      
+      .logo-container {
+        flex: 0 0 auto;
+      }
+      
+      nav {
+        flex: 0 0 auto;
+        position: relative;
+      }
+    }
+  `;
+  
+  document.head.appendChild(mobileStyles);
+}
+
+/**
+ * BUG FIX #2: Enhanced mobile navigation functionality
+ */
+function handleMobileNavigation() {
+  const header = document.querySelector('.app-header');
+  if (!header) {
+    console.warn('Header not found for mobile navigation setup');
+    return;
   }
+  
+  const toggleButton = header.querySelector('.mobile-menu-toggle');
+  const navList = header.querySelector('.nav-list');
+  
+  if (!toggleButton || !navList) {
+    console.warn('Mobile navigation elements not found');
+    return;
+  }
+  
+  // Clear any existing event listeners by cloning the button
+  const newToggleButton = toggleButton.cloneNode(true);
+  toggleButton.parentNode.replaceChild(newToggleButton, toggleButton);
+  
+  // Add click handler for mobile toggle
+  newToggleButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const isOpen = navList.classList.contains('mobile-open');
+    
+    if (isOpen) {
+      navList.classList.remove('mobile-open');
+      newToggleButton.innerHTML = '☰';
+      newToggleButton.setAttribute('aria-expanded', 'false');
+    } else {
+      navList.classList.add('mobile-open');
+      newToggleButton.innerHTML = '✕';
+      newToggleButton.setAttribute('aria-expanded', 'true');
+    }
+  });
+  
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!header.contains(e.target) && navList.classList.contains('mobile-open')) {
+      navList.classList.remove('mobile-open');
+      newToggleButton.innerHTML = '☰';
+      newToggleButton.setAttribute('aria-expanded', 'false');
+    }
+  });
+  
+  // Close menu when clicking on nav links (mobile)
+  const navLinks = navList.querySelectorAll('a');
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        navList.classList.remove('mobile-open');
+        newToggleButton.innerHTML = '☰';
+        newToggleButton.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
+  
+  // Handle window resize
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+      // Desktop view
+      navList.classList.remove('mobile-open');
+      newToggleButton.innerHTML = '☰';
+      newToggleButton.setAttribute('aria-expanded', 'false');
+    }
+  });
+  
+  // Set initial state
+  navList.classList.remove('mobile-open');
+  newToggleButton.innerHTML = '☰';
+  newToggleButton.setAttribute('aria-expanded', 'false');
+  
+  console.log('Mobile navigation setup complete');
 }
 
 /**
@@ -210,13 +417,69 @@ function showNotification(message, type = 'success', duration = 3000) {
   notification.className = `notification ${type}`;
   notification.textContent = message;
   
+  // Add styles if not already present
+  if (!document.getElementById('notification-styles')) {
+    const styles = document.createElement('style');
+    styles.id = 'notification-styles';
+    styles.textContent = `
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+        max-width: 400px;
+        font-size: 0.9rem;
+      }
+      
+      .notification.success {
+        background-color: var(--primary-color);
+        color: white;
+      }
+      
+      .notification.error {
+        background-color: #e74c3c;
+        color: white;
+      }
+      
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      
+      @media (max-width: 768px) {
+        .notification {
+          top: 10px;
+          right: 10px;
+          left: 10px;
+          max-width: none;
+        }
+      }
+    `;
+    document.head.appendChild(styles);
+  }
+  
   // Add to page
   document.body.appendChild(notification);
   
   // Auto remove after duration
   setTimeout(() => {
     if (notification && notification.parentNode) {
-      notification.parentNode.removeChild(notification);
+      notification.style.animation = 'slideOut 0.3s ease-in';
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
+      }, 300);
     }
   }, duration);
 }
@@ -243,91 +506,31 @@ function formatUserDisplayName(email) {
   return email.split('@')[0];
 }
 
-/**
- * Handle responsive navigation for mobile
- */
-// REPLACE this entire function:
-function handleMobileNavigation() {
-  const header = document.querySelector('.app-header');
-  if (!header) return;
-  
-  // Remove any existing mobile toggle
-  const existingToggle = header.querySelector('.mobile-menu-toggle');
-  if (existingToggle) existingToggle.remove();
-  
-  const nav = header.querySelector('nav');
-  const navList = header.querySelector('.nav-list');
-  
-  if (nav && navList) {
-    // Ensure nav is hidden by default on mobile
-    if (window.innerWidth <= 768) {
-      navList.classList.remove('mobile-open');
-    }
-    
-    // Create mobile toggle button
-    const toggleButton = document.createElement('button');
-    toggleButton.className = 'mobile-menu-toggle';
-    toggleButton.innerHTML = '☰';
-    toggleButton.setAttribute('aria-label', 'Toggle mobile menu');
-    
-    // Insert toggle button at the end of nav
-    nav.appendChild(toggleButton);
-    
-    // Add click handler
-    toggleButton.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      const isOpen = navList.classList.contains('mobile-open');
-      
-      if (isOpen) {
-        navList.classList.remove('mobile-open');
-        toggleButton.innerHTML = '☰';
-      } else {
-        navList.classList.add('mobile-open');
-        toggleButton.innerHTML = '✕';
-      }
-    });
-    
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!header.contains(e.target) && navList.classList.contains('mobile-open')) {
-        navList.classList.remove('mobile-open');
-        toggleButton.innerHTML = '☰';
-      }
-    });
-    
-    // Handle window resize
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 768) {
-        navList.classList.remove('mobile-open');
-        toggleButton.innerHTML = '☰';
-      }
-    });
-    
-    // Ensure proper initial state
-    if (window.innerWidth <= 768) {
-      navList.classList.remove('mobile-open');
-      toggleButton.innerHTML = '☰';
-    }
-  }
-}
-
 // Make functions available globally
 window.renderHeader = renderHeader;
 window.renderFooter = renderFooter;
 window.logout = logout;
 window.initializeCommonComponents = initializeCommonComponents;
+window.setupMobileNavigation = setupMobileNavigation;
+window.handleMobileNavigation = handleMobileNavigation;
 window.showNotification = showNotification;
 window.isUserAuthenticated = isUserAuthenticated;
 window.getCurrentUserEmail = getCurrentUserEmail;
 window.formatUserDisplayName = formatUserDisplayName;
-window.handleMobileNavigation = handleMobileNavigation;
 
 // Auto-setup mobile navigation when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-  // Small delay to ensure header is rendered
+  // Small delay to ensure header is rendered first
   setTimeout(() => {
-    handleMobileNavigation();
+    if (document.querySelector('.app-header')) {
+      setupMobileNavigation();
+    }
   }, 100);
+});
+
+// Re-setup mobile navigation when components are re-initialized
+window.addEventListener('componentsInitialized', () => {
+  setTimeout(() => {
+    setupMobileNavigation();
+  }, 50);
 });

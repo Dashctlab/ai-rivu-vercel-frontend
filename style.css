@@ -1606,16 +1606,6 @@ button:disabled {
 /* ===== RESPONSIVE MOBILE OVERRIDES ===== */
 
 /* Mobile Navigation - Complete Fix */
-.mobile-menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.8rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  z-index: 1001;
-}
 
 @media (max-width: 768px) {
   /* Header mobile layout fix */
@@ -1639,9 +1629,6 @@ button:disabled {
     position: relative;
   }
   
-  .mobile-menu-toggle {
-    display: block;
-  }
   
   /*Hide nav by default on mobile */
   .nav-list {
