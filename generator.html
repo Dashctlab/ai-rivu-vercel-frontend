@@ -470,9 +470,8 @@
   </style>
 </head>
 <body>
-  <!-- Header Container -->
+  <!-- Header Container - BUG FIX #2: Using components.js for unified mobile nav -->
   <div id="header-container"></div>
-
 
   <!-- Main Form Section -->
   <main class="main-content">
@@ -642,7 +641,6 @@
           </div>
         </div>
 
-
 <!-- Generate Button with Validation Checklist -->
         <div class="generate-section">
           <div style="display: flex; align-items: flex-start; gap: 2rem; justify-content: center; flex-wrap: wrap;">
@@ -682,9 +680,6 @@
           </div>
         </div>
 
-
-
-        
         <!-- Generate Button -->
         <div class="generate-section">
           <button type="submit" id="generateBtn" class="generate-btn" disabled>
@@ -799,23 +794,190 @@
   <script src="/shared/constants.js"></script>
   <script src="/shared/components.js"></script>
   <script>
+    // BUG FIX #1: Fixed initialization order and safety checks
+    
+    // Global variables
+    let curriculumDropdown, classDropdown, subjectDropdown;
+    
     // Check authentication and initialize
     document.addEventListener("DOMContentLoaded", () => {
       const userEmail = localStorage.getItem('userEmail');
       if (!userEmail) {
         window.location.href = '/login.html';
       } else {
-        // Initialize page with shared components
+        // Initialize page with shared components first
         initializeCommonComponents({
           currentPage: 'generator',
           isAuthenticated: true,
           userEmail: userEmail
         });
         
-        // Update progress indicators
-        updateProgressBar(1);
+        // Wait for components to be ready, then initialize form
+        setTimeout(() => {
+          initializeFormElements();
+        }, 100);
       }
     });
+    
+    // BUG FIX #1: Proper form initialization with safety checks
+    function initializeFormElements() {
+      // 1. Initialize dropdown references with safety checks
+      curriculumDropdown = document.getElementById('curriculum');
+      classDropdown = document.getElementById('className');
+      subjectDropdown = document.getElementById('subject');
+      
+      // 2. Safety checks before proceeding
+      if (!curriculumDropdown || !classDropdown || !subjectDropdown) {
+        console.error('Critical form elements not found');
+        showToast('Form initialization error. Please refresh the page.', 5000, true);
+        return;
+      }
+
+      // 3. Set initial states
+      classDropdown.disabled = true;
+      subjectDropdown.disabled = true;
+
+      // 4. Set up all event listeners BEFORE adding rows and validation
+      setupEventListeners();
+      
+      // 5. Add initial question row AFTER safety checks
+      addQuestionRow();
+
+      // 6. Run initial validation LAST with delay
+      setTimeout(() => {
+        validateForm();
+      }, 200);
+      
+      console.log('Form elements initialized successfully');
+    }
+    
+    // BUG FIX #1: Consolidated event listener setup
+    function setupEventListeners() {
+      // Curriculum change handler with proper async handling
+      curriculumDropdown.addEventListener('change', async () => {
+        try {
+          // Show loading state
+          classDropdown.innerHTML = '<option value="">Loading classes...</option>';
+          classDropdown.disabled = true;
+          subjectDropdown.innerHTML = '<option value="">Select class first</option>';
+          subjectDropdown.disabled = true;
+          
+          await updateClassDropdown(curriculumDropdown.value);
+          debouncedValidateForm();
+        } catch (error) {
+          console.error('Error updating class dropdown:', error);
+          classDropdown.innerHTML = '<option value="">Error loading classes</option>';
+          showToast('Unable to load classes. Please try again.', 3000, true);
+          debouncedValidateForm();
+        }
+      });
+
+      // Class change handler with proper async handling
+      classDropdown.addEventListener('change', async () => {
+        try {
+          subjectDropdown.innerHTML = '<option value="">Loading subjects...</option>';
+          subjectDropdown.disabled = true;
+          
+          await updateSubjectDropdown(curriculumDropdown.value, classDropdown.value);
+          debouncedValidateForm();
+        } catch (error) {
+          console.error('Error updating subject dropdown:', error);
+          subjectDropdown.innerHTML = '<option value="">Error loading subjects</option>';
+          showToast('Unable to load subjects. Please try again.', 3000, true);
+          debouncedValidateForm();
+        }
+      });
+
+      // Subject change handler
+      subjectDropdown.addEventListener('change', debouncedValidateForm);
+
+      // Assessment conditional logic
+      const assessmentSelect = document.getElementById('assessment');
+      const specificTopicGroup = document.getElementById('specificTopicGroup');
+      
+      if (assessmentSelect && specificTopicGroup) {
+        assessmentSelect.addEventListener('change', function() {
+          if (this.value === 'Specific Topic') {
+            specificTopicGroup.classList.add('show');
+            const specificTopicInput = document.getElementById('specificTopic');
+            if (specificTopicInput) {
+              specificTopicInput.required = true;
+            }
+          } else {
+            specificTopicGroup.classList.remove('show');
+            const specificTopicInput = document.getElementById('specificTopic');
+            if (specificTopicInput) {
+              specificTopicInput.required = false;
+              specificTopicInput.value = '';
+            }
+          }
+          debouncedValidateForm();
+        });
+      }
+
+      // Answer key radio button styling
+      const radioOptions = document.querySelectorAll('.radio-option');
+      radioOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          radioOptions.forEach(opt => opt.classList.remove('selected'));
+          this.classList.add('selected');
+          
+          // Also check the actual radio button
+          const radioInput = this.querySelector('input[type="radio"]');
+          if (radioInput) {
+            radioInput.checked = true;
+          }
+        });
+      });
+
+      // Difficulty sum tracking
+      const easyInput = document.getElementById('easy');
+      const mediumInput = document.getElementById('medium');
+      const hardInput = document.getElementById('hard');
+
+      if (easyInput && mediumInput && hardInput) {
+        [easyInput, mediumInput, hardInput].forEach(input => {
+          input.addEventListener('input', () => {
+            updateDifficultySum();
+            debouncedValidateForm();
+          });
+        });
+      }
+
+      // Form submission
+      const questionForm = document.getElementById('questionForm');
+      if (questionForm) {
+        questionForm.addEventListener('submit', generateQuestionPaper);
+      }
+
+      // Add question row button
+      const addRowBtn = document.getElementById('addQuestionRowBtn');
+      if (addRowBtn) {
+        addRowBtn.addEventListener('click', () => {
+          if (questionRowCount < 10) { // MAX_QUESTION_ROWS = 10
+            addQuestionRow();
+          } else {
+            showToast('Maximum 10 question types allowed.', 3000, true);
+          }
+        });
+      }
+
+      // Download button
+      const downloadBtn = document.getElementById('downloadBtn');
+      if (downloadBtn) {
+        downloadBtn.addEventListener('click', downloadQuestionPaper);
+        downloadBtn.style.display = 'none';
+      }
+    }
+    
+    // BUG FIX #1: Debounced validation to prevent race conditions
+    let validationTimeout;
+    function debouncedValidateForm() {
+      clearTimeout(validationTimeout);
+      validationTimeout = setTimeout(() => {
+        validateForm();
+      }, 300);
+    }
     
     // Progress bar update function
     function updateProgressBar(step) {
@@ -834,6 +996,8 @@
     // Show toast notification
     function showToast(message, duration = 3000, isError = false) {
       const toast = document.getElementById('toast');
+      if (!toast) return;
+      
       toast.textContent = message;
       toast.classList.toggle('error', isError);
       toast.classList.add('show');
@@ -843,13 +1007,15 @@
     }
     
     // Update difficulty sum with better styling
-    const easyInput = document.getElementById('easy');
-    const mediumInput = document.getElementById('medium');
-    const hardInput = document.getElementById('hard');
-    const difficultySumSpan = document.getElementById('difficultySum');
-    const difficultyTotalMessage = document.getElementById('difficultyTotalMessage');
-
     function updateDifficultySum() {
+      const easyInput = document.getElementById('easy');
+      const mediumInput = document.getElementById('medium');
+      const hardInput = document.getElementById('hard');
+      const difficultySumSpan = document.getElementById('difficultySum');
+      const difficultyTotalMessage = document.getElementById('difficultyTotalMessage');
+
+      if (!easyInput || !mediumInput || !hardInput || !difficultySumSpan || !difficultyTotalMessage) return;
+
       const easy = parseInt(easyInput.value) || 0;
       const medium = parseInt(mediumInput.value) || 0;
       const hard = parseInt(hardInput.value) || 0;
@@ -865,34 +1031,10 @@
       }
     }
     
-    easyInput.addEventListener('input', updateDifficultySum);
-    mediumInput.addEventListener('input', updateDifficultySum);
-    hardInput.addEventListener('input', updateDifficultySum);
-
-    // Assessment conditional logic
-    const assessmentSelect = document.getElementById('assessment');
-    const specificTopicGroup = document.getElementById('specificTopicGroup');
-
-    assessmentSelect.addEventListener('change', function() {
-      if (this.value === 'Specific Topic') {
-        specificTopicGroup.classList.add('show');
-        document.getElementById('specificTopic').required = true;
-      } else {
-        specificTopicGroup.classList.remove('show');
-        document.getElementById('specificTopic').required = false;
-        document.getElementById('specificTopic').value = '';
-      }
-      validateForm();
-    });
-
-    // Answer key radio button styling
-    const radioOptions = document.querySelectorAll('.radio-option');
-    radioOptions.forEach(option => {
-      option.addEventListener('click', function() {
-        radioOptions.forEach(opt => opt.classList.remove('selected'));
-        this.classList.add('selected');
-      });
-    });
+    // Make functions globally available for backward compatibility
+    window.updateProgressBar = updateProgressBar;
+    window.showToast = showToast;
+    window.debouncedValidateForm = debouncedValidateForm;
   </script>
   <script src="generator.js"></script>
 </body>
