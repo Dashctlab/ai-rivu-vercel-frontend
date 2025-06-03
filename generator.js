@@ -567,6 +567,7 @@ async function generateQuestionPaper(e) {
     timeDuration: document.getElementById('timeDuration')?.value || '60',
     additionalConditions: document.getElementById('additionalConditions')?.value || '',
     answerKeyFormat: document.querySelector('input[name="answerKeyFormat"]:checked')?.value || 'Brief'
+    deviceInfo: deviceInfo
   };
 
   try {
