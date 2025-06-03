@@ -793,6 +793,7 @@
   <script src="/config.js"></script>
   <script src="/shared/constants.js"></script>
   <script src="/shared/components.js"></script>
+  <script src="/generator.js"></script>
   <script>
 
     
@@ -967,16 +968,7 @@
       }
     }
     
-    // BUG FIX #1: Debounced validation to prevent race conditions
-    let validationTimeout;
-    function debouncedValidateForm() {
-      clearTimeout(validationTimeout);
-      validationTimeout = setTimeout(() => {
-        validateForm();
-      }, 300);
-    }
-    
-    // Progress bar update function
+       // Progress bar update function
     function updateProgressBar(step) {
       const steps = document.querySelectorAll('.progress-step');
       steps.forEach((s, index) => {
@@ -1033,6 +1025,6 @@
     window.showToast = showToast;
     window.debouncedValidateForm = debouncedValidateForm;
   </script>
-  <script src="/generator.js"></script>
+ 
 </body>
 </html>
