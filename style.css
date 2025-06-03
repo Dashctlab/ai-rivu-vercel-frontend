@@ -1045,17 +1045,6 @@ footer.app-footer p {
     grid-template-columns: none;
   }
   
-  .process-flow::before {
-    content: '';
-    position: absolute;
-    top: 70px;
-    left: 10%;
-    right: 10%;
-    height: 2px;
-    background: var(--primary-color);
-    z-index: 1;
-  }
-  
   .process-step {
     width: 22%;
   }
