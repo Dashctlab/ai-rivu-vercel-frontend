@@ -1161,3 +1161,6 @@ window.updateProgressBar = updateProgressBar;
 window.logout = logout;
 window.debouncedValidateForm = debouncedValidateForm;
 window.showToast = showToast;
+window.generateQuestionPaper = generateQuestionPaper;
+window.updateClassDropdown = updateClassDropdown;
+window.validateForm = validateForm;
