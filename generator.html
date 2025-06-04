@@ -682,13 +682,20 @@
      </form>
 
      <!-- Loading Progress -->
+     <!-- Enhanced Loading Progress -->
      <div id="loadingProgress" class="loading-progress">
-       <div class="progress-spinner"></div>
-       <div id="progressMessage" class="progress-message">
-         AI is thinking and creating your question paper...
+       <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); max-width: 400px; margin: 0 auto;">
+         <div class="progress-spinner" style="margin: 0 auto 1.5rem;"></div>
+         <div id="progressMessage" class="progress-message" style="margin-bottom: 1rem;">
+           AI is thinking and creating your question paper...
+         </div>
+         <div style="background: rgba(42, 157, 143, 0.1); padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; color: var(--primary-color); text-align: center;">
+           ⏱️ This usually takes 30-60 seconds
+         </div>
        </div>
      </div>
 
+    
      <!-- Output Section -->
      <div id="outputSection" class="output-wrapper" style="display:none;">
        <div id="pedagogicalSummary" style="display:none;">
