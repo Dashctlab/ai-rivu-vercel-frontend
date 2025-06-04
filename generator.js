@@ -51,18 +51,6 @@ function debouncedValidateForm() {
 }
 
 // ===== VALIDATION FUNCTIONS =====
-function showValidationMessage(errors) {
- const validationMessage = document.getElementById('validationMessage');
- const validationList = document.getElementById('validationList');
- 
- if (errors.length > 0) {
-   validationList.innerHTML = errors.map(error => `<li>${error}</li>`).join('');
-   validationMessage.classList.add('show');
-   validationMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
- } else {
-   validationMessage.classList.remove('show');
- }
-}
 
 function validateForm() {
   const errors = [];
@@ -147,7 +135,6 @@ function validateForm() {
  return errors.length === 0;
 }
 
-// Enhanced Helper function for checklist updates with disappearing functionality
 // Enhanced Helper function for checklist updates with complete hiding
 function updateChecklistItem(itemId, isValid, label) {
   const item = document.getElementById(itemId);
@@ -471,23 +458,26 @@ function addQuestionRow() {
 
 // Quality feedback handling
 function setupQualityFeedback() {
- const qualityOptions = document.querySelectorAll('.quality-option');
- qualityOptions.forEach(option => {
-   option.addEventListener('click', function() {
-     const radio = this.querySelector('input[type="radio"]');
-     if (radio) {
-       radio.checked = true;
-     }
-     
-     // Visual feedback
-     const siblings = this.parentNode.querySelectorAll('.quality-option');
-     siblings.forEach(sibling => sibling.classList.remove('selected'));
-     this.classList.add('selected');
-     
-     // Check if all quality questions are answered
-     checkQualityFeedbackComplete();
-   });
- });
+  const qualityOptions = document.querySelectorAll('.quality-option-mini'); // Changed class name
+  qualityOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      const radio = this.querySelector('input[type="radio"]');
+      if (radio) {
+        radio.checked = true;
+      }
+      
+      // Visual feedback - remove selected from siblings with same name
+      const radioName = radio.name;
+      const siblings = document.querySelectorAll(`input[name="${radioName}"]`);
+      siblings.forEach(sibling => {
+        sibling.closest('.quality-option-mini').classList.remove('selected');
+      });
+      this.classList.add('selected');
+      
+      // Check if all quality questions are answered
+      checkQualityFeedbackComplete();
+    });
+  });
 }
 
 function checkQualityFeedbackComplete() {
