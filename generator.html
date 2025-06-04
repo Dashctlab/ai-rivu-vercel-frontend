@@ -641,46 +641,55 @@
          </div>
        </div>
 
-       <!-- Generate Button with Validation Checklist -->
-       <div class="generate-section">
-         <div style="display: flex; align-items: flex-start; gap: 2rem; justify-content: center; flex-wrap: wrap;">
-           
-           <!-- Validation Checklist -->
-           <div id="validationChecklist" style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); min-width: 250px;">
-             <h4 style="color: var(--primary-color); margin-bottom: 1rem; font-size: 1rem;">Requirements Checklist</h4>
-             <div class="checklist-items">
-               <div class="checklist-item" id="check-curriculum">
-                 <span class="check-icon">⚪</span> Curriculum Board
-               </div>
-               <div class="checklist-item" id="check-class">
-                 <span class="check-icon">⚪</span> Class Selected
-               </div>
-               <div class="checklist-item" id="check-subject">
-                 <span class="check-icon">⚪</span> Subject Selected
-               </div>
-               <div class="checklist-item" id="check-questions">
-                 <span class="check-icon">⚪</span> Question Types Added
-               </div>
-               <div class="checklist-item" id="check-limits">
-                 <span class="check-icon">⚪</span> Within Limits (≤75 questions)
-               </div>
-             </div>
-           </div>
+      <!-- Generate Button with Compact Horizontal Validation Checklist -->
+      <div class="generate-section">
+        <div style="display: flex; align-items: flex-start; gap: 2rem; justify-content: center; flex-wrap: wrap;">
+          
+          <!-- Compact Horizontal Validation Checklist -->
+          <div id="validationChecklist" style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); min-width: 280px; max-width: 350px;">
+            <h4 style="color: var(--primary-color); margin-bottom: 0.75rem; font-size: 0.95rem; text-align: center;">Requirements Checklist</h4>
+            <div class="checklist-items-compact">
+              <div class="checklist-item-compact" id="check-curriculum">
+                <span class="check-icon">⚪</span>
+                <span class="check-text">Curriculum Board</span>
+              </div>
+              <div class="checklist-item-compact" id="check-class">
+                <span class="check-icon">⚪</span>
+                <span class="check-text">Class Selected</span>
+              </div>
+              <div class="checklist-item-compact" id="check-subject">
+                <span class="check-icon">⚪</span>
+                <span class="check-text">Subject Selected</span>
+              </div>
+              <div class="checklist-item-compact" id="check-assessment">
+                <span class="check-icon">⚪</span>
+                <span class="check-text">Assessment Type</span>
+              </div>
+              <div class="checklist-item-compact" id="check-questions">
+                <span class="check-icon">⚪</span>
+                <span class="check-text">Question Types Added</span>
+              </div>
+              <div class="checklist-item-compact" id="check-limits">
+                <span class="check-icon">⚪</span>
+                <span class="check-text">Within Limits (≤75 questions)</span>
+              </div>
+            </div>
+          </div>
+      
+          <!-- Generate Button -->
+          <div style="flex: 0 0 auto; text-align: center;">
+            <button type="submit" id="generateBtn" class="generate-btn" disabled>
+              Generate My Question Paper
+            </button>
+            <p style="font-size: 0.8rem; color: var(--secondary-text-color); margin-top: 0.5rem; max-width: 250px;">
+              Complete all requirements to enable generation
+            </p>
+          </div>
+      
+        </div>
+      </div>
 
-           <!-- Generate Button -->
-           <div style="flex: 1; min-width: 250px; text-align: center;">
-             <button type="submit" id="generateBtn" class="generate-btn" disabled>
-               Generate My Question Paper
-             </button>
-             <p style="font-size: 0.85rem; color: var(--secondary-text-color); margin-top: 0.5rem;">
-               Complete all requirements above to enable generation
-             </p>
-           </div>
-
-         </div>
-       </div>
-     </form>
-
+      
      <!-- Loading Progress -->
      <!-- Enhanced Loading Progress -->
      <div id="loadingProgress" class="loading-progress">
@@ -694,7 +703,6 @@
          </div>
        </div>
      </div>
-
     
      <!-- Output Section -->
      <div id="outputSection" class="output-wrapper" style="display:none;">
