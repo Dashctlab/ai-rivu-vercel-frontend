@@ -476,10 +476,6 @@
  <!-- Main Form Section -->
  <main class="main-content">
    <div class="container form-container">
-     <!-- Validation Message -->
-     <div id="validationMessage" class="validation-message">
-       <ul id="validationList"></ul>
-     </div>
 
      <form id="questionForm">
        <div class="form-grid">
@@ -641,53 +637,54 @@
          </div>
        </div>
 
-      <!-- Generate Button with Compact Horizontal Validation Checklist -->
-      <div class="generate-section">
-        <div style="display: flex; align-items: flex-start; gap: 2rem; justify-content: center; flex-wrap: wrap;">
-          
-          <!-- Compact Horizontal Validation Checklist -->
-          <div id="validationChecklist" style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); min-width: 280px; max-width: 350px;">
-            <h4 style="color: var(--primary-color); margin-bottom: 0.75rem; font-size: 0.95rem; text-align: center;">Requirements Checklist</h4>
-            <div class="checklist-items-compact">
-              <div class="checklist-item-compact" id="check-curriculum">
-                <span class="check-icon">⚪</span>
-                <span class="check-text">Curriculum Board</span>
-              </div>
-              <div class="checklist-item-compact" id="check-class">
-                <span class="check-icon">⚪</span>
-                <span class="check-text">Class Selected</span>
-              </div>
-              <div class="checklist-item-compact" id="check-subject">
-                <span class="check-icon">⚪</span>
-                <span class="check-text">Subject Selected</span>
-              </div>
-              <div class="checklist-item-compact" id="check-assessment">
-                <span class="check-icon">⚪</span>
-                <span class="check-text">Assessment Type</span>
-              </div>
-              <div class="checklist-item-compact" id="check-questions">
-                <span class="check-icon">⚪</span>
-                <span class="check-text">Question Types Added</span>
-              </div>
-              <div class="checklist-item-compact" id="check-limits">
-                <span class="check-icon">⚪</span>
-                <span class="check-text">Within Limits (≤75 questions)</span>
-              </div>
-            </div>
-          </div>
-      
-          <!-- Generate Button -->
-          <div style="flex: 0 0 auto; text-align: center;">
-            <button type="submit" id="generateBtn" class="generate-btn" disabled>
-              Generate My Question Paper
-            </button>
-            <p style="font-size: 0.8rem; color: var(--secondary-text-color); margin-top: 0.5rem; max-width: 250px;">
-              Complete all requirements to enable generation
-            </p>
-          </div>
-      
-        </div>
-      </div>
+
+      <!-- Generate Button with Side-by-Side Validation Checklist -->
+       <div class="generate-section">
+         <div style="display: flex; align-items: flex-start; gap: 3rem; justify-content: center; flex-wrap: wrap;">
+           
+           <!-- Generate Button -->
+           <div style="flex: 0 0 auto; text-align: center;">
+             <button type="submit" id="generateBtn" class="generate-btn" disabled>
+               Generate My Question Paper
+             </button>
+             <p id="requirements-text" style="font-size: 0.8rem; color: var(--secondary-text-color); margin-top: 0.5rem; max-width: 250px;">
+               Complete all requirements to enable generation
+             </p>
+           </div>
+       
+           <!-- Compact Validation Checklist -->
+           <div id="validationChecklist" style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); min-width: 280px; max-width: 320px;">
+             <h4 style="color: var(--primary-color); margin-bottom: 1rem; font-size: 1rem; text-align: center;">Requirements Checklist</h4>
+             <div class="checklist-items-compact">
+               <div class="checklist-item-compact" id="check-curriculum">
+                 <span class="check-icon">⚪</span>
+                 <span class="check-text">Curriculum Board</span>
+               </div>
+               <div class="checklist-item-compact" id="check-class">
+                 <span class="check-icon">⚪</span>
+                 <span class="check-text">Class Selected</span>
+               </div>
+               <div class="checklist-item-compact" id="check-subject">
+                 <span class="check-icon">⚪</span>
+                 <span class="check-text">Subject Selected</span>
+               </div>
+               <div class="checklist-item-compact" id="check-assessment">
+                 <span class="check-icon">⚪</span>
+                 <span class="check-text">Assessment Type</span>
+               </div>
+               <div class="checklist-item-compact" id="check-questions">
+                 <span class="check-icon">⚪</span>
+                 <span class="check-text">Question Types Added</span>
+               </div>
+               <div class="checklist-item-compact" id="check-limits">
+                 <span class="check-icon">⚪</span>
+                 <span class="check-text">Within Limits (≤75 questions)</span>
+               </div>
+             </div>
+           </div>
+       
+         </div>
+       </div>
 
       
      <!-- Loading Progress -->
@@ -719,67 +716,73 @@
        <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">Your Question Paper is Ready!</h3>
        <pre id="output" style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; border: 1px solid #e0e0e0;"></pre>
        
-       <!-- Quality Indicators Section -->
-       <div id="qualityIndicators" style="background: rgba(42, 157, 143, 0.05); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid var(--primary-color);">
-         <h4 style="color: var(--primary-color); margin-bottom: 1rem;">📊 Quality Check</h4>
-         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
-           
-           <div class="quality-item">
-             <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">✓ Output Quality (Format, Marks, etc.)</label>
-             <div class="quality-options">
-               <label class="quality-option" data-quality="output" data-value="Green">
-                 <input type="radio" name="outputQuality" value="Green">
-                 <span class="quality-indicator green">🟢 Excellent</span>
-               </label>
-               <label class="quality-option" data-quality="output" data-value="Yellow">
-                 <input type="radio" name="outputQuality" value="Yellow">
-                 <span class="quality-indicator yellow">🟡 Good</span>
-               </label>
-               <label class="quality-option" data-quality="output" data-value="Red">
-                 <input type="radio" name="outputQuality" value="Red">
-                 <span class="quality-indicator red">🔴 Needs Work</span>
-               </label>
-             </div>
-           </div>
+             <!-- Compact Quality Feedback Section -->
+      <div id="qualityIndicators" style="background: rgba(42, 157, 143, 0.05); padding: 1.25rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid var(--primary-color);">
+        <h4 style="color: var(--primary-color); margin-bottom: 1rem; font-size: 1.1rem;">📊 Quick Quality Check</h4>
+        
+        <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+          
+          <!-- Quality Categories -->
+          <div class="quality-grid">
+            
+            <!-- Output Quality -->
+            <div class="quality-category">
+              <div class="quality-title">Output Quality</div>
+              <div class="quality-options-vertical">
+                <label class="quality-option-mini">
+                  <input type="radio" name="outputQuality" value="Green">
+                  <span class="quality-label">🟢 Excellent</span>
+                </label>
+                <label class="quality-option-mini">
+                  <input type="radio" name="outputQuality" value="Yellow">
+                  <span class="quality-label">🟡 Good</span>
+                </label>
+                <label class="quality-option-mini">
+                  <input type="radio" name="outputQuality" value="Red">
+                  <span class="quality-label">🔴 Needs Work</span>
+                </label>
+              </div>
+            </div>
+      
+            <!-- Question Quality -->
+            <div class="quality-category">
+              <div class="quality-title">Question Quality</div>
+              <div class="quality-options-vertical">
+                <label class="quality-option-mini">
+                  <input type="radio" name="questionQuality" value="Green">
+                  <span class="quality-label">🟢 Excellent</span>
+                </label>
+                <label class="quality-option-mini">
+                  <input type="radio" name="questionQuality" value="Yellow">
+                  <span class="quality-label">🟡 Good</span>
+                </label>
+                <label class="quality-option-mini">
+                  <input type="radio" name="questionQuality" value="Red">
+                  <span class="quality-label">🔴 Needs Work</span>
+                </label>
+              </div>
+            </div>
+      
+            <!-- Curriculum Alignment -->
+            <div class="quality-category">
+              <div class="quality-title">Curriculum Aligned</div>
+              <div class="quality-options-vertical">
+                <label class="quality-option-mini">
+                  <input type="radio" name="curriculumAlignment" value="Green">
+                  <span class="quality-label">🟢 Excellent</span>
+                </label>
+                <label class="quality-option-mini">
+                  <input type="radio" name="curriculumAlignment" value="Yellow">
+                  <span class="quality-label">🟡 Good</span>
+                </label>
+                <label class="quality-option-mini">
+                  <input type="radio" name="curriculumAlignment" value="Red">
+                  <span class="quality-label">🔴 Needs Work</span>
+                </label>
+              </div>
+            </div>
 
-           <div class="quality-item">
-             <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">✓ Question Quality</label>
-             <div class="quality-options">
-               <label class="quality-option" data-quality="questions" data-value="Green">
-                 <input type="radio" name="questionQuality" value="Green">
-                 <span class="quality-indicator green">🟢 Excellent</span>
-               </label>
-               <label class="quality-option" data-quality="questions" data-value="Yellow">
-                 <input type="radio" name="questionQuality" value="Yellow">
-                 <span class="quality-indicator yellow">🟡 Good</span>
-               </label>
-               <label class="quality-option" data-quality="questions" data-value="Red">
-                 <input type="radio" name="questionQuality" value="Red">
-                 <span class="quality-indicator red">🔴 Needs Work</span>
-               </label>
-             </div>
-           </div>
 
-           <div class="quality-item">
-             <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">✓ Curriculum Aligned</label>
-             <div class="quality-options">
-               <label class="quality-option" data-quality="curriculum" data-value="Green">
-                 <input type="radio" name="curriculumAlignment" value="Green">
-                 <span class="quality-indicator green">🟢 Excellent</span>
-               </label>
-               <label class="quality-option" data-quality="curriculum" data-value="Yellow">
-                 <input type="radio" name="curriculumAlignment" value="Yellow">
-                 <span class="quality-indicator yellow">🟡 Good</span>
-               </label>
-               <label class="quality-option" data-quality="curriculum" data-value="Red">
-                 <input type="radio" name="curriculumAlignment" value="Red">
-                 <span class="quality-indicator red">🔴 Needs Work</span>
-               </label>
-             </div>
-           </div>
-
-         </div>
-       </div>
        
        <div style="text-align: center; margin-top: 2rem;">
          <button id="downloadBtn" class="generate-btn" style="background: var(--accent-color); color: var(--text-color);">
