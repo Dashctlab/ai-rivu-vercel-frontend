@@ -1,4 +1,4 @@
-/* ===== COMPLETE AI-RIVU STYLE.CSS WITH ENHANCEMENTS ===== */
+/* ===== AI-RIVU STYLE.CSS ===== */
 
 /* ===== Google Fonts ===== */
 @import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@500;600&family=Inter:wght@400;500&display=swap');
@@ -815,23 +815,27 @@ footer.app-footer p {
   100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* Compact Checklist Styles with Disappearing Functionality */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .checklist-items-compact {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.5rem;
 }
 
 .checklist-item-compact {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.85rem;
-  padding: 0.3rem 0;
+  font-size: 0.9rem;
+  padding: 0.5rem 0;
   color: #7f8c8d;
   transition: all 0.3s ease;
   opacity: 1;
-  max-height: 30px;
+  max-height: 40px;
   overflow: hidden;
 }
 
@@ -861,15 +865,36 @@ footer.app-footer p {
 
 .checklist-item-compact .check-text {
   flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Hide entire checklist when all complete */
+#validationChecklist.all-complete {
+  opacity: 0;
+  transform: scale(0.9);
+  max-height: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  transition: all 0.8s ease;
 }
+
+/* Hide requirements text when complete */
+#requirements-text.hide {
+  opacity: 0;
+  max-height: 0;
+  margin: 0;
+  padding: 0;
+  transition: all 0.5s ease;
+}
+
+/* Desktop: side-by-side layout */
+@media (min-width: 769px) {
+  .generate-section > div {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
 
 /* Loading progress */
 .loading-progress {
@@ -1473,54 +1498,26 @@ button:disabled {
 /* ===== QUALITY INDICATORS AND VALIDATIONC CHECKLIST ===== */
 
 /* Quality Indicators Styles */
-.quality-item {
-  background: white;
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-}
-
-.quality-options {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.quality-option {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.quality-option:hover {
-  border-color: var(--primary-color);
-  background: rgba(42, 157, 143, 0.05);
-}
-
-.quality-option.selected {
-  border-color: var(--primary-color);
-  background: rgba(42, 157, 143, 0.1);
-}
-
-.quality-option input[type="radio"] {
-  width: auto;
-  margin: 0;
-}
-
-.quality-indicator {
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.quality-indicator.green { color: #27ae60; }
-.quality-indicator.yellow { color: #f39c12; }
-.quality-indicator.red { color: #e74c3c; }
-
+ .quality-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .quality-options-vertical {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  
+  .quality-option-mini {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.75rem;
+  }
+  
+  .quality-label {
+    text-align: center;
+  }
 
 /* Download status styling */
 #downloadStatus {
@@ -1689,15 +1686,21 @@ button:disabled {
     font-size: 0.8rem;
   }
 }
+
+/* Mobile: center button, stack vertically */
  .generate-section > div {
     flex-direction: column;
     align-items: center;
+   gap: 1.5rem;
+  }
+    .generate-section > div > div:first-child {
+    order: 1; /* Generate button first on mobile */
   }
   
   #validationChecklist {
     order: 2;
-    margin-top: 1rem;
     width: 100%;
+    max-width: 100%;
   }
   
   .quality-options {

@@ -51,18 +51,6 @@ function debouncedValidateForm() {
 }
 
 // ===== VALIDATION FUNCTIONS =====
-function showValidationMessage(errors) {
- const validationMessage = document.getElementById('validationMessage');
- const validationList = document.getElementById('validationList');
- 
- if (errors.length > 0) {
-   validationList.innerHTML = errors.map(error => `<li>${error}</li>`).join('');
-   validationMessage.classList.add('show');
-   validationMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
- } else {
-   validationMessage.classList.remove('show');
- }
-}
 
 function validateForm() {
   const errors = [];
@@ -75,10 +63,10 @@ function validateForm() {
   const specificTopic = document.getElementById('specificTopic')?.value || '';
   
   // Update checklist items - this will trigger the disappearing animation
-  updateChecklistItem('check-curriculum', curriculum, 'Curriculum Board');
-  updateChecklistItem('check-class', selectedClass, 'Class Selected');
-  updateChecklistItem('check-subject', selectedSubject, 'Subject Selected');
-  updateChecklistItem('check-assessment', assessment, 'Assessment Type');
+  updateChecklistItem('check-curriculum', curriculum, ' Select Curriculum Board');
+  updateChecklistItem('check-class', selectedClass, 'Select Class');
+  updateChecklistItem('check-subject', selectedSubject, 'Select Subject');
+  updateChecklistItem('check-assessment', assessment, ' Select Assessment Type');
   
   if (!curriculum) errors.push('Please select a Curriculum Board');
   if (!selectedClass) errors.push('Please select a Class/Grade');
@@ -147,7 +135,7 @@ function validateForm() {
  return errors.length === 0;
 }
 
-// Enhanced Helper function for checklist updates with disappearing functionality
+// Enhanced Helper function for checklist updates with complete hiding
 function updateChecklistItem(itemId, isValid, label) {
   const item = document.getElementById(itemId);
   if (item) {
@@ -163,6 +151,9 @@ function updateChecklistItem(itemId, isValid, label) {
         // After a delay, start disappearing animation
         setTimeout(() => {
           item.classList.add('disappearing');
+          
+          // Check if all items are complete
+          checkAllComplete();
         }, 1000);
         
       } else {
@@ -171,10 +162,34 @@ function updateChecklistItem(itemId, isValid, label) {
         
         // Remove disappearing classes to show the item again
         item.classList.remove('completed', 'disappearing');
+        
+        // Show checklist and requirements text again
+        const checklist = document.getElementById('validationChecklist');
+        const requirementsText = document.getElementById('requirements-text');
+        if (checklist) checklist.classList.remove('all-complete');
+        if (requirementsText) requirementsText.classList.remove('hide');
       }
     }
   }
 }
+
+// Check if all checklist items are complete and hide the block
+function checkAllComplete() {
+  const allItems = document.querySelectorAll('.checklist-item-compact');
+  const completedItems = document.querySelectorAll('.checklist-item-compact.disappearing');
+  
+  if (allItems.length === completedItems.length) {
+    // All items are complete, hide the entire checklist
+    setTimeout(() => {
+      const checklist = document.getElementById('validationChecklist');
+      const requirementsText = document.getElementById('requirements-text');
+      
+      if (checklist) checklist.classList.add('all-complete');
+      if (requirementsText) requirementsText.classList.add('hide');
+    }, 500);
+  }
+}
+
 // ===== LOADING STATES =====
 function showLoadingProgress() {
  const loadingProgress = document.getElementById('loadingProgress');
@@ -443,23 +458,26 @@ function addQuestionRow() {
 
 // Quality feedback handling
 function setupQualityFeedback() {
- const qualityOptions = document.querySelectorAll('.quality-option');
- qualityOptions.forEach(option => {
-   option.addEventListener('click', function() {
-     const radio = this.querySelector('input[type="radio"]');
-     if (radio) {
-       radio.checked = true;
-     }
-     
-     // Visual feedback
-     const siblings = this.parentNode.querySelectorAll('.quality-option');
-     siblings.forEach(sibling => sibling.classList.remove('selected'));
-     this.classList.add('selected');
-     
-     // Check if all quality questions are answered
-     checkQualityFeedbackComplete();
-   });
- });
+  const qualityOptions = document.querySelectorAll('.quality-option-mini'); // Changed class name
+  qualityOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      const radio = this.querySelector('input[type="radio"]');
+      if (radio) {
+        radio.checked = true;
+      }
+      
+      // Visual feedback - remove selected from siblings with same name
+      const radioName = radio.name;
+      const siblings = document.querySelectorAll(`input[name="${radioName}"]`);
+      siblings.forEach(sibling => {
+        sibling.closest('.quality-option-mini').classList.remove('selected');
+      });
+      this.classList.add('selected');
+      
+      // Check if all quality questions are answered
+      checkQualityFeedbackComplete();
+    });
+  });
 }
 
 function checkQualityFeedbackComplete() {
