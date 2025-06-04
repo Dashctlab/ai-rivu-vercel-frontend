@@ -51,41 +51,28 @@ function debouncedValidateForm() {
 }
 
 // ===== VALIDATION FUNCTIONS =====
-function showValidationMessage(errors) {
- const validationMessage = document.getElementById('validationMessage');
- const validationList = document.getElementById('validationList');
- 
- if (errors.length > 0) {
-   validationList.innerHTML = errors.map(error => `<li>${error}</li>`).join('');
-   validationMessage.classList.add('show');
-   validationMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
- } else {
-   validationMessage.classList.remove('show');
- }
-}
 
-function validateForm() {
- const errors = [];
- 
- // Check required fields
- const curriculum = curriculumDropdown?.value || '';
- const selectedClass = classDropdown?.value || '';
- const selectedSubject = subjectDropdown?.value || '';
- const assessment = document.getElementById('assessment')?.value || '';
- const specificTopic = document.getElementById('specificTopic')?.value || '';
- 
- // Update checklist items
- updateChecklistItem('check-curriculum', curriculum, 'Curriculum Board');
- updateChecklistItem('check-class', selectedClass, 'Class Selected');
- updateChecklistItem('check-subject', selectedSubject, 'Subject Selected');
- 
- if (!curriculum) errors.push('Please select a Curriculum Board');
- if (!selectedClass) errors.push('Please select a Class/Grade');
- if (!selectedSubject) errors.push('Please select a Subject');
- if (!assessment) errors.push('Please select Assessment type (Full or Specific Topic)');
- if (assessment === 'Specific Topic' && !specificTopic.trim()) {
-   errors.push('Please enter the specific topic you want to focus on');
- }
+  
+  // Check required fields
+  const curriculum = curriculumDropdown?.value || '';
+  const selectedClass = classDropdown?.value || '';
+  const selectedSubject = subjectDropdown?.value || '';
+  const assessment = document.getElementById('assessment')?.value || '';
+  const specificTopic = document.getElementById('specificTopic')?.value || '';
+  
+  // Update checklist items - this will trigger the disappearing animation
+  updateChecklistItem('check-curriculum', curriculum, 'Curriculum Board');
+  updateChecklistItem('check-class', selectedClass, 'Class Selected');
+  updateChecklistItem('check-subject', selectedSubject, 'Subject Selected');
+  updateChecklistItem('check-assessment', assessment, 'Assessment Type');
+  
+  if (!curriculum) errors.push('Please select a Curriculum Board');
+  if (!selectedClass) errors.push('Please select a Class/Grade');
+  if (!selectedSubject) errors.push('Please select a Subject');
+  if (!assessment) errors.push('Please select Assessment type (Full or Specific Topic)');
+  if (assessment === 'Specific Topic' && !specificTopic.trim()) {
+    errors.push('Please enter the specific topic you want to focus on');
+  }
  
  // Check difficulty percentages
  const easy = parseInt(document.getElementById('easy')?.value) || 0;
@@ -140,32 +127,35 @@ function validateForm() {
  // Show validation errors
  showValidationMessage(errors);
  
- // Enable/disable generate button
- const generateBtn = document.getElementById('generateBtn');
- if (generateBtn) {
-   generateBtn.disabled = errors.length > 0 || isGenerating;
- }
- 
- return errors.length === 0;
-}
 
-// Helper function for checklist updates
+// Enhanced Helper function for checklist updates with disappearing functionality
 function updateChecklistItem(itemId, isValid, label) {
- const item = document.getElementById(itemId);
- if (item) {
-   const icon = item.querySelector('.check-icon');
-   if (icon) {
-     if (isValid) {
-       icon.textContent = '✅';
-       item.style.color = '#27ae60';
-     } else {
-       icon.textContent = '⚪';
-       item.style.color = '#7f8c8d';
-     }
-   }
- }
+  const item = document.getElementById(itemId);
+  if (item) {
+    const icon = item.querySelector('.check-icon');
+    if (icon) {
+      if (isValid) {
+        icon.textContent = '✅';
+        item.style.color = '#27ae60';
+        
+        // Add completed class for scaling effect
+        item.classList.add('completed');
+        
+        // After a delay, start disappearing animation
+        setTimeout(() => {
+          item.classList.add('disappearing');
+        }, 1000);
+        
+      } else {
+        icon.textContent = '⚪';
+        item.style.color = '#7f8c8d';
+        
+        // Remove disappearing classes to show the item again
+        item.classList.remove('completed', 'disappearing');
+      }
+    }
+  }
 }
-
 // ===== LOADING STATES =====
 function showLoadingProgress() {
  const loadingProgress = document.getElementById('loadingProgress');
