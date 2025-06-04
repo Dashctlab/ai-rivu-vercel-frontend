@@ -1521,29 +1521,6 @@ button:disabled {
 .quality-indicator.yellow { color: #f39c12; }
 .quality-indicator.red { color: #e74c3c; }
 
-/* Validation Checklist Styles */
-.checklist-items {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.checklist-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  padding: 0.25rem 0;
-  color: #7f8c8d;
-  transition: color 0.3s;
-}
-
-.check-icon {
-  font-size: 1rem;
-  width: 20px;
-  text-align: center;
-}
-
 
 /* Download status styling */
 #downloadStatus {
