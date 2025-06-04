@@ -51,7 +51,21 @@ function debouncedValidateForm() {
 }
 
 // ===== VALIDATION FUNCTIONS =====
+function showValidationMessage(errors) {
+ const validationMessage = document.getElementById('validationMessage');
+ const validationList = document.getElementById('validationList');
+ 
+ if (errors.length > 0) {
+   validationList.innerHTML = errors.map(error => `<li>${error}</li>`).join('');
+   validationMessage.classList.add('show');
+   validationMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+ } else {
+   validationMessage.classList.remove('show');
+ }
+}
 
+function validateForm() {
+  const errors = [];
   
   // Check required fields
   const curriculum = curriculumDropdown?.value || '';
@@ -124,9 +138,14 @@ function debouncedValidateForm() {
  
  errors.push(...limitErrors);
  
- // Show validation errors
- showValidationMessage(errors);
+ // Enable/disable generate button
+ const generateBtn = document.getElementById('generateBtn');
+ if (generateBtn) {
+   generateBtn.disabled = errors.length > 0 || isGenerating;
+ }
  
+ return errors.length === 0;
+}
 
 // Enhanced Helper function for checklist updates with disappearing functionality
 function updateChecklistItem(itemId, isValid, label) {
