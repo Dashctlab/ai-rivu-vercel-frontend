@@ -37,28 +37,28 @@
     main p {
       text-align: justify;
     }
-
+    /* MATCH HEADER FORMATTING FOR ALL SECTION HEADINGS */
+    .section-title {
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      text-align: left;
+      /* REMOVED: border-bottom: 2px solid var(--border-color-light); */
+      padding-bottom: 0.5rem;
+    }
+    /* OPTIONAL HERO IMAGE STYLING */
+    .about-hero {
+      width: 100%;
+      height: auto;
+      margin-bottom: 2rem;
+      border-radius: 8px;
+      object-fit: cover;
+    }
   </style>
 </head>
 <body>
-  <!-- HEADER -->
-  <div id="header-container"></div>    <!-- to check and remove if not working -->
-  <header class="app-header">
-    <div class="container">
-      <div class="logo-container">
-          <a href="/home.html" aria-label="Home page">
-        <img src="images/ai-rivu-logo.png" alt="AI-RIVU Logo" class="logo-image" />
-          </a>
-      </div>
-      <nav>
-        <ul class="nav-list tight">
-          <li><a href="/about.html" class="active">About</a></li>
-          <li><a href="/contact.html">Contact</a></li>
-          <li><button class="primary-btn" onclick="location.href='login.html'">Login</button></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+  <!-- HEADER - Let shared component handle this -->
+  <div id="header-container"></div>
 
   <!-- MAIN CONTENT -->
   <main class="main-content container" style="padding: 4rem 0;">
@@ -67,7 +67,7 @@
 
     <h1 class="section-title">About AI-RIVU</h1>
     <p>
-      AI-RIVU is the first and flagship product of Asmakam Innovations, built to empower India’s teachers with AI-driven tools. AI-RIVU will cultivate the next generation with stronger curriculum rigor—shaping student careers, strengthening our nation’s foundation, and democratising quality education for all. It will enable educators to become vastly more efficient and help every teacher teach better.
+      AI-RIVU is the first and flagship product of Asmakam Innovations, built to empower India's teachers with AI-driven tools. AI-RIVU will cultivate the next generation with stronger curriculum rigor—shaping student careers, strengthening our nation's foundation, and democratising quality education for all. It will enable educators to become vastly more efficient and help every teacher teach better.
     </p>
     <p>
       We believe that every educator deserves access to cutting-edge technology—without the technical overhead—and that seamless, intelligent assistance can transform how lessons are planned, delivered, and assessed.
@@ -75,10 +75,10 @@
 
     <h2 class="section-title">Our Story</h2>
     <p>
-      Asmakam Innovations was founded on the conviction that technology can help our future be bright. “Asmakam” (meaning “ours” in Sanskrit) drives the core value of growing together as a community with a goal of bettering lives, increasing efficiency, and improving access to technology.
+      Asmakam Innovations was founded on the conviction that technology can help our future be bright. "Asmakam" (meaning "ours" in Sanskrit) drives the core value of growing together as a community with a goal of bettering lives, increasing efficiency, and improving access to technology.
     </p>
     <p>
-      In early 2025, our team—rooted in Bangalore but passionate about India’s heartland—launched AI-RIVU (a play on “Arivu,” meaning “knowledge” in Tamil). AI can level the playing field for educators outside major metros. Starting with our Question Paper Generator, we are rapidly expanding our toolkit to support lesson planning, grading, and more—making every school more efficient and education more accessible.
+      In early 2025, our team—rooted in Bangalore but passionate about India's heartland—launched AI-RIVU (a play on "Arivu," meaning "knowledge" in Tamil). AI can level the playing field for educators outside major metros. Starting with our Question Paper Generator, we are rapidly expanding our toolkit to support lesson planning, grading, and more—making every school more efficient and education more accessible.
     </p>
 
     <!-- MISSION & VISION COLUMNS -->
@@ -105,14 +105,14 @@
       <div>
         <h2 class="section-title">Meet the Team</h2>
         <ul>
-          <li><strong>Ashwin CT</strong>, Founder &amp; CEO – Growth marketer turned edtech entrepreneur, spearheading AI-RIVU’s vision.</li>
+          <li><strong>Ashwin CT</strong>, Founder &amp; CEO – Growth marketer turned edtech entrepreneur, spearheading AI-RIVU's vision.</li>
           <li><strong>Advisory Board</strong> – Senior educators, CBSE examiners, and AI ethics experts guiding our roadmap.</li>
         </ul>
       </div>
       <div>
         <h2 class="section-title">Join Us</h2>
         <p>
-          Whether you’re an educator looking to pilot AI-RIVU in your school, a developer keen to contribute, or an investor interested in transforming Indian education—let’s talk.
+          Whether you're an educator looking to pilot AI-RIVU in your school, a developer keen to contribute, or an investor interested in transforming Indian education—let's talk.
         </p>
       </div>
     </div>
@@ -123,46 +123,19 @@
     </div>
   </main>
 
-  <!-- FOOTER -->
-  <div id="footer-container"></div> <!-- to remove if not working -->
+  <!-- FOOTER - Let shared component handle this -->
+  <div id="footer-container"></div>
 
-  
-  <footer class="app-footer">
-    <div class="container">
-      <div class="footer-flex">
-        <div>
-          <ul class="footer-links">
-          <li><a href="/about.html">About</a></li>
-          <li><a href="/contact.html">Contact</a></li>
-          </ul>
-        </div>
-        <div class="footer-logo">
-          <img src="images/asmakam-logo.png" alt="Asmakam Innovations logo">
-        </div>
-      </div>
-      <p>© <span id="yr"></span> Asmakam Innovations · All Rights Reserved</p>
-    </div>
-  </footer>
-
-  <script>
-    document.getElementById("yr").textContent = new Date().getFullYear();
-  </script>
-
-
-  <!-- last updates-->
-
+  <!-- Scripts -->
   <script src="/config.js"></script>
   <script src="/shared/constants.js"></script>
   <script src="/shared/components.js"></script>
   <script>
-  initializeCommonComponents({
-    currentPage: 'about',
-    isAuthenticated: false
-  });
-</script>
-
-
-
-  
+    // Initialize page with shared components
+    initializeCommonComponents({
+      currentPage: 'about',
+      isAuthenticated: false
+    });
+  </script>
 </body>
 </html>
