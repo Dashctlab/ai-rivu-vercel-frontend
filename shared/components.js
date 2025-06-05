@@ -295,7 +295,7 @@ function injectMobileStyles() {
       }
       
       /* Very small screens - stack vertically */
-      @media (max-width: 480px) {
+      @media (max-width: 380px) {
         .app-header .container {
           flex-direction: column !important;
           gap: 0.5rem !important;
