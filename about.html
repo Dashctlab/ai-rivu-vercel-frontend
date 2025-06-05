@@ -57,6 +57,24 @@
   </style>
 </head>
 <body>
+  <!-- HEADER -->
+  <div id="header-container"></div>    <!-- to check and remove if not working -->
+  <header class="app-header">
+    <div class="container">
+      <div class="logo-container">
+          <a href="/home.html" aria-label="Home page">
+        <img src="images/ai-rivu-logo.png" alt="AI-RIVU Logo" class="logo-image" />
+          </a>
+      </div>
+      <nav>
+        <ul class="nav-list tight">
+          <li><a href="/about.html" class="active">About</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+          <li><button class="primary-btn" onclick="location.href='login.html'">Login</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
   <!-- MAIN CONTENT -->
   <main class="main-content container" style="padding: 4rem 0;">
@@ -120,6 +138,32 @@
       <button class="primary-btn" onclick="location.href='contact.html'">Contact Us</button>
     </div>
   </main>
+
+  <!-- FOOTER -->
+  <div id="footer-container"></div> <!-- to remove if not working -->
+
+  
+  <footer class="app-footer">
+    <div class="container">
+      <div class="footer-flex">
+        <div>
+          <ul class="footer-links">
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-logo">
+          <img src="images/asmakam-logo.png" alt="Asmakam Innovations logo">
+        </div>
+      </div>
+      <p>© <span id="yr"></span> Asmakam Innovations · All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("yr").textContent = new Date().getFullYear();
+  </script>
+
 
   <!-- last updates-->
 
