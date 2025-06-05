@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>AI-RIVU • The Future of Teaching</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ===== MOBILE-FIRST REVOLUTIONARY RESET ===== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+      overscroll-behavior: none;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+      color: #0a0a0a;
+      background: #ffffff;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* ===== MOBILE-FIRST DESIGN SYSTEM ===== */
+    :root {
+      /* Colors - High contrast for mobile */
+      --primary: #2A9D8F;
+      --primary-dark: #1d7068;
+      --primary-light: #e6f7f5;
+      --accent: #E9C46A;
+      --accent-dark: #d4a843;
+      --secondary: #F4A261;
+      --danger: #E76F51;
+      --success: #2A9D8F;
+      --warning: #F4A261;
+      
+      /* Text colors - optimized for mobile screens */
+      --text-primary: #0a0a0a;
+      --text-secondary: #374151;
+      --text-muted: #6b7280;
+      --text-light: #9ca3af;
+      --text-inverse: #ffffff;
+      
+      /* Backgrounds */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f9fafb;
+      --bg-muted: #f3f4f6;
+      --bg-dark: #111827;
+      
+      /* Gradients - optimized for mobile performance */
+      --gradient-primary: linear-gradient(135deg, #2A9D8F 0%, #E9C46A 100%);
+      --gradient-hero: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+      --gradient-dark: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+      
+      /* Shadows - lightweight for mobile */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      
+      /* Border radius - thumb-friendly */
+      --radius-xs: 4px;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-2xl: 24px;
+      --radius-full: 9999px;
+      
+      /* Spacing - thumb-optimized */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-2xl: 3rem;
+      --space-3xl: 4rem;
+      
+      /* Touch targets - minimum 44px */
+      --touch-target: 44px;
+      --touch-target-lg: 56px;
+      
+      /* Typography scale - mobile optimized */
+      --text-xs: 0.75rem;
+      --text-sm: 0.875rem;
+      --text-base: 1rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      --text-3xl: 1.875rem;
+      --text-4xl: 2.25rem;
+      --text-5xl: 3rem;
+      
+      /* Transitions - 60fps optimized */
+      --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+      
+      /* Z-index scale */
+      --z-dropdown: 1000;
+      --z-sticky: 1020;
+      --z-fixed: 1030;
+      --z-modal: 1040;
+      --z-popover: 1050;
+      --z-tooltip: 1060;
+    }
+
+    /* ===== MOBILE-OPTIMIZED ANIMATIONS ===== */
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ===== MOBILE-FIRST UTILITIES ===== */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+    }
+
+    .container-lg {
+      max-width: 1200px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ===== MOBILE-FIRST NAVIGATION ===== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: var(--z-fixed);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      transition: var(--transition-base);
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: relative;
+    }
+
+    .nav-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: var(--text-xl);
+      font-weight: 800;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      z-index: var(--z-modal);
+    }
+
+    .nav-logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: var(--text-sm);
+      font-weight: 700;
+    }
+
+    .nav-toggle {
+      width: var(--touch-target);
+      height: var(--touch-target);
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      z-index: var(--z-modal);
+      transition: var(--transition-base);
+    }
+
+    .nav-toggle span {
+      width: 20px;
+      height: 2px;
+      background: var(--text-primary);
+      border-radius: 1px;
+      transition: var(--transition-base);
+      transform-origin: center;
+    }
+
+    .nav-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .nav-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -6px);
+    }
+
+    .nav-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: var(--bg-primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xl);
+      transform: translateY(-100%);
+      opacity: 0;
+      transition: var(--transition-base);
+      list-style: none;
+    }
+
+    .nav-menu.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .nav-link {
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: var(--transition-base);
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-full);
+      transition: var(--transition-base);
+    }
+
+    .nav-link:active::after {
+      width: 100%;
+    }
+
+    /* ===== MOBILE-FIRST BUTTONS ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      min-height: var(--touch-target);
+      padding: 0 var(--space-lg);
+      border: none;
+      border-radius: var(--radius-full);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: var(--text-base);
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition-base);
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: var(--text-inverse);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-primary:active {
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-secondary {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border: 2px solid var(--text-primary);
+    }
+
+    .btn-secondary:active {
+      background: var(--bg-secondary);
+    }
+
+    .btn-lg {
+      min-height: var(--touch-target-lg);
+      padding: 0 var(--space-2xl);
+      font-size: var(--text-lg);
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    /* ===== HERO SECTION - MOBILE FIRST ===== */
+    .hero {
+      min-height: 100vh;
+      background: var(--gradient-hero);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      padding-top: 80px;
+    }
+
+    .hero-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--space-2xl);
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: var(--radius-full);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      width: fit-content;
+      margin: 0 auto;
+      animation: slideInDown 0.6s ease-out;
+    }
+
+    .hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(var(--text-3xl), 8vw, var(--text-5xl));
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--text-primary);
+      text-align: center;
+      margin: 0;
+      animation: slideInUp 0.8s ease-out 0.2s both;
+    }
+
+    .hero-gradient-text {
+      background: var(--gradient-primary);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: var(--primary);
+    }
+
+    .hero-subtitle {
+      font-size: var(--text-lg);
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 1.6;
+      max-width: 500px;
+      margin: 0 auto;
+      animation: slideInUp 0.8s ease-out 0.4s both;
+    }
+
+    .hero-cta {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      animation: slideInUp 0.8s ease-out 0.6s both;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-lg);
+      margin-top: var(--space-xl);
+      animation: slideInUp 0.8s ease-out 0.8s both;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: var(--text-2xl);
+      font-weight: 800;
+      color: var(--primary);
+      display: block;
+      line-height: 1;
+    }
+
+    .hero-stat-label {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-top: var(--space-xs);
+    }
+
+    /* ===== MOBILE-FIRST VISUAL DEMO ===== */
+    .hero-demo {
+      background: var(--bg-primary);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-lg);
+      margin: var(--space-xl) 0;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      animation: scaleIn 1s ease-out 1s both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .demo-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+      padding-bottom: var(--space-md);
+      border-bottom: 2px solid var(--bg-secondary);
+    }
+
+    .demo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: var(--text-lg);
+    }
+
+    .demo-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .demo-subtitle {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .demo-question {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-lg);
+      border-left: 4px solid var(--primary);
+    }
+
+    .demo-question-text {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-md);
+      font-size: var(--text-base);
+    }
+
+    .demo-options {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .demo-option {
+      background: var(--bg-primary);
+      padding: var(--space-md);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+
+    .demo-progress {
+      background: var(--bg-secondary);
+      height: 6px;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-bottom: var(--space-md);
+      position: relative;
+    }
+
+    .demo-progress-bar {
+      background: var(--gradient-primary);
+      height: 100%;
+      width: 85%;
+      border-radius: var(--radius-full);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .demo-progress-bar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    .demo-status {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      color: var(--success);
+      font-weight: 600;
+      font-size: var(--text-sm);
+    }
+
+    /* ===== FEATURES SECTION - MOBILE OPTIMIZED ===== */
+    .features {
+      padding: var(--space-3xl) 0;
+      background: var(--bg-primary);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: var(--space-3xl);
+    }
+
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: var(--radius-full);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      margin-bottom: var(--space-lg);
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(var(--text-2xl), 6vw, var(--text-4xl));
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: var(--space-lg);
+      line-height: 1.2;
+    }
+
+    .section-subtitle {
+      font-size: var(--text-lg);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      gap: var(--space-xl);
+    }
+
+    .feature-card {
+      background: var(--bg-primary);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-xl);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      transition: var(--transition-base);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-primary);
+      transform: scaleX(0);
+      transition: var(--transition-base);
+      transform-origin: left;
+    }
+
+    .feature-card:active::before {
+      transform: scaleX(1);
+    }
+
+    .feature-card:active {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-xl);
+      color: white;
+      margin-bottom: var(--space-lg);
+    }
+
+    .feature-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-md);
+      line-height: 1.3;
+    }
+
+    .feature-description {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      font-size: var(--text-base);
+    }
+
+    /* ===== HOW IT WORKS - MOBILE OPTIMIZED ===== */
+    .how-it-works {
+      padding: var(--space-3xl) 0;
+      background: var(--bg-secondary);
+    }
+
+    .steps-container {
+      display: grid;
+      gap: var(--space-2xl);
+      margin-top: var(--space-3xl);
+    }
+
+    .step {
+      display: flex;
+      gap: var(--space-lg);
+      align-items: flex-start;
+    }
+
+    .step-number {
+      width: 48px;
+      height: 48px;
+      background: var(--gradient-primary);
+      color: white;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-lg);
+      font-weight: 800;
+      font-family: 'Space Grotesk', sans-serif;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .step-number::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      right: -4px;
+      bottom: -4px;
+      border-radius: var(--radius-full);
+      background: var(--gradient-primary);
+      opacity: 0.2;
+      animation: pulse 2s infinite;
+    }
+
+    .step-content {
+      flex: 1;
+      padding-top: var(--space-sm);
+    }
+
+    .step-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-sm);
+      line-height: 1.3;
+    }
+
+    .step-description {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      font-size: var(--text-base);
+    }
+
+    /* ===== STATS SECTION - MOBILE OPTIMIZED ===== */
+    .stats {
+      padding: var(--space-3xl) 0;
+      background: var(--gradient-dark);
+      color: var(--text-inverse);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-xl);
+      text-align: center;
+    }
+
+    .stat-card {
+      padding: var(--space-lg);
+    }
+
+    .stat-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: var(--text-3xl);
+      font-weight: 900;
+      display: block;
+      margin-bottom: var(--space-sm);
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: var(--text-base);
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    /* ===== TESTIMONIALS - MOBILE OPTIMIZED ===== */
+    .testimonials {
+      padding: var(--space-3xl) 0;
+      background: var(--bg-primary);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      gap: var(--space-xl);
+      margin-top: var(--space-3xl);
+    }
+
+    .testimonial {
+      background: var(--bg-primary);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-xl);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .testimonial-content {
+      font-style: italic;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-lg);
+      line-height: 1.6;
+      font-size: var(--text-base);
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .author-avatar {
+      width: 48px;
+      height: 48px;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: var(--text-lg);
+    }
+
+    .author-info h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: var(--text-base);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 var(--space-xs) 0;
+    }
+
+    .author-info p {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* ===== CTA SECTION - MOBILE OPTIMIZED ===== */
+    .cta {
+      padding: var(--space-3xl) 0;
+      background: var(--gradient-hero);
+      text-align: center;
+    }
+
+    .cta-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(var(--text-2xl), 6vw, var(--text-4xl));
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: var(--space-lg);
+      line-height: 1.2;
+    }
+
+    .cta-subtitle {
+      font-size: var(--text-lg);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-2xl);
+      line-height: 1.6;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    /* ===== FOOTER - MOBILE OPTIMIZED ===== */
+    .footer {
+      padding: var(--space-3xl) 0 var(--space-xl);
+      background: var(--bg-dark);
+      color: var(--text-inverse);
+    }
+
+    .footer-content {
+      display: grid;
+      gap: var(--space-2xl);
+      margin-bottom: var(--space-2xl);
+    }
+
+    .footer-section h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: var(--text-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-lg);
+      color: var(--text-inverse);
+    }
+
+    .footer-section p,
+    .footer-section a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      line-height: 1.6;
+      font-size: var(--text-base);
+      transition: var(--transition-base);
+      display: block;
+      margin-bottom: var(--space-sm);
+    }
+
+    .footer-section a:active {
+      color: var(--accent);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: var(--space-xl);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: var(--text-sm);
+    }
+
+    /* ===== SCROLL ANIMATIONS - MOBILE OPTIMIZED ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== TABLET RESPONSIVE (768px+) ===== */
+    @media (min-width: 768px) {
+      .container {
+        padding: 0 var(--space-xl);
+      }
+
+      .nav-toggle {
+        display: none;
+      }
+
+      .nav-menu {
+        position: static;
+        flex-direction: row;
+        height: auto;
+        background: transparent;
+        transform: none;
+        opacity: 1;
+        gap: var(--space-xl);
+      }
+
+      .nav-link {
+        font-size: var(--text-base);
+      }
+
+      .hero-cta {
+        flex-direction: row;
+        justify-content: center;
+      }
+
+      .hero-stats {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 600px;
+        margin: var(--space-xl) auto 0;
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .steps-container {
+        max-width: 800px;
+        margin: var(--space-3xl) auto 0;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .cta-buttons {
+        flex-direction: row;
+        justify-content: center;
+      }
+
+      .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ===== DESKTOP RESPONSIVE (1024px+) ===== */
+    @media (min-width: 1024px) {
+      .container {
+        max-width: 1200px;
+        padding: 0 var(--space-2xl);
+      }
+
+      .hero {
+        padding-top: 100px;
+      }
+
+      .hero-container {
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-3xl);
+      }
+
+      .hero-content {
+        flex: 1;
+        text-align: left;
+      }
+
+      .hero-demo {
+        flex: 1;
+        margin: 0;
+      }
+
+      .hero-badge {
+        margin: 0;
+      }
+
+      .hero-title,
+      .hero-subtitle {
+        text-align: left;
+      }
+
+      .hero-cta {
+        justify-content: flex-start;
+      }
+
+      .hero-stats {
+        justify-content: flex-start;
+        margin: var(--space-xl) 0 0 0;
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(6, 1fr);
+      }
+
+      .footer-content {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    /* ===== PERFORMANCE OPTIMIZATIONS ===== */
+    .hero-demo,
+    .feature-card,
+    .testimonial {
+      will-change: transform;
+    }
+
+    @media (hover: hover) {
+      .feature-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-xl);
+      }
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+    }
+
+    /* ===== DARK MODE SUPPORT ===== */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #000000;
+        --bg-secondary: #111111;
+        --bg-muted: #1a1a1a;
+        --text-primary: #ffffff;
+        --text-secondary: #e5e5e5;
+        --text-muted: #a3a3a3;
+        --text-light: #737373;
+      }
+
+      .nav {
+        background: rgba(0, 0, 0, 0.95);
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="container">
+      <div class="nav-container">
+        <a href="#" class="nav-logo" aria-label="AI-RIVU Homepage">
+          <div class="nav-logo-icon">AI</div>
+          <span>AI-RIVU</span>
+        </a>
+        
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="#features" class="nav-link">Features</a></li>
+          <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+          <li><a href="#testimonials" class="nav-link">Reviews</a></li>
+          <li><a href="/login.html" class="btn btn-primary">Start Creating</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span>🚀</span>
+            <span>Revolutionizing Education with AI</span>
+          </div>
+          
+          <h1 class="hero-title">
+            Create Perfect<br>
+            <span class="hero-gradient-text">Question Papers</span><br>
+            in 30 Seconds
+          </h1>
+          
+          <p class="hero-subtitle">
+            The most advanced AI-powered question paper generator for Indian educators. Transform hours of work into seconds.
+          </p>
+          
+          <div class="hero-cta">
+            <a href="/login.html" class="btn btn-primary btn-lg btn-full">
+              <span>🎯</span>
+              Start Creating Now
+            </a>
+            <a href="#how-it-works" class="btn btn-secondary btn-lg btn-full">
+              <span>▶️</span>
+              See How It Works
+            </a>
+          </div>
+          
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <span class="hero-stat-number" data-count="10000">0</span>
+              <span class="hero-stat-label">Teachers</span>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-number" data-count="50000">0</span>
+              <span class="hero-stat-label">Papers</span>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-number">30s</span>
+              <span class="hero-stat-label">Average</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="hero-demo">
+          <div class="demo-header">
+            <div class="demo-icon">📝</div>
+            <div>
+              <div class="demo-title">Question Paper Generator</div>
+              <div class="demo-subtitle">CBSE Class 10 Mathematics</div>
+            </div>
+          </div>
+          
+          <div class="demo-question">
+            <div class="demo-question-text">1. Solve: x² + 5x + 6 = 0</div>
+            <div class="demo-options">
+              <div class="demo-option">a) x = -2, -3</div>
+              <div class="demo-option">b) x = 2, 3</div>
+              <div class="demo-option">c) x = -1, -6</div>
+              <div class="demo-option">d) x = 1, 6</div>
+            </div>
+          </div>
+          
+          <div class="demo-progress">
+            <div class="demo-progress-bar"></div>
+          </div>
+          
+          <div class="demo-status">
+            <span>✅</span>
+            <span>Paper Generated Successfully</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features reveal" id="features">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">
+          <span>⭐</span>
+          <span>Powerful Features</span>
+        </div>
+        <h2 class="section-title">Why Teachers Choose AI-RIVU</h2>
+        <p class="section-subtitle">
+          Designed specifically for Indian educators, combining cutting-edge AI with deep curriculum understanding.
+        </p>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon">🧠</div>
+          <h3 class="feature-title">AI-Powered Intelligence</h3>
+          <p class="feature-description">
+            Advanced AI understands CBSE, Karnataka, and Tamil Nadu curricula to generate perfectly aligned questions.
+          </p>
+        </div>
+        
+        <div class="feature-card reveal">
+          <div class="feature-icon">⚡</div>
+          <h3 class="feature-title">Lightning Fast</h3>
+          <p class="feature-description">
+            From concept to printable question paper in 30 seconds. More time for students, less paperwork.
+          </p>
+        </div>
+        
+        <div class="feature-card reveal">
+          <div class="feature-icon">🎓</div>
+          <h3 class="feature-title">Curriculum Aligned</h3>
+          <p class="feature-description">
+            Questions designed for different cognitive levels - from basic recall to critical thinking.
+          </p>
+        </div>
+        
+        <div class="feature-card reveal">
+          <div class="feature-icon">🎨</div>
+          <h3 class="feature-title">Fully Customizable</h3>
+          <p class="feature-description">
+            Control difficulty, question types, marks distribution. Every paper matches your exact needs.
+          </p>
+        </div>
+        
+        <div class="feature-card reveal">
+          <div class="feature-icon">📄</div>
+          <h3 class="feature-title">Professional Format</h3>
+          <p class="feature-description">
+            Beautiful Word documents with proper formatting and comprehensive answer keys.
+          </p>
+        </div>
+        
+        <div class="feature-card reveal">
+          <div class="feature-icon">🛡️</div>
+          <h3 class="feature-title">Quality Guaranteed</h3>
+          <p class="feature-description">
+            Every question validated for accuracy, age-appropriateness, and curriculum alignment.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works reveal" id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">
+          <span>⚙️</span>
+          <span>Simple Process</span>
+        </div>
+        <h2 class="section-title">Create Papers in 4 Steps</h2>
+        <p class="section-subtitle">
+          Professional results in minutes, not hours. Even for teachers who aren't tech-savvy.
+        </p>
+      </div>
+      
+      <div class="steps-container">
+        <div class="step reveal">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3 class="step-title">Choose Curriculum</h3>
+            <p class="step-description">
+              Select your board, class, and subject from our comprehensive Indian education database.
+            </p>
+          </div>
+        </div>
+        
+        <div class="step reveal">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3 class="step-title">Customize Paper</h3>
+            <p class="step-description">
+              Set question types, difficulty levels, marks distribution, and exam duration.
+            </p>
+          </div>
+        </div>
+        
+        <div class="step reveal">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3 class="step-title">Generate Instantly</h3>
+            <p class="step-description">
+              Our AI creates a professional question paper with answer key in seconds.
+            </p>
+          </div>
+        </div>
+        
+        <div class="step reveal">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3 class="step-title">Download & Print</h3>
+            <p class="step-description">
+              Get your formatted Word document, ready for printing or customization.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats reveal">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Trusted Nationwide</h2>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-number" data-count="10000">0</span>
+          <span class="stat-label">Teachers</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" data-count="50000">0</span>
+          <span class="stat-label">Papers</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" data-count="500">0</span>
+          <span class="stat-label">Schools</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" data-count="98">0</span>
+          <span class="stat-label">% Happy</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" data-count="15">0</span>
+          <span class="stat-label">States</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">30s</span>
+          <span class="stat-label">Speed</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials reveal" id="testimonials">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">
+          <span>❤️</span>
+          <span>Teacher Love</span>
+        </div>
+        <h2 class="section-title">Loved Across India</h2>
+        <p class="section-subtitle">
+          From Mumbai to Chennai, teachers are transforming their classrooms with AI-RIVU.
+        </p>
+      </div>
+      
+      <div class="testimonials-grid">
+        <div class="testimonial reveal">
+          <p class="testimonial-content">
+            "AI-RIVU changed everything. What took 3-4 hours now takes minutes. My students love the variety of questions!"
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">P</div>
+            <div class="author-info">
+              <h4>Priya Sharma</h4>
+              <p>Delhi Public School</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial reveal">
+          <p class="testimonial-content">
+            "Perfect for managing 6 classes! Curriculum alignment is spot-on and I can customize for different groups."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">R</div>
+            <div class="author-info">
+              <h4>Rajesh Kumar</h4>
+              <p>Kendriya Vidyalaya</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial reveal">
+          <p class="testimonial-content">
+            "The answer keys are incredibly detailed. Students use them for self-study and performance improved!"
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">M</div>
+            <div class="author-info">
+              <h4>Meera Iyer</h4>
+              <p>DAV Public School</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial reveal">
+          <p class="testimonial-content">
+            "Finally, a tool that understands Indian education! Questions are contextual and board-aligned."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">A</div>
+            <div class="author-info">
+              <h4>Arjun Patil</h4>
+              <p>Maharashtra Board</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta reveal">
+    <div class="container">
+      <h2 class="cta-title">Ready to Transform Teaching?</h2>
+      <p class="cta-subtitle">
+        Join thousands of educators creating better question papers with AI-RIVU.
+      </p>
+      <div class="cta-buttons">
+        <a href="/login.html" class="btn btn-primary btn-lg btn-full">
+          <span>🚀</span>
+          Start Creating Now
+        </a>
+        <a href="/contact.html" class="btn btn-secondary btn-lg btn-full">
+          <span>📅</span>
+          Schedule Demo
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>AI-RIVU</h3>
+          <p>Empowering educators with AI-driven tools. Built by teachers, for teachers.</p>
+          <p style="color: var(--accent); margin-top: var(--space-md);">Bridging Today. Shaping Tomorrow.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Product</h3>
+          <a href="/generator.html">Question Generator</a>
+          <a href="/about.html">About Us</a>
+          <a href="/contact.html">Contact</a>
+        </div>
+        <div class="footer-section">
+          <h3>Support</h3>
+          <a href="/contact.html">Help Center</a>
+          <a href="mailto:ashwinct@gmail.com">Email Support</a>
+          <a href="tel:+918828015315">Call Us</a>
+        </div>
+        <div class="footer-section">
+          <h3>Company</h3>
+          <a href="/about.html">About Asmakam</a>
+          <a href="/contact.html">Partnerships</a>
+          <a href="/contact.html">Careers</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Asmakam Innovations. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // ===== MOBILE-FIRST NAVIGATION =====
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu');
+    
+    navToggle.addEventListener('click', () => {
+      navToggle.classList.toggle('active');
+      navMenu.classList.toggle('active');
+      document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+    });
+
+    // Close menu when clicking on a link
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        navToggle.classList.remove('active');
+        navMenu.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // ===== SCROLL ANIMATIONS - PERFORMANCE OPTIMIZED =====
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -10% 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          observer.unobserve(entry.target); // Stop observing once revealed
+        }
+      });
+    }, observerOptions);
+
+    // Observe reveal elements
+    document.querySelectorAll('.reveal').forEach(el => {
+      observer.observe(el);
+    });
+
+    // ===== ANIMATED COUNTERS - MOBILE OPTIMIZED =====
+    function animateCounter(element, target, duration = 1500) {
+      let start = 0;
+      const increment = target / (duration / 16);
+      
+      const timer = setInterval(() => {
+        start += increment;
+        if (start >= target) {
+          element.textContent = target.toLocaleString();
+          clearInterval(timer);
+        } else {
+          element.textContent = Math.floor(start).toLocaleString();
+        }
+      }, 16);
+    }
+
+    // Stats counter animation
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const counters = entry.target.querySelectorAll('[data-count]');
+          counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-count'));
+            animateCounter(counter, target);
+          });
+          statsObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('.stats, .hero-stats').forEach(el => {
+      statsObserver.observe(el);
+    });
+
+    // ===== SMOOTH SCROLLING =====
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // ===== PERFORMANCE OPTIMIZATIONS =====
+    // Debounce scroll events
+    let ticking = false;
+    function updateOnScroll() {
+      // Any scroll-based updates here
+      ticking = false;
+    }
+
+    function requestTick() {
+      if (!ticking) {
+        requestAnimationFrame(updateOnScroll);
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', requestTick, { passive: true });
+
+    // ===== TOUCH OPTIMIZATIONS =====
+    // Add touch feedback to interactive elements
+    document.querySelectorAll('.btn, .feature-card, .testimonial').forEach(el => {
+      el.addEventListener('touchstart', function() {
+        this.style.transform = 'scale(0.98)';
+      }, { passive: true });
+      
+      el.addEventListener('touchend', function() {
+        this.style.transform = '';
+      }, { passive: true });
+    });
+
+    // ===== LOADING OPTIMIZATION =====
+    // Fade in page when loaded
+    window.addEventListener('load', () => {
+      document.body.style.opacity = '0';
+      document.body.style.transition = 'opacity 0.3s ease-in-out';
+      
+      requestAnimationFrame(() => {
+        document.body.style.opacity = '1';
+      });
+    });
+
+    // ===== ACCESSIBILITY ENHANCEMENTS =====
+    // Focus management for mobile navigation
+    navToggle.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        navToggle.click();
+      }
+    });
+
+    // Skip to main content
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab' && !e.shiftKey && e.target === navToggle) {
+        const main = document.querySelector('main') || document.querySelector('.hero');
+        if (main) {
+          main.focus();
+          e.preventDefault();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
