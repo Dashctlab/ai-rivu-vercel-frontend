@@ -145,25 +145,14 @@
 </head>
 
 <body>
-  <!-- =============== HEADER =============== -->
-  <header class="app-header">
-    <div class="container">
-      <div class="logo-container">
-        <a href="/home.html" aria-label="Home page"> 
-        <img src="images/ai-rivu-logo.png" alt="AI-RIVU Logo" class="logo-image">
-        </a>
-      </div>
-      <nav>
-        <ul class="nav-list tight">
-          <li><a href="/home.html">Home</a></li>
-          <li><a href="/about.html">About</a></li>
-          <li><a href="contact.html">Contact</a></li>
-          <li><button class="primary-btn" onclick="location.href='/login.html'">Login</button></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-
+  
+<script>
+initializeCommonComponents({
+  currentPage: 'contact',
+  isAuthenticated: false
+});
+</script>
+  
   <!-- =============== CONTACT HERO =============== -->
   <section class="contact-hero">
     <div class="container">
@@ -245,27 +234,7 @@
     </div>
   </section>
 
-
-  <!-- ================= FOOTER ================= -->
-  <footer class="app-footer">
-    <div class="container">
-      <div class="footer-flex">
-        <div>
-          <ul class="footer-links">
-            <li><a href="#about">About&nbsp;Us</a></li>
-            <li><a href="contact.html">Contact&nbsp;Us</a></li>
-          </ul>
-        </div>
-        <div class="footer-logo">
-          <img src="images/asmakam-logo.png" alt="Asmakam Innovations logo">
-        </div>
-      </div>
-      <p>© <span id="yr"></span> Asmakam Innovations · All Rights Reserved</p>
-    </div>
-  </footer>
-
   <script>
-    document.getElementById("yr").textContent=new Date().getFullYear();
     
     // Replace this with your actual Google Apps Script URL
     const scriptURL = 'https://script.google.com/macros/s/AKfycbw5eZLB0eL1WaCEkl22N7tL_-M-cebpIHVLfRkGsreipKz4Sn6YvfjR8EwCi4UBKZ5a/exec';
@@ -319,5 +288,17 @@
       return false; // Prevent default form submission
     }
   </script>
+
+          <!-- Footer -->
+        <script src="/config.js"></script>
+        <script src="/shared/constants.js"></script>
+        <script src="/shared/components.js"></script>
+        <script>
+          initializeCommonComponents({
+            currentPage: 'contact',
+            isAuthenticated: false
+          });
+        </script>
+  
 </body>
 </html>
