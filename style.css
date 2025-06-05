@@ -367,72 +367,29 @@ header.app-header nav ul li a:hover {
   font-weight: 700;
 }
 
-/* Desktop: Two-column layout */
+/* Desktop: Keep it simple - single column with better spacing */
 @media (min-width: 768px) {
   .process-flow {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-    max-width: 1000px;
+    max-width: 900px;
+    gap: 2.5rem;
   }
-
-  .process-step:nth-child(1),
-  .process-step:nth-child(2),
-  .process-step:nth-child(3) {
-    grid-column: 1;
-  }
-
-  .process-step:nth-child(4),
-  .process-step:nth-child(5) {
-    grid-column: 2;
-  }
-
-  .process-step:nth-child(3)::after {
-    content: "→";
-    right: -30px;
-    top: 50%;
-    left: auto;
-    bottom: auto;
-    transform: translateY(-50%);
-  }
-}
-
-/* Large desktop: Single row */
-@media (min-width: 1200px) {
-  .process-flow {
-    grid-template-columns: repeat(5, 1fr);
-    gap: 1.5rem;
-    max-width: 1400px;
-  }
-
+  
   .process-step {
-    grid-column: auto;
-    flex-direction: column;
-    text-align: center;
-    padding: 1.5rem;
+    padding: 2.5rem;
   }
-
+  
   .step-number {
-    width: 50px;
-    height: 50px;
-    font-size: 1.2rem;
+    width: 70px;
+    height: 70px;
+    font-size: 1.6rem;
   }
-
+  
   .step-content h4 {
-    font-size: 1.1rem;
+    font-size: 1.4rem;
   }
-
+  
   .step-content p {
-    font-size: 0.9rem;
-  }
-
-  .process-step:not(:last-child)::after {
-    content: "→";
-    right: -25px;
-    top: 50%;
-    left: auto;
-    bottom: auto;
-    transform: translateY(-50%);
-    font-size: 1.5rem;
+    font-size: 1.1rem;
   }
 }
 
@@ -450,7 +407,6 @@ header.app-header nav ul li a:hover {
     font-size: 1.2rem;
   }
 }
-
 
 /* ===== Why Section ===== */
 .why {
