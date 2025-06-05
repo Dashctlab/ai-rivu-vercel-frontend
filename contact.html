@@ -145,13 +145,8 @@
 </head>
 
 <body>
-  
-<script>
-initializeCommonComponents({
-  currentPage: 'contact',
-  isAuthenticated: false
-});
-</script>
+  <!-- Header Container - FIX: Add this -->
+  <div id="header-container"></div>
   
   <!-- =============== CONTACT HERO =============== -->
   <section class="contact-hero">
@@ -234,7 +229,21 @@ initializeCommonComponents({
     </div>
   </section>
 
+  <!-- Footer Container - FIX: Add this -->
+  <div id="footer-container"></div>
+
+  <!-- Scripts -->
+  <script src="/config.js"></script>
+  <script src="/shared/constants.js"></script>
+  <script src="/shared/components.js"></script>
   <script>
+    // FIX: Initialize components after DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeCommonComponents({
+        currentPage: 'contact',
+        isAuthenticated: false
+      });
+    });
     
     // Replace this with your actual Google Apps Script URL
     const scriptURL = 'https://script.google.com/macros/s/AKfycbw5eZLB0eL1WaCEkl22N7tL_-M-cebpIHVLfRkGsreipKz4Sn6YvfjR8EwCi4UBKZ5a/exec';
@@ -288,17 +297,5 @@ initializeCommonComponents({
       return false; // Prevent default form submission
     }
   </script>
-
-          <!-- Footer -->
-        <script src="/config.js"></script>
-        <script src="/shared/constants.js"></script>
-        <script src="/shared/components.js"></script>
-        <script>
-          initializeCommonComponents({
-            currentPage: 'contact',
-            isAuthenticated: false
-          });
-        </script>
-  
 </body>
 </html>
