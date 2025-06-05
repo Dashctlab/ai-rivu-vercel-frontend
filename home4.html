@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-RIVU • Revolutionizing Education with AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* ===== REVOLUTIONARY RESET ===== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      color: #1a1a1a;
+      background: #ffffff;
+      overflow-x: hidden;
+    }
+
+    /* ===== DESIGN SYSTEM ===== */
+    :root {
+      --primary: #2A9D8F;
+      --primary-light: #E6F7F5;
+      --primary-dark: #1d6b5f;
+      --accent: #E9C46A;
+      --accent-light: #FDF6E3;
+      --secondary: #F4A261;
+      --error: #E76F51;
+      --success: #2A9D8F;
+      --text-dark: #264653;
+      --text-medium: #6B7280;
+      --text-light: #9CA3AF;
+      --white: #FFFFFF;
+      --light-bg: #FAFBFC;
+      --border: #E5E7EB;
+      --gradient-primary: linear-gradient(135deg, #2A9D8F 0%, #E9C46A 100%);
+      --gradient-hero: linear-gradient(135deg, rgba(42, 157, 143, 0.1) 0%, rgba(233, 196, 106, 0.1) 100%);
+      --gradient-accent: linear-gradient(135deg, #F4A261 0%, #E76F51 100%);
+      --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
+      --shadow-medium: 0 10px 40px rgba(0, 0, 0, 0.12);
+      --shadow-large: 0 20px 60px rgba(0, 0, 0, 0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-xl: 24px;
+      --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* ===== MAGNIFICENT ANIMATIONS ===== */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(1deg); }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(60px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(60px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    @keyframes sparkle {
+      0%, 100% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1); opacity: 1; }
+    }
+
+    /* ===== UTILITIES ===== */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-lg);
+    }
+
+    .gradient-text {
+      background: var(--gradient-primary);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.6s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--text-dark);
+      border: 2px solid var(--border);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-secondary:hover {
+      background: var(--light-bg);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    /* ===== NAVIGATION ===== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1.5rem 0;
+      transition: var(--transition);
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid transparent;
+    }
+
+    .navbar.scrolled {
+      background: rgba(255, 255, 255, 0.95);
+      border-bottom-color: var(--border);
+      padding: 1rem 0;
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-medium);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* ===== HERO SECTION ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      background: var(--gradient-hero);
+      overflow: hidden;
+      padding-top: 100px;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="2" fill="%232A9D8F" opacity="0.1"><animate attributeName="opacity" values="0.1;0.3;0.1" dur="4s" repeatCount="indefinite"/></circle></pattern></defs><rect width="100%" height="100%" fill="url(%23dots)"/></svg>') center/cover;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-text {
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent-light);
+      color: var(--text-dark);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      animation: scaleIn 1s ease-out 0.2s both;
+    }
+
+    .hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 2rem;
+      color: var(--text-dark);
+    }
+
+    .hero-subtitle {
+      font-size: 1.3rem;
+      color: var(--text-medium);
+      margin-bottom: 3rem;
+      max-width: 600px;
+      line-height: 1.5;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      margin-top: 2rem;
+    }
+
+    .stat {
+      text-align: left;
+    }
+
+    .stat-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      display: block;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 1rem;
+      color: var(--text-medium);
+      font-weight: 500;
+    }
+
+    /* ===== HERO VISUAL ===== */
+    .hero-visual {
+      position: relative;
+      animation: slideInRight 1s ease-out 0.3s both;
+    }
+
+    .main-visual {
+      position: relative;
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: 3rem;
+      box-shadow: var(--shadow-large);
+      border: 1px solid var(--border);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .visual-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--light-bg);
+    }
+
+    .visual-icon {
+      width: 50px;
+      height: 50px;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .visual-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .visual-subtitle {
+      color: var(--text-medium);
+      font-size: 0.9rem;
+    }
+
+    .question-preview {
+      background: var(--light-bg);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border-left: 4px solid var(--primary);
+    }
+
+    .question-text {
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+    }
+
+    .question-options {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .option {
+      background: white;
+      padding: 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      color: var(--text-medium);
+    }
+
+    .progress-bar {
+      background: var(--light-bg);
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .progress-fill {
+      background: var(--gradient-primary);
+      height: 100%;
+      width: 85%;
+      border-radius: 4px;
+      animation: shimmer 2s infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-fill::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--success);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .floating-elements {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+    }
+
+    .floating-card {
+      position: absolute;
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--border);
+      animation: float 4s ease-in-out infinite;
+      max-width: 200px;
+    }
+
+    .floating-card:nth-child(1) {
+      top: 10%;
+      left: -10%;
+      animation-delay: 0s;
+    }
+
+    .floating-card:nth-child(2) {
+      top: 60%;
+      right: -15%;
+      animation-delay: -2s;
+    }
+
+    .floating-card:nth-child(3) {
+      bottom: 20%;
+      left: -5%;
+      animation-delay: -4s;
+    }
+
+    .card-icon {
+      width: 30px;
+      height: 30px;
+      background: var(--gradient-accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--text-dark);
+      margin-bottom: 0.25rem;
+    }
+
+    .card-desc {
+      font-size: 0.7rem;
+      color: var(--text-medium);
+      line-height: 1.3;
+    }
+
+    /* ===== FEATURES SECTION ===== */
+    .features {
+      padding: 8rem 0;
+      background: white;
+      position: relative;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      color: var(--text-dark);
+      line-height: 1.2;
+    }
+
+    .section-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-medium);
+      line-height: 1.6;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2.5rem;
+      margin-top: 4rem;
+    }
+
+    .feature-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: 3rem;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-primary);
+      transform: scaleX(0);
+      transition: var(--transition);
+      transform-origin: left;
+    }
+
+    .feature-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-large);
+    }
+
+    .feature-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: var(--radius-md);
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .feature-icon::after {
+      content: '';
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 15px;
+      height: 15px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: sparkle 2s infinite;
+    }
+
+    .feature-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+    }
+
+    .feature-description {
+      color: var(--text-medium);
+      line-height: 1.7;
+      font-size: 1.05rem;
+    }
+
+    /* ===== HOW IT WORKS ===== */
+    .how-it-works {
+      padding: 8rem 0;
+      background: var(--light-bg);
+      position: relative;
+    }
+
+    .steps-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 3rem;
+      margin-top: 4rem;
+    }
+
+    .step {
+      text-align: center;
+      position: relative;
+    }
+
+    .step-number {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0 auto 2rem;
+      position: relative;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .step-number::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      opacity: 0.2;
+      animation: pulse 2s infinite;
+    }
+
+    .step-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+    }
+
+    .step-description {
+      color: var(--text-medium);
+      line-height: 1.7;
+      font-size: 1.05rem;
+    }
+
+    /* ===== STATS SECTION ===== */
+    .stats-section {
+      padding: 6rem 0;
+      background: var(--gradient-primary);
+      color: white;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 3rem;
+      text-align: center;
+    }
+
+    .stat-card {
+      position: relative;
+    }
+
+    .stat-card .stat-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card .stat-label {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    /* ===== TESTIMONIALS ===== */
+    .testimonials {
+      padding: 8rem 0;
+      background: white;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 3rem;
+      margin-top: 4rem;
+    }
+
+    .testimonial {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: 3rem;
+      border: 1px solid var(--border);
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .testimonial:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-large);
+    }
+
+    .testimonial-content {
+      font-style: italic;
+      color: var(--text-medium);
+      margin-bottom: 2rem;
+      line-height: 1.7;
+      font-size: 1.1rem;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .author-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .author-info h4 {
+      color: var(--text-dark);
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .author-info p {
+      color: var(--text-medium);
+      font-size: 0.95rem;
+    }
+
+    /* ===== CTA SECTION ===== */
+    .cta-section {
+      padding: 8rem 0;
+      text-align: center;
+      background: var(--gradient-hero);
+      position: relative;
+    }
+
+    .cta-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .cta-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 2rem;
+      line-height: 1.2;
+    }
+
+    .cta-subtitle {
+      font-size: 1.3rem;
+      color: var(--text-medium);
+      margin-bottom: 3rem;
+      line-height: 1.6;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      padding: 4rem 0 2rem;
+      background: var(--text-dark);
+      color: white;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-section h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: white;
+    }
+
+    .footer-section p,
+    .footer-section a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      line-height: 1.8;
+      transition: var(--transition);
+    }
+
+    .footer-section a:hover {
+      color: var(--accent);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* ===== RESPONSIVE DESIGN ===== */
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 1rem;
+      }
+
+      .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 3rem;
+      }
+
+      .hero-stats {
+        justify-content: center;
+      }
+
+      .hero-cta {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .features-grid,
+      .steps-container,
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .floating-card {
+        display: none;
+      }
+
+      .main-visual {
+        padding: 2rem;
+      }
+    }
+
+    /* ===== SCROLL ANIMATIONS ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.8s ease-out;
+    }
+
+    .reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <div class="nav-container">
+        <a href="#" class="logo">
+          <div class="logo-icon">
+            <i class="fas fa-brain"></i>
+          </div>
+          <span>AI-RIVU</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#testimonials">Reviews</a></li>
+          <li><a href="#" class="btn btn-primary">
+            <i class="fas fa-rocket"></i>
+            Start Creating
+          </a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <div class="hero-badge">
+            <i class="fas fa-sparkles"></i>
+            <span>Revolutionizing Education with AI</span>
+          </div>
+          <h1 class="hero-title">
+            Create Perfect
+            <span class="gradient-text">Question Papers</span>
+            in 30 Seconds
+          </h1>
+          <p class="hero-subtitle">
+            The most advanced AI-powered question paper generator for Indian educators. Transform hours of work into seconds while maintaining the highest quality standards.
+          </p>
+          <div class="hero-cta">
+            <a href="/login.html" class="btn btn-primary">
+              <i class="fas fa-rocket"></i>
+              Start Creating Now
+            </a>
+            <a href="#how-it-works" class="btn btn-secondary">
+              <i class="fas fa-play"></i>
+              See How It Works
+            </a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat">
+              <span class="stat-number">10,000+</span>
+              <span class="stat-label">Teachers Trust Us</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">50,000+</span>
+              <span class="stat-label">Papers Generated</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">30 Sec</span>
+              <span class="stat-label">Average Time</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="main-visual">
+            <div class="visual-header">
+              <div class="visual-icon">
+                <i class="fas fa-file-alt"></i>
+              </div>
+              <div>
+                <div class="visual-title">Question Paper Generator</div>
+                <div class="visual-subtitle">CBSE Class 10 Mathematics</div>
+              </div>
+            </div>
+            <div class="question-preview">
+              <div class="question-text">1. Solve the quadratic equation: x² + 5x + 6 = 0</div>
+              <div class="question-options">
+                <div class="option">a) x = -2, -3</div>
+                <div class="option">b) x = 2, 3</div>
+                <div class="option">c) x = -1, -6</div>
+                <div class="option">d) x = 1, 6</div>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+            <div class="status-indicator">
+              <i class="fas fa-check-circle"></i>
+              <span>Paper Generated Successfully</span>
+            </div>
+          </div>
+          <div class="floating-elements">
+            <div class="floating-card">
+              <div class="card-icon">
+                <i class="fas fa-brain"></i>
+              </div>
+              <div class="card-title">AI Processing</div>
+              <div class="card-desc">Advanced algorithms analyzing curriculum patterns</div>
+            </div>
+            <div class="floating-card">
+              <div class="card-icon">
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+              <div class="card-title">Curriculum Aligned</div>
+              <div class="card-desc">Perfect CBSE and state board compliance</div>
+            </div>
+            <div class="floating-card">
+              <div class="card-icon">
+                <i class="fas fa-download"></i>
+              </div>
+              <div class="card-title">Ready to Print</div>
+              <div class="card-desc">Professional Word format with answer keys</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features reveal" id="features">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">
+          <i class="fas fa-star"></i>
+          <span>Powerful Features</span>
+        </div>
+        <h2 class="section-title">Why Teachers Choose AI-RIVU</h2>
+        <p class="section-subtitle">
+          Designed specifically for Indian educators, our platform combines cutting-edge AI with deep understanding of local curricula to deliver unmatched results.
+        </p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon">
+            <i class="fas fa-brain"></i>
+          </div>
+          <h3 class="feature-title">AI-Powered Intelligence</h3>
+          <p class="feature-description">
+            Advanced AI understands CBSE, Karnataka, and Tamil Nadu curricula to generate perfectly aligned questions that match your teaching objectives and student levels.
+          </p>
+        </div>
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <h3 class="feature-title">Lightning Fast Generation</h3>
+          <p class="feature-description">
+            From concept to printable question paper in 30 seconds. Spend less time on paperwork, more time inspiring and connecting with your students.
+          </p>
+        </div>
+        <div class="feature-card reveal reveal-delay-3">
+          <div class="feature-icon">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <h3 class="feature-title">Bloom's Taxonomy Aligned</h3>
+          <p class="feature-description">
+            Questions designed to test different cognitive levels - from basic recall to critical thinking and creative problem-solving abilities.
+          </p>
+        </div>
+        <div class="feature-card reveal reveal-delay-4">
+          <div class="feature-icon">
+            <i class="fas fa-palette"></i>
+          </div>
+          <h3 class="feature-title">Fully Customizable</h3>
+          <p class="feature-description">
+            Control difficulty levels, question types, marks distribution, and topics. Every paper matches your exact classroom requirements.
+          </p>
+        </div>
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon">
+            <i class="fas fa-file-word"></i>
+          </div>
+          <h3 class="feature-title">Professional Format</h3>
+          <p class="feature-description">
+            Download beautifully formatted Word documents with proper headers, spacing, and comprehensive answer keys. Ready to print or customize.
+          </p>
+        </div>
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3 class="feature-title">Quality Guaranteed</h3>
+          <p class="feature-description">
+            Every question is validated for accuracy, age-appropriateness, and curriculum alignment. No more worrying about errors or unclear wording.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works reveal" id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">
+          <i class="fas fa-cogs"></i>
+          <span>Simple Process</span>
+        </div>
+        <h2 class="section-title">Create Perfect Papers in 4 Steps</h2>
+        <p class="section-subtitle">
+          Our intuitive process makes question paper creation effortless, even for teachers who aren't tech-savvy. Professional results in minutes, not hours.
+        </p>
+      </div>
+      <div class="steps-container">
+        <div class="step reveal reveal-delay-1">
+          <div class="step-number">1</div>
+          <h3 class="step-title">Choose Your Curriculum</h3>
+          <p class="step-description">
+            Select your board (CBSE, Karnataka, Tamil Nadu), class, and subject from our comprehensive database of Indian educational standards.
+          </p>
+        </div>
+        <div class="step reveal reveal-delay-2">
+          <div class="step-number">2</div>
+          <h3 class="step-title">Customize Your Paper</h3>
+          <p class="step-description">
+            Set question types, difficulty levels, marks distribution, and exam duration. Add specific topics or let AI choose from the syllabus.
+          </p>
+        </div>
+        <div class="step reveal reveal-delay-3">
+          <div class="step-number">3</div>
+          <h3 class="step-title">Generate Instantly</h3>
+          <p class="step-description">
+            Our AI creates a professional question paper with comprehensive answer key in seconds. Review and make any final adjustments.
+          </p>
+        </div>
+        <div class="step reveal reveal-delay-4">
+          <div class="step-number">4</div>
+          <h3 class="step-title">Download & Print</h3>
+          <p class="step-description">
+            Get your perfectly formatted Word document, ready for printing or further customization. Share with colleagues or store for future use.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section reveal">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title" style="color: white;">Trusted by Educators Nationwide</h2>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card reveal reveal-delay-1">
+          <span class="stat-number" data-count="10000">0</span>
+          <span class="stat-label">Active Teachers</span>
+        </div>
+        <div class="stat-card reveal reveal-delay-2">
+          <span class="stat-number" data-count="50000">0</span>
+          <span class="stat-label">Papers Generated</span>
+        </div>
+        <div class="stat-card reveal reveal-delay-3">
+          <span class="stat-number" data-count="500">0</span>
+          <span class="stat-label">Schools Using AI-RIVU</span>
+        </div>
+        <div class="stat-card reveal reveal-delay-4">
+          <span class="stat-number" data-count="98">0</span>
+          <span class="stat-label">% Satisfaction Rate</span>
+        </div>
+        <div class="stat-card reveal reveal-delay-1">
+          <span class="stat-number" data-count="15">0</span>
+          <span class="stat-label">States Covered</span>
+        </div>
+        <div class="stat-card reveal reveal-delay-2">
+          <span class="stat-number" data-count="30">0</span>
+          <span class="stat-label">Seconds Average Time</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials reveal" id="testimonials">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">
+          <i class="fas fa-heart"></i>
+          <span>Teacher Reviews</span>
+        </div>
+        <h2 class="section-title">Loved by Teachers Across India</h2>
+        <p class="section-subtitle">
+          See how AI-RIVU is transforming classrooms from Mumbai to Chennai, Delhi to Bangalore, helping teachers save time and improve student outcomes.
+        </p>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial reveal reveal-delay-1">
+          <p class="testimonial-content">
+            "AI-RIVU has completely changed how I prepare for exams. What used to take me 3-4 hours now takes just minutes. The quality is exceptional and my students love the variety of questions."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">P</div>
+            <div class="author-info">
+              <h4>Priya Sharma</h4>
+              <p>Mathematics Teacher, Delhi Public School</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial reveal reveal-delay-2">
+          <p class="testimonial-content">
+            "As a science teacher managing 6 different classes, AI-RIVU is a lifesaver. The curriculum alignment is perfect and I can customize difficulty levels for different student groups."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">R</div>
+            <div class="author-info">
+              <h4>Rajesh Kumar</h4>
+              <p>Science Teacher, Kendriya Vidyalaya, Bangalore</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial reveal reveal-delay-3">
+          <p class="testimonial-content">
+            "The answer keys are so detailed and accurate. My students use them for self-study and it's improved their performance significantly. This tool is a game-changer for education."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">M</div>
+            <div class="author-info">
+              <h4>Meera Iyer</h4>
+              <p>English Teacher, DAV Public School, Chennai</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial reveal reveal-delay-4">
+          <p class="testimonial-content">
+            "Finally, a tool that understands Indian education! The questions are contextual, culturally relevant, and perfectly aligned with our state board requirements."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">A</div>
+            <div class="author-info">
+              <h4>Arjun Patil</h4>
+              <p>Social Science Teacher, Maharashtra State Board</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Coming Soon Features -->
+  <section class="features reveal" style="background: var(--light-bg);">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">
+          <i class="fas fa-rocket"></i>
+          <span>Coming Soon</span>
+        </div>
+        <h2 class="section-title">The Future of AI Education</h2>
+        <p class="section-subtitle">
+          We're constantly evolving to serve you better. Here's what's next in our journey to revolutionize Indian education.
+        </p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3 class="feature-title">Student Analytics</h3>
+          <p class="feature-description">
+            Real-time dashboards to track student performance, identify learning gaps, and personalize teaching strategies for better outcomes.
+          </p>
+        </div>
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon">
+            <i class="fas fa-language"></i>
+          </div>
+          <h3 class="feature-title">Regional Languages</h3>
+          <p class="feature-description">
+            Generate question papers in Hindi, Tamil, Kannada, Telugu, and other regional languages for truly inclusive education.
+          </p>
+        </div>
+        <div class="feature-card reveal reveal-delay-3">
+          <div class="feature-icon">
+            <i class="fas fa-robot"></i>
+          </div>
+          <h3 class="feature-title">Auto Grading</h3>
+          <p class="feature-description">
+            AI-powered evaluation of answer sheets with detailed feedback, rubric-based scoring, and plagiarism detection.
+          </p>
+        </div>
+        <div class="feature-card reveal reveal-delay-4">
+          <div class="feature-icon">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <h3 class="feature-title">Lesson Planner</h3>
+          <p class="feature-description">
+            Intelligent lesson planning with curriculum mapping, resource suggestions, and activity recommendations.
+          </p>
+        </div>
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3 class="feature-title">Collaboration Tools</h3>
+          <p class="feature-description">
+            Share question banks with colleagues, collaborate on curriculum design, and build a community of educators.
+          </p>
+        </div>
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <h3 class="feature-title">Mobile App</h3>
+          <p class="feature-description">
+            Create and manage question papers on the go with our upcoming mobile app for iOS and Android.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section reveal">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title">Ready to Transform Your Teaching?</h2>
+        <p class="cta-subtitle">
+          Join thousands of educators who have already discovered the power of AI-assisted teaching. Start creating better question papers today.
+        </p>
+        <div class="cta-buttons">
+          <a href="/login.html" class="btn btn-primary">
+            <i class="fas fa-rocket"></i>
+            Start Creating Now
+          </a>
+          <a href="/contact.html" class="btn btn-secondary">
+            <i class="fas fa-calendar"></i>
+            Schedule Demo
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>AI-RIVU</h3>
+          <p>Empowering educators with AI-driven tools for creating exceptional learning experiences. Built by teachers, for teachers.</p>
+          <p style="margin-top: 1rem; color: var(--accent);">Bridging Today. Shaping Tomorrow.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Product</h3>
+          <p><a href="/generator.html">Question Generator</a></p>
+          <p><a href="/about.html">About Us</a></p>
+          <p><a href="/contact.html">Contact</a></p>
+          <p><a href="#testimonials">Reviews</a></p>
+        </div>
+        <div class="footer-section">
+          <h3>Support</h3>
+          <p><a href="/contact.html">Help Center</a></p>
+          <p><a href="/contact.html">Contact Support</a></p>
+          <p><a href="mailto:ashwinct@gmail.com">Email Us</a></p>
+          <p><a href="tel:+918828015315">Call Us</a></p>
+        </div>
+        <div class="footer-section">
+          <h3>Company</h3>
+          <p><a href="/about.html">About Asmakam</a></p>
+          <p><a href="/contact.html">Partnerships</a></p>
+          <p><a href="/contact.html">Careers</a></p>
+          <p><a href="/contact.html">Press</a></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Asmakam Innovations. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 100) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // Intersection Observer for reveal animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all reveal elements
+    document.querySelectorAll('.reveal').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Animated counter for stats
+    function animateCounter(element, target, duration = 2000) {
+      let start = 0;
+      const increment = target / (duration / 16);
+      
+      const timer = setInterval(() => {
+        start += increment;
+        if (start >= target) {
+          element.textContent = target.toLocaleString();
+          clearInterval(timer);
+        } else {
+          element.textContent = Math.floor(start).toLocaleString();
+        }
+      }, 16);
+    }
+
+    // Stats counter animation
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const counter = entry.target.querySelector('.stat-number');
+          const target = parseInt(counter.getAttribute('data-count'));
+          animateCounter(counter, target);
+          statsObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.stat-card').forEach(el => {
+      statsObserver.observe(el);
+    });
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Add dynamic particles effect
+    function createParticle() {
+      const particle = document.createElement('div');
+      particle.style.cssText = `
+        position: fixed;
+        width: 4px;
+        height: 4px;
+        background: linear-gradient(45deg, #2A9D8F, #E9C46A);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0.6;
+      `;
+      
+      particle.style.left = Math.random() * window.innerWidth + 'px';
+      particle.style.top = Math.random() * window.innerHeight + 'px';
+      
+      document.body.appendChild(particle);
+      
+      const animation = particle.animate([
+        { transform: 'translateY(0px) scale(1)', opacity: 0.6 },
+        { transform: 'translateY(-100px) scale(0)', opacity: 0 }
+      ], {
+        duration: 3000 + Math.random() * 2000,
+        easing: 'ease-out'
+      });
+      
+      animation.onfinish = () => particle.remove();
+    }
+
+    // Create particles periodically (but not too many for performance)
+    setInterval(createParticle, 3000);
+
+    // Enhanced button hover effects
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-3px) scale(1.02)';
+      });
+      
+      btn.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) scale(1)';
+      });
+    });
+
+    // Add loading animation
+    window.addEventListener('load', () => {
+      document.body.style.opacity = '0';
+      document.body.style.transition = 'opacity 0.5s ease-in-out';
+      
+      setTimeout(() => {
+        document.body.style.opacity = '1';
+      }, 100);
+    });
+  </script>
+</body>
+</html>
