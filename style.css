@@ -1088,26 +1088,62 @@ footer.app-footer p {
   }
 
   /* Process flow desktop */
-   .process-flow {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: auto auto;
-    gap: 2rem;
+  .process-flow {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1rem;
+    gap: 2rem;
   }
   
-  .process-step:nth-child(1) { grid-column: 1; grid-row: 1; }
-  .process-step:nth-child(2) { grid-column: 2; grid-row: 1; }
-  .process-step:nth-child(3) { grid-column: 3; grid-row: 1; }
-  .process-step:nth-child(4) { grid-column: 1/3; grid-row: 2; justify-self: center; }
-  .process-step:nth-child(5) { grid-column: 2/4; grid-row: 2; justify-self: center; }
+  /* First row: 3 items */
+  .process-step:nth-child(1),
+  .process-step:nth-child(2), 
+  .process-step:nth-child(3) {
+    flex: 0 1 calc(33.333% - 2rem);
+    min-width: 200px;
+    max-width: 250px;
+  }
   
-  /* Hide connectors on desktop grid */
+  /* Force line break after 3rd item */
+  .process-step:nth-child(3)::after {
+    content: "";
+    flex-basis: 100%;
+    height: 0;
+  }
+  
+  /* Second row: 2 items centered */
+  .process-step:nth-child(4),
+  .process-step:nth-child(5) {
+    flex: 0 1 calc(40% - 2rem);
+    min-width: 200px;
+    max-width: 280px;
+  }
+  
+  /* Hide all connectors on desktop */
   .process-connector {
     display: none;
   }
+  
+  /* Ensure process steps maintain their styling */
+  .process-step {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem 1rem;
+    box-shadow: 0 4px 12px rgba(42, 157, 143, 0.1);
+    border: 2px solid var(--primary-color);
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .process-step:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(42, 157, 143, 0.2);
+  }
+}
 
   /* Footer desktop layout */
   .footer-flex {
@@ -1675,31 +1711,38 @@ button:disabled {
 
   .process-flow {
     display: flex;
-    transform: rotate(90deg);
-    font-size: 1.2rem;
-    color: var(--primary-color);
-    justify-content: center;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
   }
   
   .process-connector {
-    transform: rotate(90deg);
+    color: var(--primary-color);
     font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center;
+    transform: rotate(90deg);
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .process-step {
-    max-width: 100%;
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem 1rem;
+    box-shadow: 0 4px 12px rgba(42, 157, 143, 0.1);
+    border: 2px solid var(--primary-color);
+    text-align: center;
     width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
   }
-  
-  .step-content h4 {
-    font-size: 0.95rem;
-  }
-  
-  .step-content p {
-    font-size: 0.8rem;
-  }
-}
 
+  
 /* Mobile: center button, stack vertically */
  .generate-section > div {
     flex-direction: column;
