@@ -1088,39 +1088,32 @@ footer.app-footer p {
   }
 
   /* Process flow desktop */
+ @media (min-width: 768px) {
   .process-flow {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-start;
-    max-width: 1200px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 2rem 1rem;
-    gap: 2rem;
+    justify-items: center;
   }
   
-  /* First row: 3 items */
-  .process-step:nth-child(1),
-  .process-step:nth-child(2), 
-  .process-step:nth-child(3) {
-    flex: 0 1 calc(33.333% - 2rem);
-    min-width: 200px;
-    max-width: 250px;
-  }
+  /* First row: items 1, 2, 3 */
+  .process-step:nth-child(1) { grid-column: 1; grid-row: 1; }
+  .process-step:nth-child(2) { grid-column: 2; grid-row: 1; }
+  .process-step:nth-child(3) { grid-column: 3; grid-row: 1; }
   
-  /* Force line break after 3rd item */
-  .process-step:nth-child(3)::after {
-    content: "";
-    flex-basis: 100%;
-    height: 0;
+  /* Second row: items 4, 5 centered (spanning columns 1-2 and 2-3) */
+  .process-step:nth-child(4) { 
+    grid-column: 1; 
+    grid-row: 2; 
+    margin-left: 50%;
   }
-  
-  /* Second row: 2 items centered */
-  .process-step:nth-child(4),
-  .process-step:nth-child(5) {
-    flex: 0 1 calc(40% - 2rem);
-    min-width: 200px;
-    max-width: 280px;
+  .process-step:nth-child(5) { 
+    grid-column: 3; 
+    grid-row: 2; 
+    margin-right: 50%;
   }
   
   /* Hide all connectors on desktop */
@@ -1128,7 +1121,7 @@ footer.app-footer p {
     display: none;
   }
   
-  /* Ensure process steps maintain their styling */
+  /* Ensure all process steps have consistent sizing */
   .process-step {
     background: white;
     border-radius: 12px;
@@ -1136,6 +1129,8 @@ footer.app-footer p {
     box-shadow: 0 4px 12px rgba(42, 157, 143, 0.1);
     border: 2px solid var(--primary-color);
     text-align: center;
+    width: 200px;
+    max-width: 200px;
     transition: transform 0.3s, box-shadow 0.3s;
   }
   
