@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-RIVU • Revolutionary AI Education Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* ===== REVOLUTIONARY CSS RESET ===== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      color: #ffffff;
+      background: #000000;
+      overflow-x: hidden;
+      cursor: none; /* Custom cursor */
+    }
+
+    /* ===== CUSTOM CURSOR ===== */
+    .cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background: radial-gradient(circle, #00f5ff 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: difference;
+      transition: transform 0.1s ease;
+    }
+
+    .cursor-follower {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(0, 245, 255, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.3s ease;
+    }
+
+    /* ===== REVOLUTIONARY VARIABLES ===== */
+    :root {
+      --neon-cyan: #00f5ff;
+      --neon-magenta: #ff0080;
+      --neon-yellow: #ffff00;
+      --electric-blue: #0080ff;
+      --plasma-purple: #8000ff;
+      --laser-green: #00ff80;
+      --quantum-gradient: linear-gradient(45deg, #00f5ff, #ff0080, #ffff00, #00ff80);
+      --hologram-gradient: linear-gradient(135deg, 
+        rgba(0, 245, 255, 0.1) 0%, 
+        rgba(255, 0, 128, 0.1) 25%, 
+        rgba(255, 255, 0, 0.1) 50%, 
+        rgba(0, 255, 128, 0.1) 75%, 
+        rgba(128, 0, 255, 0.1) 100%);
+      --glass-ultra: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --shadow-neon: 0 0 50px rgba(0, 245, 255, 0.5);
+      --shadow-quantum: 0 0 100px rgba(255, 0, 128, 0.3);
+      --transition-quantum: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      --border-radius-futuristic: 24px;
+    }
+
+    /* ===== LEGENDARY ANIMATIONS ===== */
+    @keyframes quantum-float {
+      0%, 100% { 
+        transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+      }
+      25% { 
+        transform: translateY(-30px) rotateX(5deg) rotateY(5deg);
+      }
+      50% { 
+        transform: translateY(-60px) rotateX(0deg) rotateY(10deg);
+      }
+      75% { 
+        transform: translateY(-30px) rotateX(-5deg) rotateY(5deg);
+      }
+    }
+
+    @keyframes hologram-shift {
+      0% { 
+        background-position: 0% 0%;
+        filter: hue-rotate(0deg);
+      }
+      25% { 
+        background-position: 100% 100%;
+        filter: hue-rotate(90deg);
+      }
+      50% { 
+        background-position: 0% 100%;
+        filter: hue-rotate(180deg);
+      }
+      75% { 
+        background-position: 100% 0%;
+        filter: hue-rotate(270deg);
+      }
+      100% { 
+        background-position: 0% 0%;
+        filter: hue-rotate(360deg);
+      }
+    }
+
+    @keyframes neural-pulse {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(0, 245, 255, 0.4),
+                    0 0 40px rgba(0, 245, 255, 0.2),
+                    0 0 80px rgba(0, 245, 255, 0.1);
+      }
+      50% {
+        box-shadow: 0 0 40px rgba(255, 0, 128, 0.6),
+                    0 0 80px rgba(255, 0, 128, 0.4),
+                    0 0 120px rgba(255, 0, 128, 0.2);
+      }
+    }
+
+    @keyframes matrix-rain {
+      0% { transform: translateY(-100vh); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+
+    @keyframes text-glitch {
+      0%, 100% { 
+        transform: translateX(0);
+        filter: hue-rotate(0deg);
+      }
+      20% { 
+        transform: translateX(-2px);
+        filter: hue-rotate(90deg);
+      }
+      40% { 
+        transform: translateX(2px);
+        filter: hue-rotate(180deg);
+      }
+      60% { 
+        transform: translateX(-1px);
+        filter: hue-rotate(270deg);
+      }
+      80% { 
+        transform: translateX(1px);
+        filter: hue-rotate(360deg);
+      }
+    }
+
+    @keyframes data-stream {
+      0% { 
+        transform: scaleX(0);
+        opacity: 0;
+      }
+      50% { 
+        opacity: 1;
+      }
+      100% { 
+        transform: scaleX(1);
+        opacity: 0.7;
+      }
+    }
+
+    /* ===== QUANTUM UTILITIES ===== */
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .quantum-glass {
+      background: var(--glass-ultra);
+      backdrop-filter: blur(30px) saturate(180%);
+      -webkit-backdrop-filter: blur(30px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--border-radius-futuristic);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quantum-glass::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--hologram-gradient);
+      opacity: 0.1;
+      animation: hologram-shift 8s infinite;
+      pointer-events: none;
+    }
+
+    .hologram-text {
+      background: var(--quantum-gradient);
+      background-size: 300% 300%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: hologram-shift 4s ease-in-out infinite;
+      font-weight: 800;
+    }
+
+    .neural-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.5rem 3rem;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-decoration: none;
+      cursor: none;
+      transition: var(--transition-quantum);
+      position: relative;
+      overflow: hidden;
+      background: transparent;
+      color: white;
+    }
+
+    .neural-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--quantum-gradient);
+      background-size: 300% 300%;
+      animation: hologram-shift 3s infinite;
+      z-index: -1;
+    }
+
+    .neural-btn::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      right: 2px;
+      bottom: 2px;
+      background: #000000;
+      border-radius: inherit;
+      z-index: -1;
+    }
+
+    .neural-btn:hover {
+      transform: translateY(-5px) scale(1.05);
+      animation: neural-pulse 1s infinite;
+    }
+
+    .neural-btn:hover::after {
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    /* ===== QUANTUM NAVIGATION ===== */
+    .quantum-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 2rem 0;
+      transition: var(--transition-quantum);
+      background: transparent;
+    }
+
+    .quantum-nav.scrolled {
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(30px);
+      border-bottom: 1px solid rgba(0, 245, 255, 0.2);
+      padding: 1rem 0;
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .quantum-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      text-decoration: none;
+      position: relative;
+    }
+
+    .quantum-logo .logo-ai {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 20px var(--neon-cyan);
+    }
+
+    .quantum-logo .logo-rivu {
+      color: var(--neon-magenta);
+      text-shadow: 0 0 20px var(--neon-magenta);
+    }
+
+    .nav-quantum {
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+      list-style: none;
+    }
+
+    .nav-quantum a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition-quantum);
+      position: relative;
+    }
+
+    .nav-quantum a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--neon-cyan);
+      transition: var(--transition-quantum);
+    }
+
+    .nav-quantum a:hover {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 10px var(--neon-cyan);
+    }
+
+    .nav-quantum a:hover::after {
+      width: 100%;
+    }
+
+    /* ===== LEGENDARY HERO SECTION ===== */
+    .quantum-hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse at center, rgba(0, 245, 255, 0.1) 0%, transparent 70%);
+    }
+
+    .quantum-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="neural" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%2300f5ff" opacity="0.3"><animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite"/></circle><line x1="25" y1="25" x2="50" y2="0" stroke="%2300f5ff" stroke-width="0.5" opacity="0.2"/><line x1="25" y1="25" x2="50" y2="50" stroke="%23ff0080" stroke-width="0.5" opacity="0.2"/></pattern></defs><rect width="100%" height="100%" fill="url(%23neural)"/></svg>') center/cover;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .hero-quantum-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+      min-height: 80vh;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-quantum-text {
+      animation: quantum-float 8s ease-in-out infinite;
+    }
+
+    .hero-quantum-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 900;
+      line-height: 0.9;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .hero-quantum-title .title-ai {
+      display: block;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 30px var(--neon-cyan);
+      animation: text-glitch 3s infinite;
+    }
+
+    .hero-quantum-title .title-education {
+      display: block;
+      margin-top: 1rem;
+      background: linear-gradient(45deg, var(--neon-magenta), var(--neon-yellow));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: hologram-shift 4s infinite;
+    }
+
+    .hero-quantum-subtitle {
+      font-size: 1.5rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 3rem;
+      max-width: 600px;
+      font-weight: 300;
+      line-height: 1.4;
+    }
+
+    .hero-quantum-cta {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .hero-quantum-stats {
+      display: flex;
+      gap: 3rem;
+    }
+
+    .quantum-stat {
+      text-align: left;
+    }
+
+    .quantum-stat-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      display: block;
+      text-shadow: 0 0 20px var(--neon-cyan);
+    }
+
+    .quantum-stat-label {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ===== QUANTUM VISUALIZATION ===== */
+    .hero-quantum-visual {
+      position: relative;
+      height: 600px;
+      animation: quantum-float 10s ease-in-out infinite reverse;
+    }
+
+    .ai-brain-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ai-brain {
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, 
+        rgba(0, 245, 255, 0.1) 0%,
+        rgba(255, 0, 128, 0.1) 30%,
+        rgba(255, 255, 0, 0.1) 60%,
+        transparent 100%);
+      border: 2px solid rgba(0, 245, 255, 0.3);
+      position: relative;
+      animation: neural-pulse 3s infinite;
+    }
+
+    .neural-node {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: var(--neon-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 20px var(--neon-cyan);
+      animation: neural-pulse 2s infinite;
+    }
+
+    .neural-node:nth-child(1) { top: 20%; left: 30%; animation-delay: 0s; }
+    .neural-node:nth-child(2) { top: 40%; right: 20%; animation-delay: 0.5s; }
+    .neural-node:nth-child(3) { bottom: 30%; left: 25%; animation-delay: 1s; }
+    .neural-node:nth-child(4) { bottom: 20%; right: 35%; animation-delay: 1.5s; }
+    .neural-node:nth-child(5) { top: 50%; left: 50%; animation-delay: 2s; background: var(--neon-magenta); box-shadow: 0 0 20px var(--neon-magenta); }
+
+    .data-stream {
+      position: absolute;
+      width: 2px;
+      height: 100px;
+      background: linear-gradient(to bottom, var(--neon-cyan), transparent);
+      animation: data-stream 2s infinite;
+    }
+
+    .data-stream:nth-child(6) { top: 10%; left: 10%; animation-delay: 0s; }
+    .data-stream:nth-child(7) { top: 20%; right: 15%; animation-delay: 0.3s; }
+    .data-stream:nth-child(8) { bottom: 10%; left: 20%; animation-delay: 0.6s; }
+    .data-stream:nth-child(9) { bottom: 15%; right: 10%; animation-delay: 0.9s; }
+
+    .floating-quantum-card {
+      position: absolute;
+      background: var(--glass-ultra);
+      backdrop-filter: blur(30px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--border-radius-futuristic);
+      padding: 2rem;
+      box-shadow: var(--shadow-neon);
+      animation: quantum-float 6s ease-in-out infinite;
+    }
+
+    .floating-quantum-card:nth-child(10) {
+      top: 0;
+      left: -50px;
+      animation-delay: 0s;
+    }
+
+    .floating-quantum-card:nth-child(11) {
+      top: 50%;
+      right: -80px;
+      animation-delay: -2s;
+    }
+
+    .floating-quantum-card:nth-child(12) {
+      bottom: 0;
+      left: 50px;
+      animation-delay: -4s;
+    }
+
+    .quantum-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--quantum-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      animation: hologram-shift 3s infinite;
+    }
+
+    .quantum-card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+
+    .quantum-card-desc {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.4;
+    }
+
+    /* ===== LEGENDARY FEATURES SECTION ===== */
+    .quantum-features {
+      padding: 10rem 0;
+      position: relative;
+      background: linear-gradient(180deg, transparent 0%, rgba(0, 245, 255, 0.05) 50%, transparent 100%);
+    }
+
+    .quantum-section-header {
+      text-align: center;
+      margin-bottom: 6rem;
+    }
+
+    .quantum-section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .quantum-section-subtitle {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.7);
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    .quantum-features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 3rem;
+      margin-top: 6rem;
+    }
+
+    .quantum-feature-card {
+      background: var(--glass-ultra);
+      backdrop-filter: blur(30px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--border-radius-futuristic);
+      padding: 3rem;
+      transition: var(--transition-quantum);
+      position: relative;
+      overflow: hidden;
+      cursor: none;
+    }
+
+    .quantum-feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--quantum-gradient);
+      background-size: 300% 300%;
+      animation: hologram-shift 4s infinite;
+      transform: scaleX(0);
+      transition: var(--transition-quantum);
+    }
+
+    .quantum-feature-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .quantum-feature-card:hover {
+      transform: translateY(-20px) rotateX(5deg);
+      box-shadow: var(--shadow-quantum);
+    }
+
+    .quantum-feature-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--quantum-gradient);
+      background-size: 300% 300%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+      margin-bottom: 2rem;
+      animation: hologram-shift 6s infinite;
+      box-shadow: var(--shadow-neon);
+    }
+
+    .quantum-feature-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 1rem;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .quantum-feature-desc {
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.7;
+      font-size: 1.1rem;
+    }
+
+    /* ===== REVOLUTIONARY CTA SECTION ===== */
+    .quantum-cta {
+      padding: 10rem 0;
+      text-align: center;
+      background: radial-gradient(ellipse at center, rgba(255, 0, 128, 0.1) 0%, transparent 70%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quantum-cta::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="quantum" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:%23ff0080;stop-opacity:0.2" /><stop offset="100%" style="stop-color:%23ff0080;stop-opacity:0" /></radialGradient></defs><circle cx="200" cy="200" r="50" fill="url(%23quantum)"><animate attributeName="cy" values="200;800;200" dur="8s" repeatCount="indefinite"/></circle><circle cx="800" cy="300" r="30" fill="url(%23quantum)"><animate attributeName="cx" values="800;200;800" dur="10s" repeatCount="indefinite"/></circle></svg>') center/cover;
+      pointer-events: none;
+    }
+
+    .quantum-cta-content {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .quantum-cta-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 900;
+      color: white;
+      margin-bottom: 2rem;
+      line-height: 1.1;
+    }
+
+    .quantum-cta-subtitle {
+      font-size: 1.4rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 4rem;
+      line-height: 1.5;
+    }
+
+    .quantum-cta-buttons {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ===== RESPONSIVE QUANTUM DESIGN ===== */
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 1rem;
+      }
+
+      .hero-quantum-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 3rem;
+      }
+
+      .hero-quantum-stats {
+        justify-content: center;
+      }
+
+      .hero-quantum-cta {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .nav-quantum {
+        display: none;
+      }
+
+      .quantum-features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quantum-cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .hero-quantum-visual {
+        height: 400px;
+      }
+
+      .ai-brain {
+        width: 300px;
+        height: 300px;
+      }
+
+      .floating-quantum-card {
+        display: none;
+      }
+    }
+
+    /* ===== QUANTUM SCROLL ANIMATIONS ===== */
+    .quantum-reveal {
+      opacity: 0;
+      transform: translateY(50px) rotateX(-10deg);
+      transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .quantum-reveal.revealed {
+      opacity: 1;
+      transform: translateY(0) rotateX(0deg);
+    }
+
+    /* ===== MATRIX BACKGROUND EFFECT ===== */
+    .matrix-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .matrix-column {
+      position: absolute;
+      top: -100vh;
+      width: 2px;
+      background: linear-gradient(to bottom, 
+        transparent,
+        var(--neon-cyan),
+        transparent
+      );
+      animation: matrix-rain 8s linear infinite;
+      opacity: 0.3;
+    }
+  </style>
+</head>
+<body>
+  <!-- Custom Cursor -->
+  <div class="cursor"></div>
+  <div class="cursor-follower"></div>
+
+  <!-- Matrix Background -->
+  <div class="matrix-bg" id="matrixBg"></div>
+
+  <!-- Quantum Navigation -->
+  <nav class="quantum-nav" id="quantumNav">
+    <div class="container">
+      <div class="nav-container">
+        <a href="#" class="quantum-logo">
+          <span class="logo-ai">AI</span><span class="logo-rivu">-RIVU</span>
+        </a>
+        <ul class="nav-quantum">
+          <li><a href="#features">Neural Features</a></li>
+          <li><a href="#demo">Live Demo</a></li>
+          <li><a href="#revolution">Revolution</a></li>
+          <li><a href="#" class="neural-btn">
+            <i class="fas fa-rocket"></i>
+            Enter the Future
+          </a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Legendary Hero Section -->
+  <section class="quantum-hero" id="hero">
+    <div class="container">
+      <div class="hero-quantum-content">
+        <div class="hero-quantum-text">
+          <h1 class="hero-quantum-title">
+            <span class="title-ai">REVOLUTIONARY</span>
+            <span class="title-education">AI EDUCATION</span>
+          </h1>
+          <p class="hero-quantum-subtitle">
+            Experience the future of education today. Our quantum-powered AI doesn't just generate questions—it revolutionizes how teachers create, students learn, and knowledge evolves.
+          </p>
+          <div class="hero-quantum-cta">
+            <a href="#" class="neural-btn">
+              <i class="fas fa-brain"></i>
+              Activate AI Revolution
+            </a>
+            <a href="#" class="neural-btn">
+              <i class="fas fa-play"></i>
+              Witness the Future
+            </a>
+          </div>
+          <div class="hero-quantum-stats">
+            <div class="quantum-stat">
+              <span class="quantum-stat-number">∞</span>
+              <span class="quantum-stat-label">Possibilities</span>
+            </div>
+            <div class="quantum-stat">
+              <span class="quantum-stat-number">0.3s</span>
+              <span class="quantum-stat-label">Generation</span>
+            </div>
+            <div class="quantum-stat">
+              <span class="quantum-stat-number">100%</span>
+              <span class="quantum-stat-label">Mind Blown</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-quantum-visual">
+          <div class="ai-brain-container">
+            <div class="ai-brain">
+              <div class="neural-node"></div>
+              <div class="neural-node"></div>
+              <div class="neural-node"></div>
+              <div class="neural-node"></div>
+              <div class="neural-node"></div>
+              <div class="data-stream"></div>
+              <div class="data-stream"></div>
+              <div class="data-stream"></div>
+              <div class="data-stream"></div>
+            </div>
+            <div class="floating-quantum-card">
+              <div class="quantum-card-icon">
+                <i class="fas fa-brain"></i>
+              </div>
+              <div class="quantum-card-title">Neural Processing</div>
+              <div class="quantum-card-desc">Advanced AI algorithms processing educational patterns</div>
+            </div>
+            <div class="floating-quantum-card">
+              <div class="quantum-card-icon">
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+              <div class="quantum-card-title">Quantum Learning</div>
+              <div class="quantum-card-desc">Revolutionizing education through quantum-inspired pedagogy</div>
+            </div>
+            <div class="floating-quantum-card">
+              <div class="quantum-card-icon">
+                <i class="fas fa-rocket"></i>
+              </div>
+              <div class="quantum-card-title">Future Ready</div>
+              <div class="quantum-card-desc">Preparing students for tomorrow's challenges today</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quantum Features -->
+  <section class="quantum-features quantum-reveal" id="features">
+    <div class="container">
+      <div class="quantum-section-header">
+        <h2 class="quantum-section-title">
+          <span class="hologram-text">QUANTUM CAPABILITIES</span>
+        </h2>
+        <p class="quantum-section-subtitle">
+          Experience education technology that transcends traditional boundaries. Our AI doesn't just assist—it transforms the very fabric of learning.
+        </p>
+      </div>
+      <div class="quantum-features-grid">
+        <div class="quantum-feature-card">
+          <div class="quantum-feature-icon">
+            <i class="fas fa-atom"></i>
+          </div>
+          <h3 class="quantum-feature-title">Quantum AI Processing</h3>
+          <p class="quantum-feature-desc">
+            Harnesses quantum-inspired algorithms to understand educational patterns at a molecular level, creating questions that adapt to individual learning quantum states.
+          </p>
+        </div>
+        <div class="quantum-feature-card">
+          <div class="quantum-feature-icon">
+            <i class="fas fa-dna"></i>
+          </div>
+          <h3 class="quantum-feature-title">Neural Curriculum Mapping</h3>
+          <p class="quantum-feature-desc">
+            Deep neural networks map every concept across CBSE, state boards, and international curricula, ensuring perfect alignment with learning objectives.
+          </p>
+        </div>
+        <div class="quantum-feature-card">
+          <div class="quantum-feature-icon">
+            <i class="fas fa-rocket"></i>
+          </div>
+          <h3 class="quantum-feature-title">Instant Materialization</h3>
+          <p class="quantum-feature-desc">
+            Question papers materialize in 0.3 seconds through our revolutionary quantum processing engine—faster than human thought.
+          </p>
+        </div>
+        <div class="quantum-feature-card">
+          <div class="quantum-feature-icon">
+            <i class="fas fa-eye"></i>
+          </div>
+          <h3 class="quantum-feature-title">Predictive Intelligence</h3>
+          <p class="quantum-feature-desc">
+            AI predicts student performance patterns and adjusts question complexity in real-time, creating the perfect challenge for every learner.
+          </p>
+        </div>
+        <div class="quantum-feature-card">
+          <div class="quantum-feature-icon">
+            <i class="fas fa-infinity"></i>
+          </div>
+          <h3 class="quantum-feature-title">Infinite Customization</h3>
+          <p class="quantum-feature-desc">
+            Unlimited permutations of questions, difficulty levels, and assessment types—no two papers are ever the same across the multiverse.
+          </p>
+        </div>
+        <div class="quantum-feature-card">
+          <div class="quantum-feature-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3 class="quantum-feature-title">Quantum Security</h3>
+          <p class="quantum-feature-desc">
+            Military-grade encryption and quantum security protocols ensure your educational data remains protected in all dimensions.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Revolutionary CTA -->
+  <section class="quantum-cta quantum-reveal" id="revolution">
+    <div class="container">
+      <div class="quantum-cta-content">
+        <h2 class="quantum-cta-title">
+          JOIN THE <span class="hologram-text">EDUCATION REVOLUTION</span>
+        </h2>
+        <p class="quantum-cta-subtitle">
+          The future of education isn't coming—it's here. Be among the first educators to harness the power of quantum AI and transform your classroom into a portal to tomorrow.
+        </p>
+        <div class="quantum-cta-buttons">
+          <a href="#" class="neural-btn">
+            <i class="fas fa-bolt"></i>
+            Activate Quantum Mode
+          </a>
+          <a href="#" class="neural-btn">
+            <i class="fas fa-calendar"></i>
+            Schedule Neural Demo
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quantum JavaScript -->
+  <script>
+    // Custom Cursor Magic
+    const cursor = document.querySelector('.cursor');
+    const cursorFollower = document.querySelector('.cursor-follower');
+
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      
+      setTimeout(() => {
+        cursorFollower.style.left = (e.clientX - 20) + 'px';
+        cursorFollower.style.top = (e.clientY - 20) + 'px';
+      }, 100);
+    });
+
+    // Quantum Navigation Scroll Effect
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('quantumNav');
+      if (window.scrollY > 100) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+
+    // Matrix Background Effect
+    function createMatrixColumn() {
+      const matrix = document.getElementById('matrixBg');
+      const column = document.createElement('div');
+      column.className = 'matrix-column';
+      column.style.left = Math.random() * window.innerWidth + 'px';
+      column.style.animationDuration = (Math.random() * 5 + 3) + 's';
+      column.style.animationDelay = Math.random() * 2 + 's';
+      matrix.appendChild(column);
+      
+      setTimeout(() => {
+        column.remove();
+      }, 8000);
+    }
+
+    // Create matrix columns periodically
+    setInterval(createMatrixColumn, 300);
+
+    // Quantum Reveal Animations
+    const quantumObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.quantum-reveal').forEach(el => {
+      quantumObserver.observe(el);
+    });
+
+    // Neural Button Hover Effects
+    document.querySelectorAll('.neural-btn').forEach(btn => {
+      btn.addEventListener('mouseenter', () => {
+        btn.style.transform = 'translateY(-5px) scale(1.05) rotateX(5deg)';
+      });
+      
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = 'translateY(0) scale(1) rotateX(0deg)';
+      });
+    });
+
+    // Quantum Feature Cards Interactive Effects
+    document.querySelectorAll('.quantum-feature-card').forEach(card => {
+      card.addEventListener('mouseenter', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        card.style.transformOrigin = `${x}px ${y}px`;
+      });
+    });
+
+    // Revolutionary Loading Animation
+    window.addEventListener('load', () => {
+      document.body.style.opacity = '0';
+      document.body.style.transition = 'opacity 1s ease-in-out';
+      
+      setTimeout(() => {
+        document.body.style.opacity = '1';
+      }, 100);
+    });
+
+    // Quantum Particles System
+    function createQuantumParticle() {
+      const particle = document.createElement('div');
+      particle.style.cssText = `
+        position: fixed;
+        width: 3px;
+        height: 3px;
+        background: radial-gradient(circle, #00f5ff 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0.8;
+      `;
+      
+      particle.style.left = Math.random() * window.innerWidth + 'px';
+      particle.style.top = Math.random() * window.innerHeight + 'px';
+      
+      document.body.appendChild(particle);
+      
+      const animation = particle.animate([
+        { 
+          transform: 'translate(0, 0) scale(1)', 
+          opacity: 0.8 
+        },
+        { 
+          transform: `translate(${(Math.random() - 0.5) * 200}px, ${(Math.random() - 0.5) * 200}px) scale(0)`, 
+          opacity: 0 
+        }
+      ], {
+        duration: 4000 + Math.random() * 2000,
+        easing: 'ease-out'
+      });
+      
+      animation.onfinish = () => particle.remove();
+    }
+
+    // Create quantum particles periodically
+    setInterval(createQuantumParticle, 500);
+
+    // Smooth Quantum Scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
