@@ -584,10 +584,6 @@ const tbody = document.getElementById('questionRowsBody');
  
  questionRowCount++;
  const rowId = `qrow-${Date.now()}`;
- const tbody = document.getElementById('questionRowsBody');
- 
- if (!tbody) return;
- 
  const row = document.createElement('tr');
  row.id = rowId;
  
@@ -627,6 +623,10 @@ const tbody = document.getElementById('questionRowsBody');
  tbody.appendChild(row);
  
  // Add event listeners with validation
+const numQuestionsInput = row.querySelector('.numQuestions');
+const marksPerQuestionInput = row.querySelector('.marksPerQuestion');
+const typeSelect = row.querySelector('.question-type');
+
 [numQuestionsInput, marksPerQuestionInput, typeSelect].forEach(input => {
    if (input) {
      // FIXED: Multiple events for mobile compatibility
