@@ -66,15 +66,28 @@ function validateForm() {
   updateChecklistItem('check-curriculum', curriculum, ' Select Curriculum Board');
   updateChecklistItem('check-class', selectedClass, 'Select Class');
   updateChecklistItem('check-subject', selectedSubject, 'Select Subject');
-  updateChecklistItem('check-assessment', assessment, ' Select Assessment Type');
+ const assessmentComplete = assessment && (assessment === 'Full' || (assessment === 'Specific Topic' && specificTopic.trim()));
+
+   // Dynamic checklist text based on selection
+   let checklistText = 'Select Assessment Type';
+   if (assessment === 'Specific Topic') {
+     checklistText = specificTopic.trim() ? 'Assessment & Topic Complete' : 'Enter Specific Topic';
+   } else if (assessment === 'Full') {
+     checklistText = 'Assessment Complete';
+   }
+   
+   updateChecklistItem('check-assessment', assessmentComplete, checklistText);
+   
+   if (!curriculum) errors.push('Please select a Curriculum Board');
+   if (!selectedClass) errors.push('Please select a Class/Grade');
+   if (!selectedSubject) errors.push('Please select a Subject');
+   if (!assessment) errors.push('Please select Assessment type (Full or Specific Topic)');
+   if (assessment === 'Specific Topic' && !specificTopic.trim()) {
+     errors.push('Please enter the specific topic you want to focus on');
+   }
+
   
-  if (!curriculum) errors.push('Please select a Curriculum Board');
-  if (!selectedClass) errors.push('Please select a Class/Grade');
-  if (!selectedSubject) errors.push('Please select a Subject');
-  if (!assessment) errors.push('Please select Assessment type (Full or Specific Topic)');
-  if (assessment === 'Specific Topic' && !specificTopic.trim()) {
-    errors.push('Please enter the specific topic you want to focus on');
-  }
+ 
  
  // Check difficulty percentages
  const easy = parseInt(document.getElementById('easy')?.value) || 0;
