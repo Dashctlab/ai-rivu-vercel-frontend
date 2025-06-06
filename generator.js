@@ -585,12 +585,14 @@ function addQuestionRow() {
    <td>
      <input type="text" class="topic" placeholder="Optional topic">
    </td>
-   <td>
-     <input type="number" class="numQuestions" min="0" max="15" value="${defaultQuestions}" required>
-   </td>
-   <td>
-     <input type="number" class="marksPerQuestion" min="0" value="${defaultMarks}" required>
-   </td>
+  <td>
+  <input type="number" class="numQuestions" min="0" max="15" value="${defaultQuestions}" 
+         required inputmode="numeric" pattern="[0-9]*">
+</td>
+<td>
+  <input type="number" class="marksPerQuestion" min="0" value="${defaultMarks}" 
+         required inputmode="numeric" pattern="[0-9]*">
+</td>
    <td class="totalMarks" style="text-align: center;">0</td>
    <td>
      ${questionRowCount === 1 ? '' : `
@@ -604,19 +606,29 @@ function addQuestionRow() {
  tbody.appendChild(row);
  
  // Add event listeners with validation
- const numQuestionsInput = row.querySelector('.numQuestions');
- const marksPerQuestionInput = row.querySelector('.marksPerQuestion');
- const typeSelect = row.querySelector('.question-type');
- 
- [numQuestionsInput, marksPerQuestionInput, typeSelect].forEach(input => {
+[numQuestionsInput, marksPerQuestionInput, typeSelect].forEach(input => {
    if (input) {
-     input.addEventListener('input', () => {
-       if (numQuestionsInput && parseInt(numQuestionsInput.value) > 15) {
-         numQuestionsInput.value = 15;
-         showToast('Maximum 15 questions per section allowed.', 3000, true);
-       }
-       calculateTotals();
-       debouncedValidateForm(); // Use debounced version
+     // FIXED: Multiple events for mobile compatibility
+     ['input', 'change', 'blur'].forEach(eventType => {
+       input.addEventListener(eventType, () => {
+         // FIXED: Mobile number input sanitization
+         if (input.type === 'number' && input.value) {
+           // Remove any non-digit characters that mobile keyboards might add
+           const sanitized = input.value.replace(/[^0-9]/g, '');
+           if (input.value !== sanitized) {
+             input.value = sanitized;
+           }
+         }
+         
+         // FIXED: Enforce limits after sanitization
+         if (numQuestionsInput && parseInt(numQuestionsInput.value) > 15) {
+           numQuestionsInput.value = 15;
+           showToast('Maximum 15 questions per section allowed.', 3000, true);
+         }
+         
+         calculateTotals();
+         debouncedValidateForm();
+       });
      });
    }
  });
@@ -716,18 +728,24 @@ async function submitQualityFeedback(feedback) {
  }
 }
 
+//  calculateTotals function 
 function calculateTotals() {
  let overallTotal = 0;
  let totalQuestions = 0;
  
  document.querySelectorAll('#questionRowsBody tr').forEach(row => {
-   const num = parseInt(row.querySelector('.numQuestions')?.value) || 0;
-   const marks = parseInt(row.querySelector('.marksPerQuestion')?.value) || 0;
+   // FIXED: Proper null checking and NaN handling
+   const numInput = row.querySelector('.numQuestions');
+   const marksInput = row.querySelector('.marksPerQuestion');
+   
+   const num = (numInput && numInput.value !== '') ? parseInt(numInput.value) || 0 : 0;
+   const marks = (marksInput && marksInput.value !== '') ? parseInt(marksInput.value) || 0 : 0;
+   
    const total = num * marks;
    
    const totalMarksCell = row.querySelector('.totalMarks');
    if (totalMarksCell) {
-     totalMarksCell.textContent = total;
+     totalMarksCell.textContent = total; // Clean display, no NaN
    }
    
    overallTotal += total;
@@ -1357,15 +1375,28 @@ function setupEventListeners() {
   const mediumInput = document.getElementById('medium');
   const hardInput = document.getElementById('hard');
 
-  if (easyInput && mediumInput && hardInput) {
+ if (easyInput && mediumInput && hardInput) {
     [easyInput, mediumInput, hardInput].forEach(input => {
-      input.addEventListener('input', () => {
-        updateDifficultySum();
-        debouncedValidateForm();
+      ['input', 'change', 'blur'].forEach(eventType => {
+        input.addEventListener(eventType, () => {
+          // FIXED: Mobile number sanitization for difficulty inputs
+          if (input.value) {
+            const sanitized = input.value.replace(/[^0-9]/g, '');
+            const num = parseInt(sanitized) || 0;
+            if (num > 100) {
+              input.value = 100;
+            } else {
+              input.value = sanitized;
+            }
+          }
+          updateDifficultySum();
+          debouncedValidateForm();
+        });
       });
     });
   }
 
+ 
   // Form submission
   const questionForm = document.getElementById('questionForm');
   if (questionForm) {
