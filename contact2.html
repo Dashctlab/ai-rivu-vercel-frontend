@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get AI-RIVU for Your School • Contact Us</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* High-Converting Contact Page Styles */
+    
+    /* Hero Section */
+    .contact-hero {
+      background: linear-gradient(135deg, #2A9D8F 0%, #E9C46A 100%);
+      color: white;
+      padding: 4rem 0 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .contact-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="2" fill="white" opacity="0.1"><animate attributeName="opacity" values="0.1;0.3;0.1" dur="4s" repeatCount="indefinite"/></circle></pattern></defs><rect width="100%" height="100%" fill="url(%23dots)"/></svg>') center/cover;
+      pointer-events: none;
+    }
+    
+    .contact-hero .container {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .contact-hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+    
+    .contact-hero p {
+      font-size: 1.3rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.5;
+    }
+    
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .hero-stat {
+      text-align: center;
+    }
+    
+    .hero-stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      display: block;
+      color: #E9C46A;
+    }
+    
+    .hero-stat-label {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+    
+    /* Main Content Grid */
+    .contact-main {
+      padding: 4rem 0;
+      background: #FAFBFC;
+    }
+    
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    
+    /* Left Column - Value Props */
+    .contact-info {
+      background: white;
+      padding: 3rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      border: 1px solid #E5E7EB;
+    }
+    
+    .contact-info h2 {
+      font-size: 2.2rem;
+      color: #2A9D8F;
+      margin-bottom: 1rem;
+      font-weight: 800;
+    }
+    
+    .contact-info .subtitle {
+      font-size: 1.1rem;
+      color: #6B7280;
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+    }
+    
+    .value-prop {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: #F9FAFB;
+      border-radius: 12px;
+      border-left: 4px solid #2A9D8F;
+    }
+    
+    .value-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #2A9D8F, #E9C46A);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      margin-right: 1.5rem;
+      flex-shrink: 0;
+    }
+    
+    .value-content h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1F2937;
+      margin-bottom: 0.5rem;
+    }
+    
+    .value-content p {
+      color: #6B7280;
+      line-height: 1.5;
+      margin: 0;
+    }
+    
+    /* Contact Methods */
+    .contact-methods {
+      margin-top: 2rem;
+      padding: 2rem;
+      background: linear-gradient(135deg, #2A9D8F, #E9C46A);
+      border-radius: 16px;
+      color: white;
+    }
+    
+    .contact-methods h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .contact-method {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .contact-method i {
+      font-size: 1.2rem;
+      margin-right: 1rem;
+      width: 20px;
+    }
+    
+    .contact-method strong {
+      margin-right: 0.5rem;
+    }
+    
+    /* Right Column - Lead Capture Form */
+    .contact-form {
+      background: white;
+      padding: 3rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      border: 1px solid #E5E7EB;
+      position: relative;
+    }
+    
+    .form-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .form-header h2 {
+      font-size: 2rem;
+      color: #1F2937;
+      margin-bottom: 0.5rem;
+      font-weight: 800;
+    }
+    
+    .form-header p {
+      color: #6B7280;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    
+    .form-header .highlight {
+      color: #2A9D8F;
+      font-weight: 600;
+    }
+    
+    /* Enhanced Form Styling */
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #374151;
+      font-size: 0.95rem;
+    }
+    
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      border: 2px solid #E5E7EB;
+      border-radius: 12px;
+      background: #F9FAFB;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: #2A9D8F;
+      background: white;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.1);
+      transform: translateY(-1px);
+    }
+    
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    /* School Type Selection */
+    .school-type-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    
+    .school-type-option {
+      position: relative;
+    }
+    
+    .school-type-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      cursor: pointer;
+    }
+    
+    .school-type-label {
+      display: block;
+      padding: 1rem;
+      border: 2px solid #E5E7EB;
+      border-radius: 12px;
+      background: #F9FAFB;
+      text-align: center;
+      font-weight: 600;
+      color: #6B7280;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .school-type-option input[type="radio"]:checked + .school-type-label {
+      border-color: #2A9D8F;
+      background: rgba(42, 157, 143, 0.1);
+      color: #2A9D8F;
+      transform: translateY(-2px);
+    }
+    
+    /* Validation States */
+    .form-group.error input,
+    .form-group.error textarea,
+    .form-group.error select {
+      border-color: #EF4444;
+      background: #FEF2F2;
+    }
+    
+    .form-group.success input,
+    .form-group.success textarea,
+    .form-group.success select {
+      border-color: #10B981;
+      background: #F0FDF4;
+    }
+    
+    .error-message {
+      color: #EF4444;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: none;
+      animation: slideDown 0.3s ease;
+    }
+    
+    .error-message.show {
+      display: block;
+    }
+    
+    .validation-icon {
+      position: absolute;
+      right: 1rem;
+      top: 2.75rem;
+      font-size: 1.1rem;
+      display: none;
+    }
+    
+    .validation-icon.success {
+      color: #10B981;
+      display: block;
+    }
+    
+    .validation-icon.error {
+      color: #EF4444;
+      display: block;
+    }
+    
+    @keyframes slideDown {
+      from { 
+        opacity: 0; 
+        transform: translateY(-10px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+    
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #2A9D8F, #E9C46A);
+      color: white;
+      padding: 1.25rem 2rem;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+    
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .submit-btn:hover:not(:disabled)::before {
+      left: 100%;
+    }
+    
+    .submit-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(42, 157, 143, 0.3);
+    }
+    
+    .submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .submit-btn.loading {
+      color: transparent;
+    }
+    
+    .submit-btn.loading::after {
+      content: '';
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      top: 50%;
+      left: 50%;
+      margin-left: -12px;
+      margin-top: -12px;
+      border: 3px solid white;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Status Messages */
+    .form-status {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      text-align: center;
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    .form-status.success {
+      background: #D1FAE5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+    }
+    
+    .form-status.error {
+      background: #FEE2E2;
+      color: #991B1B;
+      border: 1px solid #FECACA;
+    }
+    
+    .form-status.loading {
+      background: #EFF6FF;
+      color: #1E40AF;
+      border: 1px solid #DBEAFE;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Trust Indicators */
+    .trust-indicators {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #F9FAFB;
+      border-radius: 12px;
+      border: 1px solid #E5E7EB;
+    }
+    
+    .trust-indicators h4 {
+      color: #374151;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .trust-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      text-align: center;
+    }
+    
+    .trust-stat {
+      padding: 0.75rem;
+    }
+    
+    .trust-stat-number {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #2A9D8F;
+      display: block;
+    }
+    
+    .trust-stat-label {
+      font-size: 0.8rem;
+      color: #6B7280;
+      margin-top: 0.25rem;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 0 1rem;
+      }
+      
+      .contact-form {
+        order: -1;
+        padding: 2rem;
+      }
+      
+      .contact-info {
+        padding: 2rem;
+      }
+      
+      .hero-stats {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      
+      .contact-hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .school-type-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .trust-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .contact-hero {
+        padding: 3rem 0 2rem;
+      }
+      
+      .contact-main {
+        padding: 2rem 0;
+      }
+      
+      .contact-form,
+      .contact-info {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header Container -->
+  <div id="header-container"></div>
+  
+  <!-- HERO SECTION -->
+  <section class="contact-hero">
+    <div class="container">
+      <h1>Get AI-RIVU for Your School</h1>
+      <p>Join 500+ schools already transforming education with AI. Fill the form below and our education specialists will contact you within 24 hours.</p>
+      
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-number">10,000+</span>
+          <span class="hero-stat-label">Teachers Using AI-RIVU</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-number">30 Sec</span>
+          <span class="hero-stat-label">Average Paper Generation</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-number">500+</span>
+          <span class="hero-stat-label">Schools Transformed</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <section class="contact-main">
+    <div class="contact-grid">
+      
+      <!-- LEFT COLUMN - VALUE PROPS -->
+      <div class="contact-info">
+        <h2>Why Schools Choose AI-RIVU</h2>
+        <p class="subtitle">Transform your entire school's question paper creation process with AI that understands Indian education.</p>
+        
+        <div class="value-prop">
+          <div class="value-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="value-content">
+            <h3>Save 10+ Hours Per Teacher Weekly</h3>
+            <p>Teachers spend 75% less time on paper creation, focusing more on actual teaching and student interaction.</p>
+          </div>
+        </div>
+        
+        <div class="value-prop">
+          <div class="value-icon">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <div class="value-content">
+            <h3>Perfect Curriculum Alignment</h3>
+            <p>100% aligned with CBSE, Karnataka, and Tamil Nadu boards. Questions that match your exact syllabus requirements.</p>
+          </div>
+        </div>
+        
+        <div class="value-prop">
+          <div class="value-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="value-content">
+            <h3>School-Wide Implementation</h3>
+            <p>Deploy across all subjects and classes. Consistent quality across your entire institution.</p>
+          </div>
+        </div>
+        
+        <div class="value-prop">
+          <div class="value-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div class="value-content">
+            <h3>Enterprise-Grade Security</h3>
+            <p>Your school's data stays secure with bank-level encryption and compliance with Indian data protection laws.</p>
+          </div>
+        </div>
+        
+        <div class="contact-methods">
+          <h3>Need Immediate Help?</h3>
+          <div class="contact-method">
+            <i class="fas fa-phone"></i>
+            <div>
+              <strong>Call/WhatsApp:</strong> +91-8828015315
+            </div>
+          </div>
+          <div class="contact-method">
+            <i class="fas fa-envelope"></i>
+            <div>
+              <strong>Email:</strong> ashwinct@gmail.com
+            </div>
+          </div>
+          <div class="contact-method">
+            <i class="fas fa-clock"></i>
+            <div>
+              <strong>Response Time:</strong> Within 24 hours
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- RIGHT COLUMN - LEAD CAPTURE FORM -->
+      <div class="contact-form">
+        <div class="form-header">
+          <h2>Get AI-RIVU Demo</h2>
+          <p>Fill out this form and our education specialist will <span class="highlight">contact you within 24 hours</span> to schedule a personalized demo for your school.</p>
+        </div>
+        
+        <form id="contactForm" onsubmit="return submitToGoogleSheets(event)">
+          <div class="form-group">
+            <label for="name">Your Full Name*</label>
+            <input type="text" id="name" name="name" required placeholder="Dr. Priya Sharma">
+            <div class="validation-icon"></div>
+            <div class="error-message"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="designation">Your Role*</label>
+            <select id="designation" name="designation" required>
+              <option value="">Select Your Role</option>
+              <option value="Principal">Principal</option>
+              <option value="Vice Principal">Vice Principal</option>
+              <option value="Academic Director">Academic Director</option>
+              <option value="Head of Department">Head of Department</option>
+              <option value="Teacher">Teacher</option>
+              <option value="IT Administrator">IT Administrator</option>
+              <option value="School Owner">School Owner/Trustee</option>
+              <option value="Other">Other</option>
+            </select>
+            <div class="validation-icon"></div>
+            <div class="error-message"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="school">School Name*</label>
+            <input type="text" id="school" name="school" required placeholder="Delhi Public School, Bangalore">
+            <div class="validation-icon"></div>
+            <div class="error-message"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="phone">Contact Number*</label>
+            <input type="tel" id="phone" name="phone" required placeholder="+91-98765-43210">
+            <div class="validation-icon"></div>
+            <div class="error-message"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email Address*</label>
+            <input type="email" id="email" name="email" required placeholder="principal@dpsbangalore.edu.in">
+            <div class="validation-icon"></div>
+            <div class="error-message"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="city">City*</label>
+            <input type="text" id="city" name="city" required placeholder="Bangalore">
+            <div class="validation-icon"></div>
+            <div class="error-message"></div>
+          </div>
+          
+          <div class="form-group">
+            <label>School Type*</label>
+            <div class="school-type-grid">
+              <div class="school-type-option">
+                <input type="radio" id="cbse" name="schoolType" value="CBSE" required>
+                <label for="cbse" class="school-type-label">CBSE</label>
+              </div>
+              <div class="school-type-option">
+                <input type="radio" id="state" name="schoolType" value="State Board" required>
+                <label for="state" class="school-type-label">State Board</label>
+              </div>
+            </div>
+            <div class="error-message"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="students">Number of Students*</label>
+            <select id="students" name="students" required>
+              <option value="">Select Range</option>
+              <option value="Under 500">Under 500 students</option>
+              <option value="500-1000">500-1000 students</option>
+              <option value="1000-2000">1000-2000 students</option>
+              <option value="2000+">2000+ students</option>
+            </select>
+            <div class="validation-icon"></div>
+            <div class="error-message"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="requirements">Specific Requirements</label>
+            <textarea id="requirements" name="requirements" placeholder="Tell us about your specific needs: Which subjects? Any special requirements? When do you want to start?"></textarea>
+            <div class="validation-icon"></div>
+            <div class="error-message"></div>
+          </div>
+          
+          <button type="submit" class="submit-btn" id="submitBtn">
+            Get Free Demo & Pricing
+          </button>
+          
+          <div class="form-status" id="form-status"></div>
+        </form>
+        
+        <div class="trust-indicators">
+          <h4>Trusted by Leading Schools</h4>
+          <div class="trust-stats">
+            <div class="trust-stat">
+              <span class="trust-stat-number">98%</span>
+              <span class="trust-stat-label">Satisfaction Rate</span>
+            </div>
+            <div class="trust-stat">
+              <span class="trust-stat-number">24hr</span>
+              <span class="trust-stat-label">Response Time</span>
+            </div>
+            <div class="trust-stat">
+              <span class="trust-stat-number">500+</span>
+              <span class="trust-stat-label">Schools</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- Footer Container -->
+  <div id="footer-container"></div>
+
+  <!-- Scripts -->
+  <script src="/config.js"></script>
+  <script src="/shared/constants.js"></script>
+  <script src="/shared/components.js"></script>
+  <script>
+    // Initialize components
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeCommonComponents({
+        currentPage: 'contact',
+        isAuthenticated: false
+      });
+      initializeFormValidation();
+    });
+    
+    // Google Apps Script URL
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbw5eZLB0eL1WaCEkl22N7tL_-M-cebpIHVLfRkGsreipKz4Sn6YvfjR8EwCi4UBKZ5a/exec';
+    
+    // Enhanced validation rules for B2B lead capture
+    const validationRules = {
+      name: {
+        pattern: /^[a-zA-Z\s\.]{2,50}$/,
+        message: 'Please enter a valid name (2-50 characters)'
+      },
+      designation: {
+        required: true,
+        message: 'Please select your role'
+      },
+      school: {
+        pattern: /^[a-zA-Z0-9\s\,\.\-]{3,100}$/,
+        message: 'Please enter a valid school name (3-100 characters)'
+      },
+      phone: {
+        pattern: /^(\+91[\s\-]?)?[6-9]\d{9}$/,
+        message: 'Please enter a valid Indian phone number'
+      },
+      email: {
+        pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        message: 'Please enter a valid email address'
+      },
+      city: {
+        pattern: /^[a-zA-Z\s]{2,50}$/,
+        message: 'Please enter a valid city name'
+      },
+      schoolType: {
+        required: true,
+        message: 'Please select your school type'
+      },
+      students: {
+        required: true,
+        message: 'Please select student count range'
+      }
+    };
+    
+    function initializeFormValidation() {
+      const form = document.getElementById('contactForm');
+      const inputs = form.querySelectorAll('input, textarea, select');
+      
+      inputs.forEach(input => {
+        if (input.type === 'radio') {
+          input.addEventListener('change', function() {
+            validateRadioGroup(this.name);
+          });
+        } else {
+          input.addEventListener('input', function() {
+            validateField(this);
+          });
+          input.addEventListener('blur', function() {
+            validateField(this);
+          });
+          input.addEventListener('focus', function() {
+            clearFieldValidation(this);
+          });
+        }
+      });
+    }
+    
+    function validateField(field) {
+      const fieldName = field.name;
+      const value = field.value.trim();
+      const formGroup = field.closest('.form-group');
+      const errorMessage = formGroup.querySelector('.error-message');
+      const validationIcon = formGroup.querySelector('.validation-icon');
+      
+      // Skip validation for optional empty fields
+      if (!field.required && value === '') {
+        clearFieldValidation(field);
+        return true;
+      }
+      
+      // Check if field is required and empty
+      if (field.required && value === '') {
+        showFieldError(formGroup, errorMessage, validationIcon, 'This field is required');
+        return false;
+      }
+      
+      // Validate against pattern if value exists
+      if (value && validationRules[fieldName] && validationRules[fieldName].pattern) {
+        const rule = validationRules[fieldName];
+        if (!rule.pattern.test(value)) {
+          showFieldError(formGroup, errorMessage, validationIcon, rule.message);
+          return false;
+        }
+      }
+      
+      // Field is valid
+      showFieldSuccess(formGroup, errorMessage, validationIcon);
+      return true;
+    }
+    
+    function validateRadioGroup(groupName) {
+      const radioInputs = document.querySelectorAll(`input[name="${groupName}"]`);
+      if (radioInputs.length === 0) return false;
+      
+      const formGroup = radioInputs[0].closest('.form-group');
+      const errorMessage = formGroup.querySelector('.error-message');
+      const checkedRadio = document.querySelector(`input[name="${groupName}"]:checked`);
+      
+      if (!checkedRadio) {
+        const rule = validationRules[groupName];
+        showFieldError(formGroup, errorMessage, null, rule ? rule.message : 'Please select an option');
+        return false;
+      } else {
+        showFieldSuccess(formGroup, errorMessage, null);
+        return true;
+      }
+    }
+    
+    function showFieldError(formGroup, errorMessage, validationIcon, message)
