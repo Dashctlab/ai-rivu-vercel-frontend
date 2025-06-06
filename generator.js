@@ -1376,6 +1376,15 @@ function setupEventListeners() {
     });
   }
 
+
+    // ADD: Validation when specific topic is typed
+  const specificTopicInput = document.getElementById('specificTopic');
+  if (specificTopicInput) {
+    specificTopicInput.addEventListener('input', debouncedValidateForm);
+    specificTopicInput.addEventListener('blur', debouncedValidateForm);
+  }
+
+ 
   // Answer key radio button styling
   const radioOptions = document.querySelectorAll('.radio-option');
   radioOptions.forEach(option => {
