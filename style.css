@@ -1728,6 +1728,64 @@ button:disabled {
     font-size: 0.8rem;
   }
 
+  /* Prevent iOS from zooming on input focus */
+  input[type="number"],
+  input[type="text"],
+  input[type="email"],
+  select,
+  textarea {
+    font-size: 16px !important; /* iOS won't zoom if >= 16px */
+  }
+  
+  /* Fix mobile number input appearance */
+  input[type="number"] {
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+    appearance: none;
+  }
+  
+  /* Remove spinner arrows on mobile */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  /* Ensure proper keyboard on mobile */
+  input.numQuestions,
+  input.marksPerQuestion {
+    inputmode: "numeric";
+    pattern: "[0-9]*";
+  }
+  
+  /* Better mobile form spacing */
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .question-table input {
+    min-height: 44px; /* Better touch target */
+    font-size: 16px !important;
+  }
+}
+
+/* Fix for very small screens */
+@media (max-width: 480px) {
+  .question-table {
+    font-size: 14px;
+  }
+  
+  .question-table input {
+    padding: 10px 6px;
+    min-height: 40px;
+  }
+
+
+}
+
+
+
+
 @media (max-width: 480px) {
 
 /* compact checklist with dissappearing functionality */
