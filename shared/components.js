@@ -19,11 +19,13 @@ function renderHeader(options = {}) {
   ).join('');
   
   const authSection = isAuthenticated 
-    ? `
-      <li><span id="userEmailDisplay">Hi, ${userEmail.split('@')[0]}</span></li>
-      <li><button onclick="logout()" class="logout-button">Logout</button></li>
-    `
-    : `<li><button class="primary-btn" onclick="location.href='/login.html'">Login</button></li>`;
+  ? `
+    <li><span id="userEmailDisplay">Hi, ${userEmail.split('@')[0]}</span></li>
+    <li><button onclick="logout()" class="logout-button">Logout</button></li>
+  `
+  : (options.showLogin !== false ? 
+    `<li><button class="primary-btn" onclick="location.href='/login.html'">Login</button></li>` 
+    : '');
   
   return `
     <header class="app-header">
