@@ -556,6 +556,14 @@ function clearCurriculumErrorMessage() {
 
 // ===== QUESTION ROW MANAGEMENT =====
 function addQuestionRow() {
+
+const tbody = document.getElementById('questionRowsBody');
+  if (!tbody) {
+    console.log('Table not ready, retrying addQuestionRow...');
+    setTimeout(() => addQuestionRow(), 500);
+    return;
+  }
+ 
  if (questionRowCount >= MAX_QUESTION_ROWS) {
    showToast('Maximum 10 question types allowed.', 3000, true);
    return;
