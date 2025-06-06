@@ -27,8 +27,8 @@
     }
     
     .login-header {
-      background: var(--primary-color);
-      color: white;
+      background: white;
+      color: var(--text-color);
       padding: 2rem;
       text-align: center;
     }
@@ -36,12 +36,12 @@
     .login-header h2 {
       margin: 0;
       font-size: 1.8rem;
-      color: white;
+      color: var(--text-color);
     }
     
     .login-header p {
       margin: 0.5rem 0 0;
-      opacity: 0.9;
+      color: var(--secondary-text-color);
       font-size: 1rem;
     }
     
@@ -132,19 +132,6 @@
       margin-bottom: 1rem;
     }
     
-    .demo-info {
-      background: rgba(42, 157, 143, 0.05);
-      border: 1px solid rgba(42, 157, 143, 0.2);
-      border-radius: 8px;
-      padding: 1rem;
-      margin-top: 1.5rem;
-      font-size: 0.9rem;
-    }
-    
-    .demo-info strong {
-      color: var(--primary-color);
-    }
-    
     .error-message {
       background: #fee;
       color: #c33;
@@ -185,7 +172,6 @@
   <div class="login-wrapper">
     <div class="login-card">
       <div class="login-header">
-        <img src="/images/ai-rivu-logo.png" alt="AI-RIVU" style="height: 60px; margin-bottom: 1rem; filter: brightness(0) invert(1);">
         <h2>Welcome!</h2>
         <p>Login to save 3 hrs of your time!</p>
       </div>
@@ -212,12 +198,6 @@
         <div class="help-section">
           <p class="help-text">New user access or need help?</p>
           <a href="/contact.html" class="contact-btn">Contact Us</a>
-        </div>
-        
-        <div class="demo-info">
-          <strong>For New Account:</strong><br>
-          <br>
-          Password: Contact admin
         </div>
       </div>
     </div>
