@@ -21,6 +21,79 @@ let deviceInfo = {
  userAgent: navigator.userAgent
 };
 
+// Quota tracking variables
+let currentQuotaUsed = 0;
+let quotaLimit = 20;
+let quotaRemaining = 20;
+
+// Function to update quota display
+function updateQuotaDisplay() {
+    // Create or update quota indicator in the validation checklist area
+    let quotaIndicator = document.getElementById('quota-indicator');
+    
+    if (!quotaIndicator) {
+        // Create quota indicator if it doesn't exist
+        const validationChecklist = document.getElementById('validationChecklist');
+        if (validationChecklist) {
+            quotaIndicator = document.createElement('div');
+            quotaIndicator.id = 'quota-indicator';
+            quotaIndicator.style.cssText = `
+                margin-top: 1rem;
+                padding: 0.75rem;
+                background: ${quotaRemaining <= 2 ? '#fff3cd' : '#e8f5e8'};
+                border: 1px solid ${quotaRemaining <= 2 ? '#ffeaa7' : '#c3e6cb'};
+                border-radius: 6px;
+                text-align: center;
+                font-size: 0.85rem;
+            `;
+            validationChecklist.appendChild(quotaIndicator);
+        }
+    }
+
+    if (quotaIndicator) {
+        const percentage = (currentQuotaUsed / quotaLimit) * 100;
+        const isWarning = quotaRemaining <= 2;
+        
+        quotaIndicator.innerHTML = `
+            <div style="margin-bottom: 0.5rem; font-weight: 600; color: ${isWarning ? '#856404' : '#155724'};">
+                📊 Paper Quota: ${currentQuotaUsed}/${quotaLimit}
+            </div>
+            <div style="background: #e9ecef; border-radius: 10px; height: 8px; overflow: hidden;">
+                <div style="
+                    width: ${percentage}%; 
+                    height: 100%; 
+                    background: ${isWarning ? '#ffc107' : '#28a745'};
+                    transition: width 0.3s ease;
+                "></div>
+            </div>
+            <div style="margin-top: 0.25rem; font-size: 0.75rem; color: #6c757d;">
+                ${quotaRemaining} papers remaining
+                ${isWarning ? '<br><strong>Contact hello@ai-rivu.com for more access</strong>' : ''}
+            </div>
+        `;
+        
+        // Update styling based on quota status
+        quotaIndicator.style.background = isWarning ? '#fff3cd' : '#e8f5e8';
+        quotaIndicator.style.borderColor = isWarning ? '#ffeaa7' : '#c3e6cb';
+    }
+}
+
+// Function to parse quota info from response headers
+function parseQuotaHeaders(response) {
+    const quotaUsed = response.headers.get('X-Quota-Used');
+    const quotaLimitHeader = response.headers.get('X-Quota-Limit');
+    const quotaRemainingHeader = response.headers.get('X-Quota-Remaining');
+    
+    if (quotaUsed !== null) {
+        currentQuotaUsed = parseInt(quotaUsed) || 0;
+        quotaLimit = parseInt(quotaLimitHeader) || 20;
+        quotaRemaining = parseInt(quotaRemainingHeader) || 0;
+        
+        updateQuotaDisplay();
+    }
+}
+
+
 // List of question types
 const questionTypes = [
  'MCQ', 'Short Answer', 'Long Answer', 'True/False', 'Fill in the Blanks',
@@ -845,6 +918,7 @@ async function generateQuestionPaper(e) {
      
    if (response.ok) {
      const data = await response.json();
+     parseQuotaHeaders(response);
      if (!data.questions || typeof data.questions !== 'string') {
        throw new Error("Invalid response format");
      }
@@ -937,17 +1011,60 @@ async function generateQuestionPaper(e) {
  } catch (error) {
    console.error("Generation error:", error);
    
-   if (error.name === 'AbortError' || error.message.includes('timeout')) {
-     showTeacherFriendlyError('timeout', error.message);
-   } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-     showTeacherFriendlyError('network', error.message);
-   } else {
-     showTeacherFriendlyError('generation', error.message);
-   }
- }
+     // Parse quota info from error response if available
+    if (error.response && error.response.headers) {
+        parseQuotaHeaders(error.response);
+    }
+    
+    if (error.name === 'AbortError' || error.message.includes('timeout')) {
+        showTeacherFriendlyError('timeout', error.message);
+    } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+        showTeacherFriendlyError('network', error.message);
+    } else if (error.response?.status === 429) {
+        // Check if it's a quota error or rate limit error
+        const errorData = error.response.data || {};
+        if (errorData.errorCode === 'QUOTA_EXCEEDED') {
+            showQuotaExceededError(errorData);
+        } else {
+            showTeacherFriendlyError('timeout', 'You are generating papers too quickly. Please wait a moment and try again.');
+        }
+    } else {
+        showTeacherFriendlyError('generation', error.message);
+    }
 }
 
-// ===== BUG FIX #1: DOWNLOAD FUNCTION WITH MEMORY LEAK FIX =====
+
+// ADD new function to handle quota exceeded errors
+function showQuotaExceededError(errorData) {
+    hideLoadingProgress();
+    
+    const quotaInfo = errorData.quota || {};
+    const message = `
+        <div style="text-align: center; padding: 1rem;">
+            <h3 style="color: #e74c3c; margin-bottom: 1rem;">📊 Daily Limit Reached</h3>
+            <p>You've used all <strong>${quotaInfo.limit || 20}</strong> of your daily question papers.</p>
+            <p style="margin: 1rem 0;">
+                <strong>Need more papers?</strong><br>
+                Contact us at <a href="mailto:hello@ai-rivu.com" style="color: #2A9D8F; font-weight: 600;">hello@ai-rivu.com</a>
+                <br>for extended access or upgrade options.
+            </p>
+            <div style="background: #f8f9fa; padding: 0.75rem; border-radius: 6px; margin-top: 1rem; font-size: 0.9rem; color: #6c757d;">
+                Your quota resets in the next version with our paid plans.
+            </div>
+        </div>
+    `;
+    
+    // Show in a modal or toast
+    showToast(message, 10000, true); // Show for 10 seconds
+}
+
+
+
+
+
+
+ 
+// DOWNLOAD FUNCTION WITH MEMORY LEAK FIX =====
 async function downloadQuestionPaper() {
   console.log("Starting download process...");
   const downloadBtn = document.getElementById('downloadBtn');
@@ -1256,6 +1373,13 @@ document.addEventListener('DOMContentLoaded', () => {
     currentPage: 'generator',
     isAuthenticated: true,
     userEmail: userEmail
+
+   // Initialize quota display
+    setTimeout(() => {
+        updateQuotaDisplay();
+    }, 1000);
+
+   
   });
   
   // BUG FIX #2: Wait for components to be ready, then initialize form
