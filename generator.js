@@ -123,6 +123,22 @@ function debouncedValidateForm() {
  }, 300);
 }
 
+//  NaN Protection - Replace validation function helpers
+
+function safeParseInt(value, defaultValue = 0) {
+  if (value === null || value === undefined || value === '') return defaultValue;
+  const parsed = parseInt(value);
+  return isNaN(parsed) ? defaultValue : parsed;
+}
+
+function safeParseFloat(value, defaultValue = 0) {
+  if (value === null || value === undefined || value === '') return defaultValue;
+  const parsed = parseFloat(value);
+  return isNaN(parsed) ? defaultValue : parsed;
+}
+
+
+
 // ===== VALIDATION FUNCTIONS =====
 
 function validateForm() {
@@ -158,9 +174,6 @@ function validateForm() {
    if (assessment === 'Specific Topic' && !specificTopic.trim()) {
      errors.push('Please enter the specific topic you want to focus on');
    }
-
-  
- 
  
  // Check difficulty percentages
  const easy = parseInt(document.getElementById('easy')?.value) || 0;
@@ -702,14 +715,25 @@ const typeSelect = row.querySelector('.question-type');
 
 [numQuestionsInput, marksPerQuestionInput, typeSelect].forEach(input => {
    if (input) {
-     // FIXED: Multiple events for mobile compatibility
+     //  Multiple events for mobile compatibility
      ['input', 'change', 'blur'].forEach(eventType => {
        input.addEventListener(eventType, () => {
-         // FIXED: Mobile number input sanitization
+         //  Mobile number input sanitization - IMPROVED
          if (input.type === 'number' && input.value) {
-           // Remove any non-digit characters that mobile keyboards might add
-           const sanitized = input.value.replace(/[^0-9]/g, '');
-           if (input.value !== sanitized) {
+           // Allow decimal points for marks, only digits for questions
+           if (input.classList.contains('marksPerQuestion')) {
+             // For marks: allow decimals (2.5, 1.5, etc.)
+             const sanitized = input.value.replace(/[^0-9.]/g, '');
+             // Prevent multiple decimal points
+             const parts = sanitized.split('.');
+             if (parts.length > 2) {
+               input.value = parts[0] + '.' + parts.slice(1).join('');
+             } else {
+               input.value = sanitized;
+             }
+           } else {
+             // For question numbers: only integers
+             const sanitized = input.value.replace(/[^0-9]/g, '');
              input.value = sanitized;
            }
          }
@@ -718,6 +742,12 @@ const typeSelect = row.querySelector('.question-type');
          if (numQuestionsInput && parseInt(numQuestionsInput.value) > 15) {
            numQuestionsInput.value = 15;
            showToast('Maximum 15 questions per section allowed.', 3000, true);
+         }
+         
+         // FIXED: Enforce marks limit
+         if (marksPerQuestionInput && parseFloat(marksPerQuestionInput.value) > 50) {
+           marksPerQuestionInput.value = 50;
+           showToast('Maximum 50 marks per question allowed.', 3000, true);
          }
          
          calculateTotals();
@@ -760,21 +790,23 @@ const typeSelect = row.querySelector('.question-type');
 
 // Quality feedback handling
 function setupQualityFeedback() {
-  const qualityOptions = document.querySelectorAll('.quality-option-mini'); // Changed class name
-  qualityOptions.forEach(option => {
-    option.addEventListener('click', function() {
-      const radio = this.querySelector('input[type="radio"]');
-      if (radio) {
-        radio.checked = true;
+  // Use correct selector that matches HTML
+  const qualityOptions = document.querySelectorAll('input[name^="outputQuality"], input[name^="questionQuality"], input[name^="curriculumAlignment"]');
+  
+  qualityOptions.forEach(radio => {
+    radio.addEventListener('change', function() {
+      // Visual feedback - highlight selected option
+      const label = this.closest('label');
+      if (label) {
+        // Remove selected from siblings with same name
+        const radioName = this.name;
+        const siblings = document.querySelectorAll(`input[name="${radioName}"]`);
+        siblings.forEach(sibling => {
+          const siblingLabel = sibling.closest('label');
+          if (siblingLabel) siblingLabel.classList.remove('selected');
+        });
+        label.classList.add('selected');
       }
-      
-      // Visual feedback - remove selected from siblings with same name
-      const radioName = radio.name;
-      const siblings = document.querySelectorAll(`input[name="${radioName}"]`);
-      siblings.forEach(sibling => {
-        sibling.closest('.quality-option-mini').classList.remove('selected');
-      });
-      this.classList.add('selected');
       
       // Check if all quality questions are answered
       checkQualityFeedbackComplete();
@@ -828,18 +860,36 @@ function calculateTotals() {
  let totalQuestions = 0;
  
  document.querySelectorAll('#questionRowsBody tr').forEach(row => {
-   // FIXED: Proper null checking and NaN handling
+   // FIXED: Robust null checking and NaN handling
    const numInput = row.querySelector('.numQuestions');
    const marksInput = row.querySelector('.marksPerQuestion');
    
-   const num = (numInput && numInput.value !== '') ? parseInt(numInput.value) || 0 : 0;
-   const marks = (marksInput && marksInput.value !== '') ? parseInt(marksInput.value) || 0 : 0;
+   // FIXED: Parse and validate inputs
+   let num = 0;
+   let marks = 0;
+   
+   if (numInput && numInput.value !== '') {
+     num = parseInt(numInput.value);
+     if (isNaN(num) || num < 0) {
+       num = 0;
+       numInput.value = '0';
+     }
+   }
+   
+   if (marksInput && marksInput.value !== '') {
+     marks = parseFloat(marksInput.value);
+     if (isNaN(marks) || marks < 0) {
+       marks = 0;
+       marksInput.value = '0';
+     }
+   }
    
    const total = num * marks;
    
    const totalMarksCell = row.querySelector('.totalMarks');
    if (totalMarksCell) {
-     totalMarksCell.textContent = total; // Clean display, no NaN
+     // FIXED: Always show clean numbers, never NaN
+     totalMarksCell.textContent = total || 0;
    }
    
    overallTotal += total;
@@ -849,8 +899,9 @@ function calculateTotals() {
  const overallTotalElement = document.getElementById('overallTotalMarks');
  const totalQuestionsElement = document.getElementById('totalQuestions');
  
- if (overallTotalElement) overallTotalElement.textContent = overallTotal;
- if (totalQuestionsElement) totalQuestionsElement.textContent = totalQuestions;
+ // FIXED: Ensure clean display
+ if (overallTotalElement) overallTotalElement.textContent = overallTotal || 0;
+ if (totalQuestionsElement) totalQuestionsElement.textContent = totalQuestions || 0;
 }
 
 // ===== MAIN GENERATION FUNCTION =====
@@ -1373,14 +1424,12 @@ document.addEventListener('DOMContentLoaded', () => {
     currentPage: 'generator',
     isAuthenticated: true,
     userEmail: userEmail
-
-   // Initialize quota display
-    setTimeout(() => {
-        updateQuotaDisplay();
-    }, 1000);
-
-   
   });
+  
+  // CRITICAL FIX 1: Initialize quota display
+  setTimeout(() => {
+    updateQuotaDisplay();
+  }, 1000);
   
   // BUG FIX #2: Wait for components to be ready, then initialize form
   waitForDOMAndComponentsReady().then(() => {
@@ -1391,7 +1440,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// BUG FIX #2: Enhanced form initialization with proper safety checks
+// Enhanced form initialization with proper safety checks
 function initializeFormElements() {
   console.log('Initializing form elements...');
   
@@ -1477,30 +1526,36 @@ function setupEventListeners() {
   subjectDropdown.addEventListener('change', debouncedValidateForm);
 
   // Assessment conditional logic
-  const assessmentSelect = document.getElementById('assessment');
-  const specificTopicGroup = document.getElementById('specificTopicGroup');
-  
-  if (assessmentSelect && specificTopicGroup) {
-    assessmentSelect.addEventListener('change', function() {
-      if (this.value === 'Specific Topic') {
-        specificTopicGroup.classList.add('show');
-        const specificTopicInput = document.getElementById('specificTopic');
-        if (specificTopicInput) {
-          specificTopicInput.required = true;
-        }
-      } else {
-        specificTopicGroup.classList.remove('show');
-        const specificTopicInput = document.getElementById('specificTopic');
-        if (specificTopicInput) {
-          specificTopicInput.required = false;
-          specificTopicInput.value = '';
-        }
+ const assessmentSelect = document.getElementById('assessment');
+const specificTopicGroup = document.getElementById('specificTopicGroup');
+
+if (assessmentSelect && specificTopicGroup) {
+  assessmentSelect.addEventListener('change', function() {
+    const specificTopicInput = document.getElementById('specificTopic');
+    
+    if (this.value === 'Specific Topic') {
+      specificTopicGroup.classList.add('show');
+      if (specificTopicInput) {
+        specificTopicInput.required = true;
+        // FIXED: Clear any previous validation state
+        specificTopicInput.style.borderColor = '';
+        // Trigger validation after a short delay
+        setTimeout(() => debouncedValidateForm(), 100);
       }
-      debouncedValidateForm();
-    });
-  }
-
-
+    } else {
+      specificTopicGroup.classList.remove('show');
+      if (specificTopicInput) {
+        specificTopicInput.required = false;
+        specificTopicInput.value = '';
+        // FIXED: Clear validation state and errors
+        specificTopicInput.style.borderColor = '';
+        const errorElement = specificTopicInput.parentNode.querySelector('.error-message');
+        if (errorElement) errorElement.style.display = 'none';
+      }
+    }
+    debouncedValidateForm();
+  });
+}
     // ADD: Validation when specific topic is typed
   const specificTopicInput = document.getElementById('specificTopic');
   if (specificTopicInput) {
@@ -1529,26 +1584,37 @@ function setupEventListeners() {
   const mediumInput = document.getElementById('medium');
   const hardInput = document.getElementById('hard');
 
- if (easyInput && mediumInput && hardInput) {
-    [easyInput, mediumInput, hardInput].forEach(input => {
-      ['input', 'change', 'blur'].forEach(eventType => {
-        input.addEventListener(eventType, () => {
-          // FIXED: Mobile number sanitization for difficulty inputs
-          if (input.value) {
-            const sanitized = input.value.replace(/[^0-9]/g, '');
-            const num = parseInt(sanitized) || 0;
-            if (num > 100) {
-              input.value = 100;
-            } else {
-              input.value = sanitized;
-            }
+if (easyInput && mediumInput && hardInput) {
+  [easyInput, mediumInput, hardInput].forEach(input => {
+    ['input', 'change', 'blur'].forEach(eventType => {
+      input.addEventListener(eventType, () => {
+        // FIXED: Allow decimal inputs for difficulty percentages
+        if (input.value) {
+          let sanitized = input.value.replace(/[^0-9.]/g, '');
+          // Prevent multiple decimal points
+          const parts = sanitized.split('.');
+          if (parts.length > 2) {
+            sanitized = parts[0] + '.' + parts.slice(1).join('');
           }
-          updateDifficultySum();
-          debouncedValidateForm();
-        });
+          // Limit to 2 decimal places
+          if (parts[1] && parts[1].length > 1) {
+            sanitized = parts[0] + '.' + parts[1].substring(0, 1);
+          }
+          input.value = sanitized;
+          
+          const num = parseFloat(sanitized);
+          if (num > 100) {
+            input.value = '100';
+          } else if (num < 0) {
+            input.value = '0';
+          }
+        }
+        updateDifficultySum();
+        debouncedValidateForm();
       });
     });
-  }
+  });
+}
 
  
   // Form submission
@@ -1589,20 +1655,34 @@ function updateDifficultySum() {
 
   if (!easyInput || !mediumInput || !hardInput || !difficultySumSpan || !difficultyTotalMessage) return;
 
-  const easy = parseInt(easyInput.value) || 0;
-  const medium = parseInt(mediumInput.value) || 0;
-  const hard = parseInt(hardInput.value) || 0;
+  // FIXED: Handle empty/invalid inputs gracefully
+  const easy = parseFloat(easyInput.value) || 0;
+  const medium = parseFloat(mediumInput.value) || 0;
+  const hard = parseFloat(hardInput.value) || 0;
+  
+  // FIXED: Validate individual values
+  if (easy < 0 || easy > 100) easyInput.value = Math.max(0, Math.min(100, easy));
+  if (medium < 0 || medium > 100) mediumInput.value = Math.max(0, Math.min(100, medium));
+  if (hard < 0 || hard > 100) hardInput.value = Math.max(0, Math.min(100, hard));
+  
   const total = easy + medium + hard;
   difficultySumSpan.textContent = total;
   
+  // FIXED: Better visual feedback
   if (total !== 100) {
     difficultyTotalMessage.style.color = '#e74c3c';
     difficultySumSpan.style.fontWeight = 'bold';
+    difficultyTotalMessage.style.background = '#fff5f5';
+    difficultyTotalMessage.style.padding = '4px 8px';
+    difficultyTotalMessage.style.borderRadius = '4px';
   } else {
     difficultyTotalMessage.style.color = '#27ae60';
     difficultySumSpan.style.fontWeight = 'normal';
+    difficultyTotalMessage.style.background = 'transparent';
+    difficultyTotalMessage.style.padding = '0';
   }
 }
+
 
 // ===== UTILITY FUNCTIONS =====
 
@@ -1619,7 +1699,7 @@ function updateProgressBar(step) {
   });
 }
 
-// BUG FIX #5: Enhanced logout function with proper cleanup
+//  Enhanced logout function with proper cleanup
 function logout() {
   localStorage.removeItem('userEmail');
   
@@ -1628,15 +1708,13 @@ function logout() {
   currentQueryId = '';
   qualityFeedbackSubmitted = false;
   
-  // Clear download button data
+  // FIXED: Complete download button data cleanup
   const downloadBtn = document.getElementById('downloadBtn');
   if (downloadBtn) {
-    // Clear all dataset properties
-    delete downloadBtn.dataset.subject;
-    delete downloadBtn.dataset.classname;
-    delete downloadBtn.dataset.curriculum;
-    delete downloadBtn.dataset.totalmarks;
-    delete downloadBtn.dataset.timedurationtext;
+    // Clear ALL dataset properties
+    Object.keys(downloadBtn.dataset).forEach(key => {
+      delete downloadBtn.dataset[key];
+    });
     downloadBtn.style.display = 'none';
   }
   
@@ -1646,7 +1724,7 @@ function logout() {
     outputSection.style.display = 'none';
   }
   
-  // Clear form data
+  // FIXED: Clear form data completely
   if (curriculumDropdown) curriculumDropdown.value = '';
   if (classDropdown) {
     classDropdown.innerHTML = '<option value="">First select a board</option>';
@@ -1656,6 +1734,20 @@ function logout() {
     subjectDropdown.innerHTML = '<option value="">First select a class</option>';
     subjectDropdown.disabled = true;
   }
+  
+  // Clear question rows
+  const questionRowsBody = document.getElementById('questionRowsBody');
+  if (questionRowsBody) {
+    questionRowsBody.innerHTML = '';
+    questionRowCount = 0;
+  }
+  
+  // Reset form values
+  const assessmentSelect = document.getElementById('assessment');
+  if (assessmentSelect) assessmentSelect.value = '';
+  
+  const specificTopicInput = document.getElementById('specificTopic');
+  if (specificTopicInput) specificTopicInput.value = '';
   
   window.location.href = '/login.html';
 }
