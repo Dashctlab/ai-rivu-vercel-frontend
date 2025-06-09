@@ -1292,8 +1292,15 @@ document.addEventListener('DOMContentLoaded', () => {
     isAuthenticated: true,
     userEmail: userEmail
   });
-  
-  // BUG FIX #2: Wait for components to be ready, then initialize form
+
+
+ // Initialize quota display
+  setTimeout(() => {
+    updateQuotaDisplay();
+  }, 1000);
+
+ 
+  //  Wait for components to be ready, then initialize form
   waitForDOMAndComponentsReady().then(() => {
     initializeFormElements();
   }).catch(error => {
@@ -1302,7 +1309,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// BUG FIX #2: Enhanced form initialization with proper safety checks
+//  Enhanced form initialization with proper safety checks
 function initializeFormElements() {
   console.log('Initializing form elements...');
   
