@@ -828,7 +828,23 @@
      
      // Let generator.js handle the rest
      console.log('Page initialization complete - generator.js will take over');
-   });
+
+       console.log('=== DEBUGGING AI-RIVU ===');
+       console.log('1. DOM State:', document.readyState);
+       console.log('2. APP_CONFIG:', window.APP_CONFIG);
+       console.log('3. Backend URL:', window.APP_CONFIG?.BACKEND_URL);
+       
+       // Check if critical elements exist
+       setTimeout(() => {
+         console.log('4. Critical Elements Check:');
+         console.log('   - curriculum dropdown:', !!document.getElementById('curriculum'));
+         console.log('   - className dropdown:', !!document.getElementById('className'));
+         console.log('   - subject dropdown:', !!document.getElementById('subject'));
+         console.log('   - questionForm:', !!document.getElementById('questionForm'));
+         console.log('   - questionRowsBody:', !!document.getElementById('questionRowsBody'));
+       }, 1000);
+    
+   }); 
  </script>
 </body>
 </html>
