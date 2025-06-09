@@ -704,21 +704,23 @@ const typeSelect = row.querySelector('.question-type');
 
 // Quality feedback handling
 function setupQualityFeedback() {
-  const qualityOptions = document.querySelectorAll('.quality-option-mini'); // Changed class name
-  qualityOptions.forEach(option => {
-    option.addEventListener('click', function() {
-      const radio = this.querySelector('input[type="radio"]');
-      if (radio) {
-        radio.checked = true;
+  // FIXED: Use correct selector that matches HTML
+  const qualityOptions = document.querySelectorAll('input[name^="outputQuality"], input[name^="questionQuality"], input[name^="curriculumAlignment"]');
+  
+  qualityOptions.forEach(radio => {
+    radio.addEventListener('change', function() {
+      // Visual feedback - highlight selected option
+      const label = this.closest('label');
+      if (label) {
+        // Remove selected from siblings with same name
+        const radioName = this.name;
+        const siblings = document.querySelectorAll(`input[name="${radioName}"]`);
+        siblings.forEach(sibling => {
+          const siblingLabel = sibling.closest('label');
+          if (siblingLabel) siblingLabel.classList.remove('selected');
+        });
+        label.classList.add('selected');
       }
-      
-      // Visual feedback - remove selected from siblings with same name
-      const radioName = radio.name;
-      const siblings = document.querySelectorAll(`input[name="${radioName}"]`);
-      siblings.forEach(sibling => {
-        sibling.closest('.quality-option-mini').classList.remove('selected');
-      });
-      this.classList.add('selected');
       
       // Check if all quality questions are answered
       checkQualityFeedbackComplete();
