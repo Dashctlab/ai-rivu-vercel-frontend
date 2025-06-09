@@ -766,24 +766,41 @@ async function submitQualityFeedback(feedback) {
  }
 }
 
-//  calculateTotals function 
 function calculateTotals() {
  let overallTotal = 0;
  let totalQuestions = 0;
  
  document.querySelectorAll('#questionRowsBody tr').forEach(row => {
-   // FIXED: Proper null checking and NaN handling
+   // FIXED: Robust null checking and NaN handling
    const numInput = row.querySelector('.numQuestions');
    const marksInput = row.querySelector('.marksPerQuestion');
    
-   const num = (numInput && numInput.value !== '') ? parseInt(numInput.value) || 0 : 0;
-   const marks = (marksInput && marksInput.value !== '') ? parseInt(marksInput.value) || 0 : 0;
+   // FIXED: Parse and validate inputs
+   let num = 0;
+   let marks = 0;
+   
+   if (numInput && numInput.value !== '') {
+     num = parseInt(numInput.value);
+     if (isNaN(num) || num < 0) {
+       num = 0;
+       numInput.value = '0';
+     }
+   }
+   
+   if (marksInput && marksInput.value !== '') {
+     marks = parseFloat(marksInput.value);
+     if (isNaN(marks) || marks < 0) {
+       marks = 0;
+       marksInput.value = '0';
+     }
+   }
    
    const total = num * marks;
    
    const totalMarksCell = row.querySelector('.totalMarks');
    if (totalMarksCell) {
-     totalMarksCell.textContent = total; // Clean display, no NaN
+     // FIXED: Always show clean numbers, never NaN
+     totalMarksCell.textContent = total || 0;
    }
    
    overallTotal += total;
@@ -793,8 +810,9 @@ function calculateTotals() {
  const overallTotalElement = document.getElementById('overallTotalMarks');
  const totalQuestionsElement = document.getElementById('totalQuestions');
  
- if (overallTotalElement) overallTotalElement.textContent = overallTotal;
- if (totalQuestionsElement) totalQuestionsElement.textContent = totalQuestions;
+ // FIXED: Ensure clean display
+ if (overallTotalElement) overallTotalElement.textContent = overallTotal || 0;
+ if (totalQuestionsElement) totalQuestionsElement.textContent = totalQuestions || 0;
 }
 
 // ===== MAIN GENERATION FUNCTION =====
