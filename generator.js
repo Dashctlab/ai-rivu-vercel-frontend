@@ -1482,18 +1482,31 @@ function updateDifficultySum() {
 
   if (!easyInput || !mediumInput || !hardInput || !difficultySumSpan || !difficultyTotalMessage) return;
 
-  const easy = parseInt(easyInput.value) || 0;
-  const medium = parseInt(mediumInput.value) || 0;
-  const hard = parseInt(hardInput.value) || 0;
+  // FIXED: Handle empty/invalid inputs gracefully
+  const easy = parseFloat(easyInput.value) || 0;
+  const medium = parseFloat(mediumInput.value) || 0;
+  const hard = parseFloat(hardInput.value) || 0;
+  
+  // FIXED: Validate individual values
+  if (easy < 0 || easy > 100) easyInput.value = Math.max(0, Math.min(100, easy));
+  if (medium < 0 || medium > 100) mediumInput.value = Math.max(0, Math.min(100, medium));
+  if (hard < 0 || hard > 100) hardInput.value = Math.max(0, Math.min(100, hard));
+  
   const total = easy + medium + hard;
   difficultySumSpan.textContent = total;
   
+  // FIXED: Better visual feedback
   if (total !== 100) {
     difficultyTotalMessage.style.color = '#e74c3c';
     difficultySumSpan.style.fontWeight = 'bold';
+    difficultyTotalMessage.style.background = '#fff5f5';
+    difficultyTotalMessage.style.padding = '4px 8px';
+    difficultyTotalMessage.style.borderRadius = '4px';
   } else {
     difficultyTotalMessage.style.color = '#27ae60';
     difficultySumSpan.style.fontWeight = 'normal';
+    difficultyTotalMessage.style.background = 'transparent';
+    difficultyTotalMessage.style.padding = '0';
   }
 }
 
