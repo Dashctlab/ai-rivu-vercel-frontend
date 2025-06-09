@@ -1458,36 +1458,25 @@ if (assessmentSelect && specificTopicGroup) {
   const hardInput = document.getElementById('hard');
 
  if (easyInput && mediumInput && hardInput) {
-  [easyInput, mediumInput, hardInput].forEach(input => {
-    ['input', 'change', 'blur'].forEach(eventType => {
-      input.addEventListener(eventType, () => {
-        // FIXED: Allow decimal inputs for difficulty percentages
-        if (input.value) {
-          let sanitized = input.value.replace(/[^0-9.]/g, '');
-          // Prevent multiple decimal points
-          const parts = sanitized.split('.');
-          if (parts.length > 2) {
-            sanitized = parts[0] + '.' + parts.slice(1).join('');
+    [easyInput, mediumInput, hardInput].forEach(input => {
+      ['input', 'change', 'blur'].forEach(eventType => {
+        input.addEventListener(eventType, () => {
+          // FIXED: Mobile number sanitization for difficulty inputs
+          if (input.value) {
+            const sanitized = input.value.replace(/[^0-9]/g, '');
+            const num = parseInt(sanitized) || 0;
+            if (num > 100) {
+              input.value = 100;
+            } else {
+              input.value = sanitized;
+            }
           }
-          // Limit to 2 decimal places
-          if (parts[1] && parts[1].length > 1) {
-            sanitized = parts[0] + '.' + parts[1].substring(0, 1);
-          }
-          input.value = sanitized;
-          
-          const num = parseFloat(sanitized);
-          if (num > 100) {
-            input.value = '100';
-          } else if (num < 0) {
-            input.value = '0';
-          }
-        }
-        updateDifficultySum();
-        debouncedValidateForm();
+          updateDifficultySum();
+          debouncedValidateForm();
+        });
       });
     });
-  });
-}
+  }
 
  
   // Form submission
