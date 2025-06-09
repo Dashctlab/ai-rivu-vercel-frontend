@@ -1765,3 +1765,4 @@ window.initializeFormElements = initializeFormElements;
 // Debug logging
 console.log('generator.js loaded successfully');
 console.log('APP_CONFIG:', window.APP_CONFIG);
+}
