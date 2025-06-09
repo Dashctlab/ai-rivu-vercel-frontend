@@ -1388,28 +1388,36 @@ function setupEventListeners() {
   subjectDropdown.addEventListener('change', debouncedValidateForm);
 
   // Assessment conditional logic
-  const assessmentSelect = document.getElementById('assessment');
-  const specificTopicGroup = document.getElementById('specificTopicGroup');
-  
-  if (assessmentSelect && specificTopicGroup) {
-    assessmentSelect.addEventListener('change', function() {
-      if (this.value === 'Specific Topic') {
-        specificTopicGroup.classList.add('show');
-        const specificTopicInput = document.getElementById('specificTopic');
-        if (specificTopicInput) {
-          specificTopicInput.required = true;
-        }
-      } else {
-        specificTopicGroup.classList.remove('show');
-        const specificTopicInput = document.getElementById('specificTopic');
-        if (specificTopicInput) {
-          specificTopicInput.required = false;
-          specificTopicInput.value = '';
-        }
+const assessmentSelect = document.getElementById('assessment');
+const specificTopicGroup = document.getElementById('specificTopicGroup');
+
+if (assessmentSelect && specificTopicGroup) {
+  assessmentSelect.addEventListener('change', function() {
+    const specificTopicInput = document.getElementById('specificTopic');
+    
+    if (this.value === 'Specific Topic') {
+      specificTopicGroup.classList.add('show');
+      if (specificTopicInput) {
+        specificTopicInput.required = true;
+        // FIXED: Clear any previous validation state
+        specificTopicInput.style.borderColor = '';
+        // Trigger validation after a short delay
+        setTimeout(() => debouncedValidateForm(), 100);
       }
-      debouncedValidateForm();
-    });
-  }
+    } else {
+      specificTopicGroup.classList.remove('show');
+      if (specificTopicInput) {
+        specificTopicInput.required = false;
+        specificTopicInput.value = '';
+        // FIXED: Clear validation state and errors
+        specificTopicInput.style.borderColor = '';
+        const errorElement = specificTopicInput.parentNode.querySelector('.error-message');
+        if (errorElement) errorElement.style.display = 'none';
+      }
+    }
+    debouncedValidateForm();
+  });
+}
 
 
     // ADD: Validation when specific topic is typed
