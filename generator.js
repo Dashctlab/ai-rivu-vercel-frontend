@@ -632,11 +632,22 @@ const typeSelect = row.querySelector('.question-type');
      // FIXED: Multiple events for mobile compatibility
      ['input', 'change', 'blur'].forEach(eventType => {
        input.addEventListener(eventType, () => {
-         // FIXED: Mobile number input sanitization
+         // FIXED: Mobile number input sanitization - IMPROVED
          if (input.type === 'number' && input.value) {
-           // Remove any non-digit characters that mobile keyboards might add
-           const sanitized = input.value.replace(/[^0-9]/g, '');
-           if (input.value !== sanitized) {
+           // Allow decimal points for marks, only digits for questions
+           if (input.classList.contains('marksPerQuestion')) {
+             // For marks: allow decimals (2.5, 1.5, etc.)
+             const sanitized = input.value.replace(/[^0-9.]/g, '');
+             // Prevent multiple decimal points
+             const parts = sanitized.split('.');
+             if (parts.length > 2) {
+               input.value = parts[0] + '.' + parts.slice(1).join('');
+             } else {
+               input.value = sanitized;
+             }
+           } else {
+             // For question numbers: only integers
+             const sanitized = input.value.replace(/[^0-9]/g, '');
              input.value = sanitized;
            }
          }
@@ -645,6 +656,12 @@ const typeSelect = row.querySelector('.question-type');
          if (numQuestionsInput && parseInt(numQuestionsInput.value) > 15) {
            numQuestionsInput.value = 15;
            showToast('Maximum 15 questions per section allowed.', 3000, true);
+         }
+         
+         // FIXED: Enforce marks limit
+         if (marksPerQuestionInput && parseFloat(marksPerQuestionInput.value) > 50) {
+           marksPerQuestionInput.value = 50;
+           showToast('Maximum 50 marks per question allowed.', 3000, true);
          }
          
          calculateTotals();
