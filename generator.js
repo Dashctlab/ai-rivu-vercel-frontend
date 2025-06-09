@@ -1309,7 +1309,7 @@ async function downloadQuestionPaper() {
       throw new Error("Received empty file from server.");
     }
 
-    // BUG FIX #1: Create blob URL and ensure cleanup
+    //  Create blob URL and ensure cleanup
     blobUrl = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.style.display = 'none';
@@ -1319,7 +1319,7 @@ async function downloadQuestionPaper() {
     document.body.appendChild(a);
     a.click();
 
-    // BUG FIX #1: Remove the anchor element immediately
+    // Remove the anchor element immediately
     document.body.removeChild(a);
 
     showToast("Question paper downloaded successfully!", 3000);
@@ -1328,7 +1328,7 @@ async function downloadQuestionPaper() {
     console.error("Download error:", error);
     showToast(`Download failed: ${error.message}`, 5000, true);
   } finally {
-    // BUG FIX #1: Always cleanup blob URL, even if errors occur
+    // Always cleanup blob URL, even if errors occur
     if (blobUrl) {
       window.URL.revokeObjectURL(blobUrl);
       blobUrl = null;
@@ -1344,9 +1344,9 @@ async function downloadQuestionPaper() {
   }
 }
 
-// ===== BUG FIX #2: RACE CONDITION INITIALIZATION FIXES =====
+// ===== RACE CONDITION INITIALIZATION FIXES =====
 
-// BUG FIX #2: Replace timeout with proper DOM ready check
+// Replace timeout with proper DOM ready check
 async function waitForDOMAndComponentsReady() {
   // Wait for DOM to be fully ready
   await waitForDOMReady();
@@ -1481,13 +1481,13 @@ function initializeFormElements() {
   }
 }
 
-// BUG FIX #2: Consolidated event listener setup
+// Consolidated event listener setup
 function setupEventListeners() {
   console.log('Setting up event listeners...');
   
   // Curriculum change handler with proper async handling
-  curriculumDropdown.addEventListener('change', async () => {
-    console.log('Curriculum changed to:', curriculumDropdown.value);
+   curriculumDropdown.addEventListener('change', async function() {
+    console.log('Curriculum changed to:', this.value);
     try {
       // Show loading state
       classDropdown.innerHTML = '<option value="">Loading classes...</option>';
@@ -1495,7 +1495,8 @@ function setupEventListeners() {
       subjectDropdown.innerHTML = '<option value="">Select class first</option>';
       subjectDropdown.disabled = true;
       
-      await updateClassDropdown(curriculumDropdown.value);
+      // Call with window scope to ensure it exists
+      await window.updateClassDropdown(this.value);
       debouncedValidateForm();
     } catch (error) {
       console.error('Error updating class dropdown:', error);
@@ -1505,14 +1506,16 @@ function setupEventListeners() {
     }
   });
 
+
   // Class change handler with proper async handling
-  classDropdown.addEventListener('change', async () => {
-    console.log('Class changed to:', classDropdown.value);
+  classDropdown.addEventListener('change', async function() {
+    console.log('Class changed to:', this.value);
     try {
       subjectDropdown.innerHTML = '<option value="">Loading subjects...</option>';
       subjectDropdown.disabled = true;
       
-      await updateSubjectDropdown(curriculumDropdown.value, classDropdown.value);
+      // Call with window scope to ensure it exists
+      await window.updateSubjectDropdown(curriculumDropdown.value, this.value);
       debouncedValidateForm();
     } catch (error) {
       console.error('Error updating subject dropdown:', error);
@@ -1522,6 +1525,7 @@ function setupEventListeners() {
     }
   });
 
+ 
   // Subject change handler
   subjectDropdown.addEventListener('change', debouncedValidateForm);
 
@@ -1759,6 +1763,7 @@ window.debouncedValidateForm = debouncedValidateForm;
 window.showToast = showToast;
 window.generateQuestionPaper = generateQuestionPaper;
 window.updateClassDropdown = updateClassDropdown;
+window.updateSubjectDropdown = updateSubjectDropdown;
 window.validateForm = validateForm;
 window.initializeFormElements = initializeFormElements;
 
