@@ -603,33 +603,36 @@ const tbody = document.getElementById('questionRowsBody');
  const defaultQuestions = '5';
  const defaultMarks = '1';
  
- row.innerHTML = `
-   <td>
-     <select class="question-type" required>
-       <option value="">Select Type</option>
-       ${questionTypes.map(type => `<option value="${type}" ${type === defaultType ? 'selected' : ''}>${type}</option>`).join('')}
-     </select>
-   </td>
-   <td>
-     <input type="text" class="topic" placeholder="Optional topic">
-   </td>
- <td>
-  <input type="number" class="numQuestions" min="1" max="15" step="1" value="${defaultQuestions}" 
-         required inputmode="numeric" pattern="[0-9]*">
-</td>
-<td>
-  <input type="number" class="marksPerQuestion" min="0.5" max="50" step="0.5" value="${defaultMarks}" 
-         required inputmode="decimal">
-</td>
-   <td class="totalMarks" style="text-align: center;">0</td>
-   <td>
-     ${questionRowCount === 1 ? '' : `
-       <button type="button" class="delete-row-btn" data-row-id="${rowId}" aria-label="Delete row">
-         <span>&times;</span>
-       </button>
-     `}
-   </td>
- `;
+row.innerHTML = `
+  <td>
+    <select class="question-type" required>
+      <option value="">Select Type</option>
+      ${questionTypes.map(type => `<option value="${type}" ${type === defaultType ? 'selected' : ''}>${type}</option>`).join('')}
+    </select>
+  </td>
+  <td>
+    <input type="text" class="topic" placeholder="Optional topic">
+  </td>
+  <td>
+    <input type="number" class="numQuestions" min="1" max="15" step="1" value="${defaultQuestions}" 
+           required inputmode="numeric" pattern="[0-9]*" 
+           title="Enter whole numbers only (1, 2, 3, etc.)">
+  </td>
+  <td>
+    <input type="number" class="marksPerQuestion" min="0.5" max="50" step="0.5" value="${defaultMarks}" 
+           required inputmode="decimal" pattern="[0-9]+(\\.5)?" 
+           title="Enter marks in 0.5 increments (0.5, 1, 1.5, 2, etc.)" 
+           placeholder="e.g., 1.5">
+  </td>
+  <td class="totalMarks" style="text-align: center;">0</td>
+  <td>
+    ${questionRowCount === 1 ? '' : `
+      <button type="button" class="delete-row-btn" data-row-id="${rowId}" aria-label="Delete row">
+        <span>&times;</span>
+      </button>
+    `}
+  </td>
+`;
  
  tbody.appendChild(row);
  
