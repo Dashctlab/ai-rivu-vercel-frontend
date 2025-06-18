@@ -297,7 +297,7 @@ function showToast(message, duration = 3000, isError = false) {
 
 // ===== HELPER FUNCTIONS =====
 
-// BUG FIX #3: Enhanced async dropdown handling with retry mechanism
+// Enhanced async dropdown handling with retry mechanism
 async function updateSubjectDropdown(curriculum, selectedClass, retryCount = 0) {
   if (!subjectDropdown) return;
   
@@ -468,7 +468,7 @@ async function updateClassDropdown(curriculum, retryCount = 0) {
   }
 }
 
-// BUG FIX #3: Helper functions for user feedback during curriculum loading
+//  Helper functions for user feedback during curriculum loading
 function showCurriculumRetryMessage(message) {
   let retryDiv = document.getElementById('curriculum-retry-message');
   if (!retryDiv) {
@@ -1024,7 +1024,8 @@ async function generateQuestionPaper(e) {
  }
 }
 
-// ===== BUG FIX #1: DOWNLOAD FUNCTION WITH MEMORY LEAK FIX =====
+// =====  DOWNLOAD FUNCTION WITH MEMORY LEAK FIX with iOS Safari DOCX support =====
+
 async function downloadQuestionPaper() {
   console.log("Starting download process...");
   const downloadBtn = document.getElementById('downloadBtn');
@@ -1054,12 +1055,21 @@ async function downloadQuestionPaper() {
     return;
   }
 
-  // BUG FIX #1: Declare URL variable outside try block for proper cleanup
+  // FIXED: Detect iOS Safari for special handling
+  const isIOSSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && 
+                     (navigator.userAgent.includes('Safari') || navigator.userAgent.includes('Version'));
+  
+  console.log('Device detection:', {
+    userAgent: navigator.userAgent,
+    isIOSSafari: isIOSSafari
+  });
+
   let blobUrl = null;
 
   try {
     console.log("Processing output text for download...");
 
+    // [Keep existing text processing logic - same as before]
     let cleanedText = text
       .replace(/\*\*/g, '')
       .replace(/^(question paper|curriculum board|class|subject|total time).*$/gmi, '')
@@ -1188,15 +1198,19 @@ async function downloadQuestionPaper() {
       answerKey: answerKey
     };
 
-    console.log("Sending payload to server:", JSON.stringify(payload, null, 2));
+    console.log("Sending payload to server...");
 
+    // FIXED: Enhanced fetch request with iOS-specific headers
     const response = await fetch(
       `${window.APP_CONFIG.BACKEND_URL}/download-docx`,
       {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'useremail': localStorage.getItem('userEmail') || 'anonymous'
+          'useremail': localStorage.getItem('userEmail') || 'anonymous',
+          // FIXED: Add iOS-specific headers for better compatibility
+          'Accept': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/octet-stream, */*',
+          'Cache-Control': 'no-cache'
         },
         body: JSON.stringify(payload)
       }
@@ -1212,38 +1226,140 @@ async function downloadQuestionPaper() {
       throw new Error(`Download failed: ${errorData.message || response.statusText}`);
     }
 
+    // FIXED: Verify Content-Type header from server
+    const contentType = response.headers.get('Content-Type');
+    console.log('Server Content-Type:', contentType);
+    
+    if (!contentType || !contentType.includes('wordprocessingml')) {
+      console.warn('Unexpected Content-Type from server:', contentType);
+    }
+
     const blob = await response.blob();
     
     if (blob.size === 0) {
       throw new Error("Received empty file from server.");
     }
 
-    // BUG FIX #1: Create blob URL and ensure cleanup
-    blobUrl = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = blobUrl;
+    console.log('Blob details:', {
+      size: blob.size,
+      type: blob.type,
+      isIOSSafari: isIOSSafari
+    });
+
+    // FIXED: Create properly typed blob for iOS Safari compatibility
+    const docxMimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    
+    // FIXED: Force correct MIME type for iOS Safari
+    const typedBlob = isIOSSafari ? 
+      new Blob([blob], { type: docxMimeType }) : 
+      blob;
+
+    blobUrl = window.URL.createObjectURL(typedBlob);
+    
+    // FIXED: Enhanced filename handling for iOS
     const safeSubject = subject.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    a.download = `Question_Paper_${safeSubject || 'Untitled'}.docx`;
-    document.body.appendChild(a);
-    a.click();
+    const fileName = `Question_Paper_${safeSubject || 'Untitled'}.docx`;
+    
+    console.log('Creating download with filename:', fileName);
 
-    // BUG FIX #1: Remove the anchor element immediately
-    document.body.removeChild(a);
-
-    showToast("Question paper downloaded successfully!", 3000);
+    // FIXED: iOS Safari-specific download handling
+    if (isIOSSafari) {
+      // Method 1: Try standard download first
+      try {
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = blobUrl;
+        a.download = fileName;
+        
+        // FIXED: iOS Safari-specific attributes
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener');
+        
+        document.body.appendChild(a);
+        
+        // FIXED: iOS-specific click simulation
+        if (typeof a.click === 'function') {
+          a.click();
+        } else {
+          // Fallback for older iOS versions
+          const clickEvent = new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true
+          });
+          a.dispatchEvent(clickEvent);
+        }
+        
+        document.body.removeChild(a);
+        
+        // FIXED: iOS-specific success message
+        showToast("Download started! Check your Downloads folder or Files app.", 4000);
+        
+        // FIXED: Delayed cleanup for iOS Safari
+        setTimeout(() => {
+          if (blobUrl) {
+            window.URL.revokeObjectURL(blobUrl);
+            blobUrl = null;
+            console.log('iOS: Delayed blob cleanup completed');
+          }
+        }, 10000); // 10 second delay for iOS
+        
+      } catch (iosError) {
+        console.error('iOS download method failed:', iosError);
+        
+        // FIXED: Fallback - open in new tab for iOS
+        try {
+          const newWindow = window.open(blobUrl, '_blank');
+          if (newWindow) {
+            showToast("File opened in new tab. Use 'Save As' to download.", 5000);
+          } else {
+            throw new Error('Popup blocked');
+          }
+        } catch (fallbackError) {
+          console.error('iOS fallback failed:', fallbackError);
+          showToast("Download failed on iOS. Please try on a computer or use Chrome browser.", 6000, true);
+        }
+      }
+      
+    } else {
+      // FIXED: Standard download for non-iOS browsers
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = blobUrl;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      showToast("Question paper downloaded successfully!", 3000);
+      
+      // Standard cleanup
+      setTimeout(() => {
+        if (blobUrl) {
+          window.URL.revokeObjectURL(blobUrl);
+          blobUrl = null;
+          console.log('Standard blob cleanup completed');
+        }
+      }, 5000);
+    }
 
   } catch (error) {
     console.error("Download error:", error);
-    showToast(`Download failed: ${error.message}`, 5000, true);
-  } finally {
-    // BUG FIX #1: Always cleanup blob URL, even if errors occur
+    
+    // FIXED: iOS-specific error handling
+    if (isIOSSafari) {
+      showToast(`iOS Download failed: ${error.message}. Try using Chrome browser or download on computer.`, 7000, true);
+    } else {
+      showToast(`Download failed: ${error.message}`, 5000, true);
+    }
+    
+    // Ensure cleanup on error
     if (blobUrl) {
       window.URL.revokeObjectURL(blobUrl);
       blobUrl = null;
-      console.log('Download completed, blob URL cleaned up');
     }
     
+  } finally {
     // Re-enable button and hide status
     downloadBtn.disabled = false;
     downloadBtn.style.opacity = '1';
@@ -1253,9 +1369,8 @@ async function downloadQuestionPaper() {
   }
 }
 
-// ===== BUG FIX #2: RACE CONDITION INITIALIZATION FIXES =====
+// ===== RACE CONDITION INITIALIZATION FIXES =====
 
-// BUG FIX #2: Replace timeout with proper DOM ready check
 async function waitForDOMAndComponentsReady() {
   // Wait for DOM to be fully ready
   await waitForDOMReady();
@@ -1392,7 +1507,7 @@ function initializeFormElements() {
   }
 }
 
-// BUG FIX #2: Consolidated event listener setup
+//  Consolidated event listener setup
 function setupEventListeners() {
   console.log('Setting up event listeners...');
   
