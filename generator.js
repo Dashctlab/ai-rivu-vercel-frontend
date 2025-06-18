@@ -613,13 +613,13 @@ const tbody = document.getElementById('questionRowsBody');
    <td>
      <input type="text" class="topic" placeholder="Optional topic">
    </td>
-  <td>
-  <input type="number" class="marksPerQuestion" min="0.5" max="50" step="0.5" value="${defaultMarks}" 
-         required inputmode="decimal">
+ <td>
+  <input type="number" class="numQuestions" min="1" max="15" step="1" value="${defaultQuestions}" 
+         required inputmode="numeric" pattern="[0-9]*">
 </td>
 <td>
-  <input type="number" class="marksPerQuestion" min="0" value="${defaultMarks}" 
-         required inputmode="numeric" pattern="[0-9]*">
+  <input type="number" class="marksPerQuestion" min="0.5" max="50" step="0.5" value="${defaultMarks}" 
+         required inputmode="decimal">
 </td>
    <td class="totalMarks" style="text-align: center;">0</td>
    <td>
