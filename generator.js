@@ -42,7 +42,18 @@ const teacherFriendlyErrors = {
  'default': 'Something went wrong. Please try again or contact support if the problem continues.'
 };
 
-// ===== BUG FIX #4: DEBOUNCED VALIDATION =====
+//  VALIDATION FOR HALF MARKS =====
+function validateMarksInput(value) {
+  const numValue = parseFloat(value);
+  if (isNaN(numValue)) return false;
+  if (numValue <= 0) return false;
+  if (numValue > 50) return false;
+  // : Check if it's in 0.5 increments (curriculum standard)
+  return (numValue * 2) % 1 === 0; // This ensures 0.5 increments: 0.5, 1.0, 1.5, 2.0, 2.5, etc.
+}
+
+
+//DEBOUNCED VALIDATION =====
 function debouncedValidateForm() {
  clearTimeout(validationTimeout);
  validationTimeout = setTimeout(() => {
@@ -603,8 +614,8 @@ const tbody = document.getElementById('questionRowsBody');
      <input type="text" class="topic" placeholder="Optional topic">
    </td>
   <td>
-  <input type="number" class="numQuestions" min="0" max="15" value="${defaultQuestions}" 
-         required inputmode="numeric" pattern="[0-9]*">
+  <input type="number" class="marksPerQuestion" min="0.5" max="50" step="0.5" value="${defaultMarks}" 
+         required inputmode="decimal">
 </td>
 <td>
   <input type="number" class="marksPerQuestion" min="0" value="${defaultMarks}" 
@@ -622,7 +633,7 @@ const tbody = document.getElementById('questionRowsBody');
  
  tbody.appendChild(row);
  
- // Add event listeners with validation
+ // event listeners with validation
 const numQuestionsInput = row.querySelector('.numQuestions');
 const marksPerQuestionInput = row.querySelector('.marksPerQuestion');
 const typeSelect = row.querySelector('.question-type');
@@ -632,18 +643,35 @@ const typeSelect = row.querySelector('.question-type');
      // FIXED: Multiple events for mobile compatibility
      ['input', 'change', 'blur'].forEach(eventType => {
        input.addEventListener(eventType, () => {
-         // FIXED: Mobile number input sanitization - IMPROVED
+         // FIXED: Enhanced mobile number input sanitization with half marks support
          if (input.type === 'number' && input.value) {
-           // Allow decimal points for marks, only digits for questions
+																	   
            if (input.classList.contains('marksPerQuestion')) {
-             // For marks: allow decimals (2.5, 1.5, etc.)
-             const sanitized = input.value.replace(/[^0-9.]/g, '');
+             // FIXED: For marks - allow decimals but validate 0.5 increments
+             let sanitized = input.value.replace(/[^0-9.]/g, '');
+             
              // Prevent multiple decimal points
              const parts = sanitized.split('.');
              if (parts.length > 2) {
-               input.value = parts[0] + '.' + parts.slice(1).join('');
-             } else {
-               input.value = sanitized;
+               sanitized = parts[0] + '.' + parts.slice(1).join('');
+             }
+             
+             // Limit to 1 decimal place for 0.5 increments
+             if (parts.length === 2 && parts[1].length > 1) {
+               sanitized = parts[0] + '.' + parts[1].substring(0, 1);
+             }
+             
+             input.value = sanitized;
+             
+             // Validate 0.5 increments
+             const numValue = parseFloat(sanitized);
+             if (!isNaN(numValue) && !validateMarksInput(numValue)) {
+               // Round to nearest 0.5
+               const roundedValue = Math.round(numValue * 2) / 2;
+               if (roundedValue >= 0.5 && roundedValue <= 50) {
+                 input.value = roundedValue.toString();
+                 showToast('Marks rounded to nearest 0.5 increment (e.g., 1.5, 2.0, 2.5)', 2000);
+               }
              }
            } else {
              // For question numbers: only integers
@@ -652,16 +680,22 @@ const typeSelect = row.querySelector('.question-type');
            }
          }
          
-         // FIXED: Enforce limits after sanitization
+         //  Enforce limits after sanitization
          if (numQuestionsInput && parseInt(numQuestionsInput.value) > 15) {
            numQuestionsInput.value = 15;
            showToast('Maximum 15 questions per section allowed.', 3000, true);
          }
          
-         // FIXED: Enforce marks limit
+         //  Enforce marks limit with decimal support
          if (marksPerQuestionInput && parseFloat(marksPerQuestionInput.value) > 50) {
            marksPerQuestionInput.value = 50;
            showToast('Maximum 50 marks per question allowed.', 3000, true);
+         }
+         
+         // Minimum marks validation
+         if (marksPerQuestionInput && parseFloat(marksPerQuestionInput.value) < 0.5 && marksPerQuestionInput.value !== '') {
+           marksPerQuestionInput.value = 0.5;
+           showToast('Minimum 0.5 marks required.', 3000, true);
          }
          
          calculateTotals();
@@ -670,6 +704,7 @@ const typeSelect = row.querySelector('.question-type');
      });
    }
  });
+
  
  // Delete button
  const deleteBtn = row.querySelector('.delete-row-btn');
@@ -802,7 +837,7 @@ function calculateTotals() {
    const totalMarksCell = row.querySelector('.totalMarks');
    if (totalMarksCell) {
      // FIXED: Always show clean numbers, never NaN
-     totalMarksCell.textContent = total || 0;
+     totalMarksCell.textContent = total > 0 ? (total % 1 === 0 ? total.toString() : total.toFixed(1)) : 0;
    }
    
    overallTotal += total;
@@ -813,7 +848,10 @@ function calculateTotals() {
  const totalQuestionsElement = document.getElementById('totalQuestions');
  
  // FIXED: Ensure clean display
- if (overallTotalElement) overallTotalElement.textContent = overallTotal || 0;
+ if (overallTotalElement) {
+   overallTotalElement.textContent = overallTotal > 0 ? 
+     (overallTotal % 1 === 0 ? overallTotal.toString() : overallTotal.toFixed(1)) : 0;
+ }
  if (totalQuestionsElement) totalQuestionsElement.textContent = totalQuestions || 0;
 }
 
@@ -832,7 +870,7 @@ async function generateQuestionPaper(e) {
    const type = row.querySelector('.question-type')?.value || '';
    const topic = row.querySelector('.topic')?.value?.trim() || '';
    const num = parseInt(row.querySelector('.numQuestions')?.value) || 0;
-   const marks = parseInt(row.querySelector('.marksPerQuestion')?.value) || 0;
+   const marks = parseFloat(row.querySelector('.marksPerQuestion')?.value) || 0;
    
    if (type && num > 0) {
      questionDetails.push({ 
@@ -937,7 +975,9 @@ async function generateQuestionPaper(e) {
        downloadBtn.dataset.subject = payload.subject;
        downloadBtn.dataset.classname = payload.className;
        downloadBtn.dataset.curriculum = payload.curriculum;
-       downloadBtn.dataset.totalmarks = document.getElementById('overallTotalMarks')?.textContent || '0';
+       const totalMarksText = document.getElementById('overallTotalMarks')?.textContent || '0';
+       downloadBtn.dataset.totalmarks = totalMarksText;
+       
        
        const timeDurationSelect = document.getElementById('timeDuration');
        if (timeDurationSelect) {
