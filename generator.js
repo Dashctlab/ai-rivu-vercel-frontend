@@ -601,7 +601,7 @@ const tbody = document.getElementById('questionRowsBody');
  // Set default values
  const defaultType = questionRowCount === 1 ? 'Short Answer' : '';
  const defaultQuestions = '5';
- const defaultMarks = questionRowCount === 1 ? '1' : '0';
+ const defaultMarks = '1';
  
  row.innerHTML = `
    <td>
