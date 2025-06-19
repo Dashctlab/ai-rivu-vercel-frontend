@@ -997,23 +997,31 @@ async function generateQuestionPaper(e) {
      
      showToast('Your question paper has been generated successfully!', 3000);
    } else {
-     let errorData = { message: `Server responded with ${response.status}` };
-     try {
-       errorData = await response.json();
-     } catch(e) { /* ignore */ }
-     
-     console.error('Generation API Error:', errorData);
-     
-     if (response.status === 401) {
-       showTeacherFriendlyError('auth', errorData.message);
-     } else if (response.status === 429) {
-       showTeacherFriendlyError('timeout', 'Rate limit exceeded');
-     } else if (response.status >= 500) {
-       showTeacherFriendlyError('server', errorData.message);
-     } else {
-       showTeacherFriendlyError('generation', errorData.message);
-     }
-   }
+	  let errorData = { message: `Server responded with ${response.status}` };
+	  try {
+	    errorData = await response.json();
+	  } catch(e) { /* ignore */ }
+	  
+	  console.error('Generation API Error:', errorData);
+	  
+	  // FIXED: Handle quota exhaustion specifically
+	  if (response.status === 429 && errorData.errorCode === 'QUOTA_EXCEEDED') {
+	    hideLoadingProgress();
+	    showQuotaModal(errorData.quota);
+	    return; // Don't show additional error messages
+	  }
+	  
+	  if (response.status === 401) {
+	    showTeacherFriendlyError('auth', errorData.message);
+	  } else if (response.status === 429) {
+	    showTeacherFriendlyError('timeout', 'Rate limit exceeded');
+	  } else if (response.status >= 500) {
+	    showTeacherFriendlyError('server', errorData.message);
+	  } else {
+	    showTeacherFriendlyError('generation', errorData.message);
+	  }
+	}
+	 
  } catch (error) {
    console.error("Generation error:", error);
    
@@ -1058,7 +1066,7 @@ async function downloadQuestionPaper() {
     return;
   }
 
-  // FIXED: Detect iOS Safari for special handling
+  //  Detect iOS Safari for special handling
   const isIOSSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && 
                      (navigator.userAgent.includes('Safari') || navigator.userAgent.includes('Version'));
   
@@ -1203,7 +1211,7 @@ async function downloadQuestionPaper() {
 
     console.log("Sending payload to server...");
 
-    // FIXED: Enhanced fetch request with iOS-specific headers
+    //  Enhanced fetch request with iOS-specific headers
     const response = await fetch(
       `${window.APP_CONFIG.BACKEND_URL}/download-docx`,
       {
@@ -1249,23 +1257,23 @@ async function downloadQuestionPaper() {
       isIOSSafari: isIOSSafari
     });
 
-    // FIXED: Create properly typed blob for iOS Safari compatibility
+    //  Create properly typed blob for iOS Safari compatibility
     const docxMimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
     
-    // FIXED: Force correct MIME type for iOS Safari
+    // Force correct MIME type for iOS Safari
     const typedBlob = isIOSSafari ? 
       new Blob([blob], { type: docxMimeType }) : 
       blob;
 
     blobUrl = window.URL.createObjectURL(typedBlob);
     
-    // FIXED: Enhanced filename handling for iOS
+    //  Enhanced filename handling for iOS
     const safeSubject = subject.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     const fileName = `Question_Paper_${safeSubject || 'Untitled'}.docx`;
     
     console.log('Creating download with filename:', fileName);
 
-    // FIXED: iOS Safari-specific download handling
+    //  iOS Safari-specific download handling
     if (isIOSSafari) {
       // Method 1: Try standard download first
       try {
@@ -1294,11 +1302,7 @@ async function downloadQuestionPaper() {
         }
         
         document.body.removeChild(a);
-        
-        // FIXED: iOS-specific success message
         showToast("Download started! Check your Downloads folder or Files app.", 4000);
-        
-        // FIXED: Delayed cleanup for iOS Safari
         setTimeout(() => {
           if (blobUrl) {
             window.URL.revokeObjectURL(blobUrl);
@@ -1310,7 +1314,7 @@ async function downloadQuestionPaper() {
       } catch (iosError) {
         console.error('iOS download method failed:', iosError);
         
-        // FIXED: Fallback - open in new tab for iOS
+        // : Fallback - open in new tab for iOS
         try {
           const newWindow = window.open(blobUrl, '_blank');
           if (newWindow) {
@@ -1325,7 +1329,7 @@ async function downloadQuestionPaper() {
       }
       
     } else {
-      // FIXED: Standard download for non-iOS browsers
+      // : Standard download for non-iOS browsers
       const a = document.createElement('a');
       a.style.display = 'none';
       a.href = blobUrl;
@@ -1369,6 +1373,115 @@ async function downloadQuestionPaper() {
     if (downloadStatus) {
       downloadStatus.style.display = 'none';
     }
+  }
+}
+
+// ===== QUOTA MODAL FUNCTIONS =====
+
+/**
+ * Show quota exhaustion modal with upgrade options
+ */
+function showQuotaModal(quotaData) {
+  // Remove any existing modal
+  const existingModal = document.getElementById('quotaModal');
+  if (existingModal) {
+    existingModal.remove();
+  }
+
+  // Create modal HTML
+  const modalHTML = `
+    <div id="quotaModal" class="quota-modal-overlay">
+      <div class="quota-modal">
+        <div class="quota-modal-header">
+          <h2>Account Limit Reached</h2>
+          <button class="quota-modal-close" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="quota-modal-body">
+          <div class="quota-icon">📊</div>
+          <p class="quota-message">
+            You've generated <strong>${quotaData.used}</strong> question papers 
+            (free account limit reached).
+          </p>
+          <p class="quota-upgrade">
+            Ready to generate more papers? Contact us to upgrade your account:
+          </p>
+          <div class="quota-contact-options">
+            <div class="contact-option">
+              <span class="contact-icon">📞</span>
+              <a href="tel:+918828015315" class="contact-link">+91-8828015315</a>
+            </div>
+            <div class="contact-option">
+              <span class="contact-icon">🌐</span>
+              <a href="/contact.html" class="contact-link" target="_blank">Visit Contact Page</a>
+            </div>
+          </div>
+        </div>
+        <div class="quota-modal-footer">
+          <button class="quota-modal-ok" onclick="closeQuotaModal()">Got it</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Add modal to page
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+  // Add event listeners
+  const modal = document.getElementById('quotaModal');
+  const closeBtn = modal.querySelector('.quota-modal-close');
+  const okBtn = modal.querySelector('.quota-modal-ok');
+
+  // Close modal functions
+  const closeModal = () => {
+    modal.classList.add('quota-modal-closing');
+    setTimeout(() => {
+      if (modal.parentNode) {
+        modal.parentNode.removeChild(modal);
+      }
+    }, 300);
+  };
+
+  // Event listeners
+  closeBtn.addEventListener('click', closeModal);
+  okBtn.addEventListener('click', closeModal);
+  
+  // Close on overlay click (but not on modal content click)
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+
+  // ESC key to close
+  const handleEscKey = (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+      document.removeEventListener('keydown', handleEscKey);
+    }
+  };
+  document.addEventListener('keydown', handleEscKey);
+
+  // Show modal with animation
+  setTimeout(() => {
+    modal.classList.add('quota-modal-visible');
+  }, 10);
+
+  // Log quota modal shown
+  console.log('Quota modal displayed for user');
+}
+
+/**
+ * Close quota modal (global function for onclick)
+ */
+function closeQuotaModal() {
+  const modal = document.getElementById('quotaModal');
+  if (modal) {
+    modal.classList.add('quota-modal-closing');
+    setTimeout(() => {
+      if (modal.parentNode) {
+        modal.parentNode.removeChild(modal);
+      }
+    }, 300);
   }
 }
 
@@ -1469,7 +1582,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-//  Enhanced form initialization with proper safety checks
+//  Enhanced form initialization with safety checks
 function initializeFormElements() {
   console.log('Initializing form elements...');
   
